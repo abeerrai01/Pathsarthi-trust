@@ -147,6 +147,14 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Visitor Counter */}
+      <div className="w-full flex justify-center mt-8">
+        {/* hitwebcounter Code START */}
+        <a href="https://www.hitwebcounter.com" target="_blank" rel="noopener noreferrer">
+          <img src="https://hitwebcounter.com/counter/counter.php?page=20956569&style=0005&nbdigits=3&type=page&initCount=0" title="Counter Widget" alt="Visit counter For Websites" border="0" />
+        </a>
+      </div>
     </div>
   );
 };
