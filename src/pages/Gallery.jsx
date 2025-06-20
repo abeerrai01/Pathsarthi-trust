@@ -28,6 +28,12 @@ const Gallery = () => {
     { id: 2, src: '/gallery4.jpg', title: 'Educational Support', description: 'Distributing notebooks and educational materials to students in need.' },
   ];
 
+  // Combine all images into one array
+  const allImages = [
+    ...healthCampImages,
+    ...meetupImages,
+  ];
+
   const [selectedImage, setSelectedImage] = useState(null);
 
   return (
@@ -35,56 +41,23 @@ const Gallery = () => {
       <div className="max-w-7xl mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-12">Our Gallery</h1>
 
-        {/* Health Camp Section */}
-        <h2 className="text-2xl font-bold mb-8 text-indigo-700 text-center">HEALTH CAMP BY BRIGHTSTAR HOSPITAL WITH PATHSARTHI</h2>
-        <div className="grid grid-cols-1 gap-8 mb-16">
-          {healthCampImages.map((image, index) => (
+        {/* Unified Image Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-16">
+          {allImages.map((image, index) => (
             <motion.div
               key={image.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
-              className="relative group cursor-pointer border-2 border-gray-300 rounded-lg p-4 bg-white flex flex-col items-center"
+              className="relative group cursor-pointer flex items-center justify-center bg-transparent"
               onClick={() => setSelectedImage(image)}
             >
-              <div className="w-full flex justify-center">
-                <img
-                  src={image.src}
-                  alt={image.title}
-                  className="max-w-md w-full h-64 object-contain rounded-md bg-gray-50"
-                />
-              </div>
-              <div className="mt-4 text-center">
-                <h3 className="text-lg font-semibold mb-2">{image.title}</h3>
-                <p className="text-sm text-gray-600">{image.description}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Meetup Section */}
-        <h2 className="text-2xl font-bold mb-8 text-indigo-700 text-center">MEETUP WITH BRIGHTSTAR HOSPITAL</h2>
-        <div className="grid grid-cols-1 gap-8 mb-16">
-          {meetupImages.map((image, index) => (
-            <motion.div
-              key={image.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative group cursor-pointer border-2 border-gray-300 rounded-lg p-4 bg-white flex flex-col items-center"
-              onClick={() => setSelectedImage(image)}
-            >
-              <div className="w-full flex justify-center">
-                <img
-                  src={image.src}
-                  alt={image.title}
-                  className="max-w-md w-full h-64 object-contain rounded-md bg-gray-50"
-                />
-              </div>
-              <div className="mt-4 text-center">
-                <h3 className="text-lg font-semibold mb-2">{image.title}</h3>
-                <p className="text-sm text-gray-600">{image.description}</p>
-              </div>
+              <img
+                src={image.src}
+                alt={image.title}
+                className="w-full h-48 object-cover rounded-md shadow-sm"
+                style={{ aspectRatio: '4/3' }}
+              />
             </motion.div>
           ))}
         </div>

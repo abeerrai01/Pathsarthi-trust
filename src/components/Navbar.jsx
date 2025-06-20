@@ -17,6 +17,14 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu and scroll to top on navigation
+  const handleNavClick = (path) => {
+    setIsMobileMenuOpen(false);
+    if (location.pathname !== path) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const isActive = (path) => {
     return location.pathname === path;
   };
@@ -35,7 +43,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Link to="/" className="flex items-center">
+              <Link to="/" className="flex items-center" onClick={() => handleNavClick('/')}>
                 <img
                   src="/PathSarthi logo.png"
                   alt="PathSarthi Trust"
@@ -46,33 +54,15 @@ const Navbar = () => {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <Link to="/" className={getNavLinkClass('/')}>
-                  Home
-                </Link>
-                <Link to="/gallery" className={getNavLinkClass('/gallery')}>
-                  Gallery
-                </Link>
-                <Link to="/mission" className={getNavLinkClass('/mission')}>
-                  Mission
-                </Link>
-                <Link to="/contribution" className={getNavLinkClass('/contribution')}>
-                  Contribution
-                </Link>
-                <Link to="/donate" className={getNavLinkClass('/donate')}>
-                  Donate
-                </Link>
-                <Link to="/sponsor-notebooks" className={getNavLinkClass('/sponsor-notebooks')}>
-                  Sponsor Notebooks
-                </Link>
-                <Link to="/trust-members" className={getNavLinkClass('/trust-members')}>
-                  Trust Members
-                </Link>
-                <Link to="/social-media" className={getNavLinkClass('/social-media')}>
-                  Social Media
-                </Link>
-                <Link to="/about" className={getNavLinkClass('/about')}>
-                  About Us
-                </Link>
+                <Link to="/" className={getNavLinkClass('/')} onClick={() => handleNavClick('/')}>Home</Link>
+                <Link to="/gallery" className={getNavLinkClass('/gallery')} onClick={() => handleNavClick('/gallery')}>Gallery</Link>
+                <Link to="/mission" className={getNavLinkClass('/mission')} onClick={() => handleNavClick('/mission')}>Mission</Link>
+                <Link to="/contribution" className={getNavLinkClass('/contribution')} onClick={() => handleNavClick('/contribution')}>Contribution</Link>
+                <Link to="/donate" className={getNavLinkClass('/donate')} onClick={() => handleNavClick('/donate')}>Donate</Link>
+                <Link to="/sponsor-notebooks" className={getNavLinkClass('/sponsor-notebooks')} onClick={() => handleNavClick('/sponsor-notebooks')}>Sponsor Notebooks</Link>
+                <Link to="/trust-members" className={getNavLinkClass('/trust-members')} onClick={() => handleNavClick('/trust-members')}>Trust Members</Link>
+                <Link to="/social-media" className={getNavLinkClass('/social-media')} onClick={() => handleNavClick('/social-media')}>Social Media</Link>
+                <Link to="/about" className={getNavLinkClass('/about')} onClick={() => handleNavClick('/about')}>About Us</Link>
               </div>
             </div>
           </div>
@@ -138,6 +128,7 @@ const Navbar = () => {
                 ? 'bg-gray-900 text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
+            onClick={() => handleNavClick('/')}
           >
             Home
           </Link>
@@ -148,6 +139,7 @@ const Navbar = () => {
                 ? 'bg-gray-900 text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
+            onClick={() => handleNavClick('/gallery')}
           >
             Gallery
           </Link>
@@ -158,6 +150,7 @@ const Navbar = () => {
                 ? 'bg-gray-900 text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
+            onClick={() => handleNavClick('/mission')}
           >
             Mission
           </Link>
@@ -168,6 +161,7 @@ const Navbar = () => {
                 ? 'bg-gray-900 text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
+            onClick={() => handleNavClick('/contribution')}
           >
             Contribution
           </Link>
@@ -178,6 +172,7 @@ const Navbar = () => {
                 ? 'bg-gray-900 text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
+            onClick={() => handleNavClick('/donate')}
           >
             Donate
           </Link>
@@ -188,6 +183,7 @@ const Navbar = () => {
                 ? 'bg-gray-900 text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
+            onClick={() => handleNavClick('/sponsor-notebooks')}
           >
             Sponsor Notebooks
           </Link>
@@ -198,6 +194,7 @@ const Navbar = () => {
                 ? 'bg-gray-900 text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
+            onClick={() => handleNavClick('/trust-members')}
           >
             Trust Members
           </Link>
@@ -208,6 +205,7 @@ const Navbar = () => {
                 ? 'bg-gray-900 text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
+            onClick={() => handleNavClick('/social-media')}
           >
             Social Media
           </Link>
@@ -218,6 +216,7 @@ const Navbar = () => {
                 ? 'bg-gray-900 text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
+            onClick={() => handleNavClick('/about')}
           >
             About Us
           </Link>
