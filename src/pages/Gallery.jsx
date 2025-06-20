@@ -4,28 +4,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Gallery = () => {
   // Health Camp images
   const healthCampImages = [
-    { id: 1, src: '/HC1.jpg', title: 'Healthcare Camp 1', description: 'PathSarthi Trust healthcare outreach event - 1.' },
-    { id: 2, src: '/HC2.jpg', title: 'Healthcare Camp 2', description: 'PathSarthi Trust healthcare outreach event - 2.' },
-    { id: 3, src: '/HC3.jpg', title: 'Healthcare Camp 3', description: 'PathSarthi Trust healthcare outreach event - 3.' },
-    { id: 4, src: '/HC4.jpg', title: 'Healthcare Camp 4', description: 'PathSarthi Trust healthcare outreach event - 4.' },
-    { id: 5, src: '/HC5.jpg', title: 'Healthcare Camp 5', description: 'PathSarthi Trust healthcare outreach event - 5.' },
-    { id: 6, src: '/HC6.jpg', title: 'Healthcare Camp 6', description: 'PathSarthi Trust healthcare outreach event - 6.' },
-    { id: 7, src: '/HC7.jpg', title: 'Healthcare Camp 7', description: 'PathSarthi Trust healthcare outreach event - 7.' },
-    { id: 8, src: '/HC8.jpg', title: 'Healthcare Camp 8', description: 'PathSarthi Trust healthcare outreach event - 8.' },
-    { id: 9, src: '/HC9.jpg', title: 'Healthcare Camp 9', description: 'PathSarthi Trust healthcare outreach event - 9.' },
-    { id: 10, src: '/HC10.jpg', title: 'Healthcare Camp 10', description: 'PathSarthi Trust healthcare outreach event - 10.' },
-    { id: 11, src: '/HC11.jpg', title: 'Healthcare Camp 11', description: 'PathSarthi Trust healthcare outreach event - 11.' },
-    { id: 12, src: '/HC12.jpg', title: 'Healthcare Camp 12', description: 'PathSarthi Trust healthcare outreach event - 12.' },
-    { id: 13, src: '/HC13.jpg', title: 'Healthcare Camp 13', description: 'PathSarthi Trust healthcare outreach event - 13.' },
-    { id: 14, src: '/HC14.jpg', title: 'Healthcare Camp 14', description: 'PathSarthi Trust healthcare outreach event - 14.' },
-    { id: 15, src: '/HC15.jpg', title: 'Healthcare Camp 15', description: 'PathSarthi Trust healthcare outreach event - 15.' },
-    { id: 16, src: '/HC16.jpg', title: 'Healthcare Camp 16', description: 'PathSarthi Trust healthcare outreach event - 16.' },
+    { id: 1, src: '/HC1.jpg' },
+    { id: 2, src: '/HC2.jpg' },
+    { id: 3, src: '/HC3.jpg' },
+    { id: 4, src: '/HC4.jpg' },
+    { id: 5, src: '/HC5.jpg' },
+    { id: 6, src: '/HC6.jpg' },
+    { id: 7, src: '/HC7.jpg' },
+    { id: 8, src: '/HC8.jpg' },
+    { id: 9, src: '/HC9.jpg' },
+    { id: 10, src: '/HC10.jpg' },
+    { id: 11, src: '/HC11.jpg' },
+    { id: 12, src: '/HC12.jpg' },
+    { id: 13, src: '/HC13.jpg' },
+    { id: 14, src: '/HC14.jpg' },
+    { id: 15, src: '/HC15.jpg' },
+    { id: 16, src: '/HC16.jpg' },
   ];
 
   // Meetup images
   const meetupImages = [
-    { id: 1, src: '/gallery1.jpg', title: 'Community Outreach', description: 'PathSarthi Trust volunteers engaging with children during a community event.' },
-    { id: 2, src: '/gallery4.jpg', title: 'Educational Support', description: 'Distributing notebooks and educational materials to students in need.' },
+    { id: 1, src: '/gallery1.jpg' },
+    { id: 2, src: '/gallery4.jpg' },
   ];
 
   // Combine all images into one array
