@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -27,6 +27,39 @@ const Home = () => {
       image: '/images/women-empowerment.jpg',
     },
   ];
+
+  // Ref for the counter container
+  const counterRef = useRef(null);
+
+  useEffect(() => {
+    // Clean up any previous counter
+    if (counterRef.current) {
+      counterRef.current.innerHTML = "";
+    }
+    // Create the powered by link
+    const poweredBy = document.createElement('a');
+    poweredBy.href = 'https://www.free-counters.org/';
+    poweredBy.textContent = 'powered by Free-Counters.org';
+    poweredBy.target = '_blank';
+    poweredBy.rel = 'noopener noreferrer';
+    if (counterRef.current) counterRef.current.appendChild(poweredBy);
+    // Add the first script
+    const script1 = document.createElement('script');
+    script1.type = 'text/javascript';
+    script1.src = 'https://www.freevisitorcounters.com/auth.php?id=22bf731492fb17baa4745af20331c0fdd2467bf9';
+    script1.async = true;
+    if (counterRef.current) counterRef.current.appendChild(script1);
+    // Add the second script
+    const script2 = document.createElement('script');
+    script2.type = 'text/javascript';
+    script2.src = 'https://www.freevisitorcounters.com/en/home/counter/1353603/t/5';
+    script2.async = true;
+    if (counterRef.current) counterRef.current.appendChild(script2);
+    // Cleanup
+    return () => {
+      if (counterRef.current) counterRef.current.innerHTML = "";
+    };
+  }, []);
 
   return (
     <div className="space-y-16">
@@ -150,9 +183,8 @@ const Home = () => {
 
       {/* Visitor Counter */}
       <div className="w-full flex justify-center mt-8">
-        {/* hitwebcounter Code START */}
         <a href="https://www.hitwebcounter.com" target="_blank" rel="noopener noreferrer">
-          <img src="https://hitwebcounter.com/counter/counter.php?page=20956569&style=0005&nbdigits=3&type=page&initCount=0" title="Counter Widget" alt="Visit counter For Websites" border="0" />
+          <img src="https://hitwebcounter.com/counter/counter.php?page=20956663&style=0005&nbdigits=9&type=page&initCount=0" title="Counter Widget" alt="Visit counter For Websites" border="0" />
         </a>
       </div>
     </div>
