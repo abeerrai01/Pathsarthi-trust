@@ -37,28 +37,26 @@ const Gallery = () => {
 
         {/* Health Camp Section */}
         <h2 className="text-2xl font-bold mb-8 text-indigo-700 text-center">HEALTH CAMP BY BRIGHTSTAR HOSPITAL WITH PATHSARTHI</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 gap-8 mb-16">
           {healthCampImages.map((image, index) => (
             <motion.div
               key={image.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
-              className="relative group cursor-pointer"
+              className="relative group cursor-pointer border-2 border-gray-300 rounded-lg p-4 bg-white flex flex-col items-center"
               onClick={() => setSelectedImage(image)}
             >
-              <div className="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden">
+              <div className="w-full flex justify-center">
                 <img
                   src={image.src}
                   alt={image.title}
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                  className="max-w-md w-full h-64 object-contain rounded-md bg-gray-50"
                 />
               </div>
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 rounded-lg flex items-center justify-center">
-                <div className="text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-4">
-                  <h3 className="text-lg font-semibold mb-2">{image.title}</h3>
-                  <p className="text-sm">{image.description}</p>
-                </div>
+              <div className="mt-4 text-center">
+                <h3 className="text-lg font-semibold mb-2">{image.title}</h3>
+                <p className="text-sm text-gray-600">{image.description}</p>
               </div>
             </motion.div>
           ))}
@@ -66,28 +64,26 @@ const Gallery = () => {
 
         {/* Meetup Section */}
         <h2 className="text-2xl font-bold mb-8 text-indigo-700 text-center">MEETUP WITH BRIGHTSTAR HOSPITAL</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+        <div className="grid grid-cols-1 gap-8 mb-16">
           {meetupImages.map((image, index) => (
             <motion.div
               key={image.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative group cursor-pointer"
+              className="relative group cursor-pointer border-2 border-gray-300 rounded-lg p-4 bg-white flex flex-col items-center"
               onClick={() => setSelectedImage(image)}
             >
-              <div className="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden">
+              <div className="w-full flex justify-center">
                 <img
                   src={image.src}
                   alt={image.title}
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                  className="max-w-md w-full h-64 object-contain rounded-md bg-gray-50"
                 />
               </div>
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 rounded-lg flex items-center justify-center">
-                <div className="text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-4">
-                  <h3 className="text-lg font-semibold mb-2">{image.title}</h3>
-                  <p className="text-sm">{image.description}</p>
-                </div>
+              <div className="mt-4 text-center">
+                <h3 className="text-lg font-semibold mb-2">{image.title}</h3>
+                <p className="text-sm text-gray-600">{image.description}</p>
               </div>
             </motion.div>
           ))}
