@@ -7,57 +7,15 @@ const Gallery = () => {
   const images = [
     {
       id: 1,
-      src: '/images/gallery/education-1.jpg',
-      title: 'Education Program',
-      description: 'Students participating in our after-school learning program.',
+      src: '/gallery1.jpg',
+      title: 'Community Outreach',
+      description: 'PathSarthi Trust volunteers engaging with children during a community event.',
     },
     {
       id: 2,
-      src: '/images/gallery/healthcare-1.jpg',
-      title: 'Healthcare Camp',
-      description: 'Free medical checkup camp in rural community.',
-    },
-    {
-      id: 3,
-      src: '/images/gallery/women-1.jpg',
-      title: 'Women Empowerment',
-      description: 'Skill development workshop for women entrepreneurs.',
-    },
-    {
-      id: 4,
-      src: '/images/gallery/community-1.jpg',
-      title: 'Community Service',
-      description: 'Volunteers helping in community development project.',
-    },
-    {
-      id: 5,
-      src: '/images/gallery/education-2.jpg',
-      title: 'Digital Learning',
-      description: 'Computer education program for underprivileged children.',
-    },
-    {
-      id: 6,
-      src: '/images/gallery/healthcare-2.jpg',
-      title: 'Health Awareness',
-      description: 'Health awareness session in local community.',
-    },
-    {
-      id: 7,
-      src: '/images/gallery/women-2.jpg',
-      title: 'Women Leadership',
-      description: 'Women leadership development program.',
-    },
-    {
-      id: 8,
-      src: '/images/gallery/community-2.jpg',
-      title: 'Environmental Initiative',
-      description: 'Tree plantation drive with community participation.',
-    },
-    {
-      id: 9,
-      src: '/images/gallery/education-3.jpg',
-      title: 'Art Workshop',
-      description: 'Creative arts workshop for children.',
+      src: '/gallery4.jpg',
+      title: 'Educational Support',
+      description: 'Distributing notebooks and educational materials to students in need.',
     },
   ];
 
