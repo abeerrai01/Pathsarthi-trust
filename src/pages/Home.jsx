@@ -65,55 +65,46 @@ const Home = () => {
     <div className="space-y-16">
       {/* Hero Section */}
       <section
-        className="relative text-white py-20"
+        className="relative text-white py-20 flex items-center justify-center"
         style={{
           backgroundImage: 'url(/ub21.jpg)',
-          backgroundSize: 'cover',
+          backgroundSize: 'contain',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <img
-                  src="/Logo-2.png"
-                  alt="PathSarthi Trust"
-                  className="mx-auto md:mx-0 h-32 w-auto mb-6"
-                />
-              </motion.div>
-            </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 max-w-2xl w-full flex flex-col items-center"
+        >
+          <img
+            src="/Logo-2.png"
+            alt="PathSarthi Trust"
+            className="h-32 w-auto mb-6"
+          />
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 text-center">
+            Welcome to PathSarthi Trust - Empowering Lives Through Action
+          </h1>
+          <p className="text-xl mb-8 text-gray-800 text-center">
+            PathSarthi Trust is a leading Moradabad NGO dedicated to empowering communities through education, healthcare, and sustainable development initiatives. Join us to make a difference—donate to NGO in India and help transform lives today.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
+            <Link
+              to="/donate"
+              className="bg-black text-white px-8 py-3 rounded-md hover:bg-gray-900 transition-colors w-full sm:w-auto text-center"
+            >
+              Donate Now
+            </Link>
+            <Link
+              to="/mission"
+              className="bg-white text-black px-8 py-3 rounded-md border border-black hover:bg-gray-100 transition-colors w-full sm:w-auto text-center"
+            >
+              Our Mission
+            </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Main Heading and Description Section */}
-      <section className="bg-transparent text-center py-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-black">
-          Welcome to PathSarthi Trust - Empowering Lives Through Action
-        </h1>
-        <p className="text-xl mb-8 text-black max-w-2xl mx-auto">
-          PathSarthi Trust is a leading Moradabad NGO dedicated to empowering communities through education, healthcare, and sustainable development initiatives. Join us to make a difference—donate to NGO in India and help transform lives today.
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link
-            to="/donate"
-            className="bg-white text-black px-8 py-3 rounded-md hover:bg-gray-100 transition-colors border border-black"
-          >
-            Donate Now
-          </Link>
-          <Link
-            to="/mission"
-            className="bg-white text-black px-8 py-3 rounded-md hover:bg-gray-100 transition-colors border border-black"
-          >
-            Our Mission
-          </Link>
-        </div>
+        </motion.div>
       </section>
 
       {/* Impact Stats */}
