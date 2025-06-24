@@ -53,11 +53,25 @@ const Gallery = () => {
     { id: 'ub21', src: '/ub21.jpg' },
   ];
 
+  // B, Be, D images
+  const bImages = [
+    { id: 'b1', src: '/B1.jpg' },
+    { id: 'b2', src: '/B2.jpg' },
+    { id: 'b3', src: '/B3.jpg' },
+    { id: 'b4', src: '/B4.jpg' },
+    { id: 'b5', src: '/B5.jpg' },
+    { id: 'be1', src: '/Be1.jpeg' },
+    { id: 'd2', src: '/D2.jpeg' },
+    // be2-be31
+    ...Array.from({ length: 30 }, (_, i) => ({ id: `be${i+2}`, src: `/be${i+2}.jpeg` })),
+  ];
+
   // Combine all images into one array
   const allImages = [
     ...healthCampImages,
     ...meetupImages,
     ...ubImages,
+    ...bImages,
   ];
 
   const [selectedImage, setSelectedImage] = useState(null);
