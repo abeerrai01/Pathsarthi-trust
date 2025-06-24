@@ -64,7 +64,15 @@ const Home = () => {
   return (
     <div className="space-y-16">
       {/* Hero Section */}
-      <section className="relative bg-gray-900 text-white py-20">
+      <section
+        className="relative text-white py-20"
+        style={{
+          backgroundImage: 'url(/Background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
@@ -74,7 +82,7 @@ const Home = () => {
                 transition={{ duration: 0.6 }}
               >
                 <img
-                  src="/PathSarthi logo.png"
+                  src="/Logo-2.jpg"
                   alt="PathSarthi Trust"
                   className="mx-auto md:mx-0 h-32 w-auto mb-6"
                 />

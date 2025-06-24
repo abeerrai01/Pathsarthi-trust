@@ -28,10 +28,36 @@ const Gallery = () => {
     { id: 2, src: '/gallery4.jpg' },
   ];
 
+  // Ub images
+  const ubImages = [
+    { id: 'ub1', src: '/Ub1.jpg' },
+    { id: 'ub2', src: '/Ub2.jpg' },
+    { id: 'ub3', src: '/Ub3.jpg' },
+    { id: 'ub4', src: '/Ub4.jpg' },
+    { id: 'ub5', src: '/Ub5.jpg' },
+    { id: 'ub6', src: '/Ub6.jpg' },
+    { id: 'ub7', src: '/Ub7.jpg' },
+    { id: 'ub8', src: '/Ub8.jpg' },
+    { id: 'ub9', src: '/ub9.jpg' },
+    { id: 'ub10', src: '/ub10.jpg' },
+    { id: 'ub11', src: '/ub11.jpg' },
+    { id: 'ub12', src: '/ub12.jpg' },
+    { id: 'ub13', src: '/ub13.jpg' },
+    { id: 'ub14', src: '/ub14.jpg' },
+    { id: 'ub15', src: '/ub15.jpg' },
+    { id: 'ub16', src: '/ub16.jpg' },
+    { id: 'ub17', src: '/ub17.jpg' },
+    { id: 'ub18', src: '/Ub18.jpg' },
+    { id: 'ub19', src: '/Ub19.jpg' },
+    { id: 'ub20', src: '/Ub20.jpg' },
+    { id: 'ub21', src: '/ub21.jpg' },
+  ];
+
   // Combine all images into one array
   const allImages = [
     ...healthCampImages,
     ...meetupImages,
+    ...ubImages,
   ];
 
   const [selectedImage, setSelectedImage] = useState(null);

@@ -8,6 +8,7 @@ const TrustMembers = () => {
       gender: 'Male',
       designation: 'Chairman',
       joinedDate: '2022-02-23',
+      image: '/Chairman.jpg',
     },
     {
       name: 'Rupesh Kumar Chauhan',
@@ -154,11 +155,19 @@ const TrustMembers = () => {
               <div className="p-6">
                 {/* Avatar */}
                 <div className="flex justify-center mb-4">
-                  <div className={`w-20 h-20 rounded-full flex items-center justify-center text-xl font-bold text-white ${
-                    member.gender === 'Female' ? 'bg-pink-500' : 'bg-indigo-500'
-                  }`}>
-                    {getInitials(member.name)}
-                  </div>
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-20 h-20 rounded-full object-cover border-4 border-indigo-200 shadow"
+                    />
+                  ) : (
+                    <div className={`w-20 h-20 rounded-full flex items-center justify-center text-xl font-bold text-white ${
+                      member.gender === 'Female' ? 'bg-pink-500' : 'bg-indigo-500'
+                    }`}>
+                      {getInitials(member.name)}
+                    </div>
+                  )}
                 </div>
 
                 {/* Member Info */}
