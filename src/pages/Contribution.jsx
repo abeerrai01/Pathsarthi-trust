@@ -9,21 +9,21 @@ const Contribution = () => {
       title: "Empowering Through Education",
       name: "Priya's Story",
       description: "From struggling to access basic education to becoming a community teacher, Priya's journey showcases the transformative power of educational support.",
-      image: "/images/stories/education-impact.jpg",
+      image: "/education.jpg",
     },
     {
       id: 2,
       title: "Healthcare Access",
       name: "Village Health Initiative",
       description: "Our mobile health clinics have provided essential healthcare services to over 500 families in remote villages, significantly improving community health outcomes.",
-      image: "/images/stories/healthcare-impact.jpg",
+      image: "/HC4.jpg",
     },
     {
       id: 3,
       title: "Women Empowerment",
       name: "Rural Women's Collective",
       description: "A group of 25 women started their own small businesses through our skill development program, inspiring many others in their community.",
-      image: "/images/stories/women-impact.jpg",
+      image: "/women-empowerment-in-2019.png",
     },
   ];
 

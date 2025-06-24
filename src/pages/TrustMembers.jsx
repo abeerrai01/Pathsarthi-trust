@@ -81,6 +81,18 @@ const TrustMembers = () => {
       designation: 'Member',
       joinedDate: '2023-01-01',
     },
+    {
+      name: 'Shri Satya Prakash Rai',
+      gender: 'Male',
+      designation: 'Member',
+      joinedDate: '2022-07-14',
+    },
+    {
+      name: 'Pradeep Kumar Tripathi',
+      gender: 'Male',
+      designation: 'Member',
+      joinedDate: '2024-01-01',
+    },
   ];
 
   // Sort members by joining date, but ensure Ravi Prakash Rai is first
