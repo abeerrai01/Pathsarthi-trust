@@ -86,29 +86,33 @@ const Home = () => {
                   alt="PathSarthi Trust"
                   className="mx-auto md:mx-0 h-32 w-auto mb-6"
                 />
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-yellow-300 drop-shadow-lg">
-                  Welcome to PathSarthi Trust - Empowering Lives Through Action
-                </h1>
-                <p className="text-xl mb-8 text-cyan-100 drop-shadow">
-                  PathSarthi Trust is a leading Moradabad NGO dedicated to empowering communities through education, healthcare, and sustainable development initiatives. Join us to make a difference—donate to NGO in India and help transform lives today.
-                </p>
-                <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-                  <Link
-                    to="/donate"
-                    className="bg-indigo-600 text-white px-8 py-3 rounded-md hover:bg-indigo-700 transition-colors"
-                  >
-                    Donate Now
-                  </Link>
-                  <Link
-                    to="/mission"
-                    className="bg-white text-gray-900 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors"
-                  >
-                    Our Mission
-                  </Link>
-                </div>
               </motion.div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Main Heading and Description Section */}
+      <section className="bg-transparent text-center py-12">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-yellow-300 drop-shadow-lg">
+          Welcome to PathSarthi Trust - Empowering Lives Through Action
+        </h1>
+        <p className="text-xl mb-8 text-cyan-100 drop-shadow max-w-2xl mx-auto">
+          PathSarthi Trust is a leading Moradabad NGO dedicated to empowering communities through education, healthcare, and sustainable development initiatives. Join us to make a difference—donate to NGO in India and help transform lives today.
+        </p>
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <Link
+            to="/donate"
+            className="bg-indigo-600 text-white px-8 py-3 rounded-md hover:bg-indigo-700 transition-colors"
+          >
+            Donate Now
+          </Link>
+          <Link
+            to="/mission"
+            className="bg-white text-gray-900 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors"
+          >
+            Our Mission
+          </Link>
         </div>
       </section>
 

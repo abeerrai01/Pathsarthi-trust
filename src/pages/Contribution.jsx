@@ -109,7 +109,18 @@ const Contribution = () => {
                   <img
                     src={story.image}
                     alt={story.title}
-                    className="w-full h-full object-cover"
+                    className={`w-full h-full ${
+                      story.title === 'Empowering Through Education'
+                        ? 'object-cover object-top'
+                        : story.title === 'Community Development Project'
+                        ? 'object-contain'
+                        : 'object-cover'
+                    }`}
+                    style={
+                      story.title === 'Empowering Through Education'
+                        ? { objectPosition: 'top' }
+                        : undefined
+                    }
                   />
                 </div>
                 <div className="p-6">
