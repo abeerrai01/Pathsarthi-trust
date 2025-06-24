@@ -10,6 +10,14 @@ const members = [
   // Add more members as needed
 ];
 
+function getInitials(name) {
+  return name
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase();
+}
+
 const Member = () => {
   return (
     <div className="py-12">
@@ -19,7 +27,7 @@ const Member = () => {
           <table className="min-w-full bg-white rounded-lg shadow">
             <thead>
               <tr>
-                <th className="py-3 px-4 border-b text-left">Photo</th>
+                <th className="py-3 px-4 border-b text-left">Avatar</th>
                 <th className="py-3 px-4 border-b text-left">Name</th>
                 <th className="py-3 px-4 border-b text-left">Gender</th>
                 <th className="py-3 px-4 border-b text-left">District</th>
@@ -32,7 +40,11 @@ const Member = () => {
                   <td className="py-2 px-4 border-b">
                     {member.image ? (
                       <img src={member.image} alt={member.name} className="h-12 w-12 rounded-full object-cover" />
-                    ) : null}
+                    ) : (
+                      <div className={`h-12 w-12 rounded-full flex items-center justify-center text-lg font-bold text-white ${member.gender === 'Female' ? 'bg-pink-500' : 'bg-indigo-500'}`}>
+                        {getInitials(member.name)}
+                      </div>
+                    )}
                   </td>
                   <td className="py-2 px-4 border-b">{member.name}</td>
                   <td className="py-2 px-4 border-b">{member.gender}</td>

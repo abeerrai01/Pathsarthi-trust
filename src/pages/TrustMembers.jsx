@@ -3,107 +3,24 @@ import { motion } from 'framer-motion';
 
 const TrustMembers = () => {
   const members = [
-    {
-      name: 'Ravi Prakash Rai',
-      gender: 'Male',
-      designation: 'Chairman',
-      joinedDate: '2022-02-23',
-      image: '/Chairman.jpg',
-    },
-    {
-      name: 'Om Prakash Rai',
-      gender: 'Male',
-      designation: 'Accountant',
-      joinedDate: '2022-02-23',
-    },
-    {
-      name: 'Arun Kumar Singh',
-      gender: 'Male',
-      designation: 'Secretary',
-      joinedDate: '2022-02-23',
-    },
-    {
-      name: 'Rupesh Kumar Chauhan',
-      gender: 'Male',
-      designation: 'Vice-President',
-      joinedDate: '2022-06-27',
-    },
-    {
-      name: 'Sanjay Sharma',
-      gender: 'Male',
-      designation: 'District President',
-      joinedDate: '2024-10-01',
-    },
-    {
-      name: 'Satya Prakash Rai',
-      gender: 'Male',
-      designation: 'Member',
-      joinedDate: '2022-07-14',
-    },
-    {
-      name: 'Mridul Manas Rai',
-      gender: 'Male',
-      designation: 'Trustee',
-      joinedDate: '2023-01-01',
-    },
-    {
-      name: 'Priyansh Manas Rai',
-      gender: 'Male',
-      designation: 'Co-Secretary',
-      joinedDate: '2022-07-14',
-    },
-    {
-      name: 'Deepansh Manas Rai',
-      gender: 'Male',
-      designation: 'Trustee',
-      joinedDate: '2023-01-01',
-    },
-    {
-      name: 'Mehair Tripathi',
-      gender: 'Male',
-      designation: 'Trustee',
-      joinedDate: '2025-06-01',
-    },
-    {
-      name: 'Sandeep Bharti',
-      gender: 'Male',
-      designation: 'Health Advisor',
-      joinedDate: '2023-04-01',
-    },
-    {
-      name: 'Swechha Rai',
-      gender: 'Female',
-      designation: 'Trustee',
-      joinedDate: '2023-01-01',
-    },
-    {
-      name: 'Pramila Rai',
-      gender: 'Female',
-      designation: 'Trustee',
-      joinedDate: '2025-04-01',
-    },
-    {
-      name: 'Abeer Rai',
-      gender: 'Male',
-      designation: 'Board Member',
-      joinedDate: '2025-04-01',
-    },
+    { name: 'Ravi Prakash Rai', gender: 'Male', designation: 'Chairman', joinedDate: '2022-02-23', image: '/Chairman.jpg' },
+    { name: 'Om Prakash Rai', gender: 'Male', designation: 'Accountant', joinedDate: '2022-02-23' },
+    { name: 'Arun Kumar Singh', gender: 'Male', designation: 'Secretary', joinedDate: '2022-02-23' },
+    { name: 'Rupesh Kumar Chauhan', gender: 'Male', designation: 'Vice-President', joinedDate: '2022-06-27' },
+    { name: 'Sanjay Sharma', gender: 'Male', designation: 'District President', joinedDate: '2024-10-01' },
+    { name: 'Satya Prakash Rai', gender: 'Male', designation: 'Member', joinedDate: '2022-07-14' },
+    { name: 'Mridul Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
+    { name: 'Priyansh Manas Rai', gender: 'Male', designation: 'Co-Secretary', joinedDate: '2022-07-14' },
+    { name: 'Deepansh Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
+    { name: 'Mehair Tripathi', gender: 'Male', designation: 'Trustee', joinedDate: '2025-06-01' },
+    { name: 'Sandeep Bharti', gender: 'Male', designation: 'Health Advisor', joinedDate: '2023-04-01' },
+    { name: 'Swechha Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2023-01-01' },
+    { name: 'Pramila Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2025-04-01' },
+    { name: 'Abeer Rai', gender: 'Male', designation: 'Board Member', joinedDate: '2025-04-01' },
   ];
 
-  // Sort members by joining date, but ensure Ravi Prakash Rai is first
-  // and Ankit Rastogi and Amrit Agrawal are always last (in that order)
-  const sortedMembers = [...members].sort((a, b) => {
-    // Always put Ravi Prakash Rai first
-    if (a.name === 'Ravi Prakash Rai') return -1;
-    if (b.name === 'Ravi Prakash Rai') return 1;
-    // Always put Ankit Rastogi and Amrit Agrawal last (in that order)
-    if (a.name === 'Ankit Rastogi') return 1;
-    if (b.name === 'Ankit Rastogi') return -1;
-    if (a.name === 'Amrit Agrawal') return 1;
-    if (b.name === 'Amrit Agrawal') return -1;
-    // For other members, sort by joining date
-    return new Date(a.joinedDate) - new Date(b.joinedDate);
-  });
+  // Remove custom sorting, just use members as is
+  const sortedMembers = members;
 
   // Function to format date
   const formatDate = (dateString) => {
