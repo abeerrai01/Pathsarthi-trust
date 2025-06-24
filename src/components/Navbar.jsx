@@ -62,6 +62,7 @@ const Navbar = () => {
                 <Link to="/sponsor-notebooks" className={getNavLinkClass('/sponsor-notebooks')} onClick={() => handleNavClick('/sponsor-notebooks')}>Sponsor Notebooks</Link>
                 <Link to="/trust-members" className={getNavLinkClass('/trust-members')} onClick={() => handleNavClick('/trust-members')}>Board of Trustee</Link>
                 <Link to="/member" className={getNavLinkClass('/member')} onClick={() => handleNavClick('/member')}>Member</Link>
+                <Link to="/join-us" className={getNavLinkClass('/join-us')} onClick={() => handleNavClick('/join-us')}>Join Us</Link>
                 <Link to="/social-media" className={getNavLinkClass('/social-media')} onClick={() => handleNavClick('/social-media')}>Social Media</Link>
                 <Link to="/about" className={getNavLinkClass('/about')} onClick={() => handleNavClick('/about')}>About Us</Link>
               </div>
@@ -209,6 +210,17 @@ const Navbar = () => {
             onClick={() => handleNavClick('/member')}
           >
             Member
+          </Link>
+          <Link
+            to="/join-us"
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              isActive('/join-us')
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+            }`}
+            onClick={() => handleNavClick('/join-us')}
+          >
+            Join Us
           </Link>
           <Link
             to="/social-media"

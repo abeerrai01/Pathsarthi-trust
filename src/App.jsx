@@ -16,6 +16,7 @@ import TrustMembers from './pages/TrustMembers';
 import CheckoutNotebooks from './pages/CheckoutNotebooks';
 import SocialMedia from './pages/SocialMedia';
 import Member from './pages/Member';
+import JoinUs from './pages/JoinUs';
 import './App.css';
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/trust-members" element={<TrustMembers />} />
                 <Route path="/social-media" element={<SocialMedia />} />
                 <Route path="/member" element={<Member />} />
+                <Route path="/join-us" element={<JoinUs />} />
 
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" />} />
