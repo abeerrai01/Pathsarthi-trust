@@ -79,10 +79,10 @@ const Home = () => {
                   className="mx-auto md:mx-0 h-32 w-auto mb-6"
                 />
                 <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                  Welcome to PathSarthi Trust
+                  Welcome to PathSarthi Trust - Empowering Lives Through Action
                 </h1>
                 <p className="text-xl text-gray-300 mb-8">
-                  Empowering communities through education, healthcare, and sustainable development.
+                  PathSarthi Trust is a leading Moradabad NGO dedicated to empowering communities through education, healthcare, and sustainable development initiatives. Join us to make a difference—donate to NGO in India and help transform lives today.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
                   <Link
