@@ -11,10 +11,10 @@ const TrustMembers = () => {
       image: '/Chairman.jpg',
     },
     {
-      name: 'Rupesh Kumar Chauhan',
+      name: 'Om Prakash Rai',
       gender: 'Male',
-      designation: 'Vice-President',
-      joinedDate: '2022-06-27',
+      designation: 'Accountant',
+      joinedDate: '2022-02-23',
     },
     {
       name: 'Arun Kumar Singh',
@@ -23,22 +23,10 @@ const TrustMembers = () => {
       joinedDate: '2022-02-23',
     },
     {
-      name: 'Priyansh Manas Rai',
+      name: 'Rupesh Kumar Chauhan',
       gender: 'Male',
-      designation: 'Co-Secretary',
-      joinedDate: '2022-07-14',
-    },
-    {
-      name: 'Om Prakash Rai',
-      gender: 'Male',
-      designation: 'Accountant',
-      joinedDate: '2022-02-23',
-    },
-    {
-      name: 'Sandeep Bharti',
-      gender: 'Male',
-      designation: 'Health Advisor',
-      joinedDate: '2023-04-01',
+      designation: 'Vice-President',
+      joinedDate: '2022-06-27',
     },
     {
       name: 'Sanjay Sharma',
@@ -47,34 +35,22 @@ const TrustMembers = () => {
       joinedDate: '2024-10-01',
     },
     {
-      name: 'Abeer Rai',
-      gender: 'Male',
-      designation: 'Board Member',
-      joinedDate: '2025-04-01',
-    },
-    {
-      name: 'Pramila Rai',
-      gender: 'Female',
-      designation: 'Trustee',
-      joinedDate: '2025-04-01',
-    },
-    {
-      name: 'Mehair Tripathi',
-      gender: 'Male',
-      designation: 'Trustee',
-      joinedDate: '2025-06-01',
-    },
-    {
       name: 'Satya Prakash Rai',
       gender: 'Male',
       designation: 'Member',
       joinedDate: '2022-07-14',
     },
     {
-      name: 'Swechha Rai',
-      gender: 'Female',
+      name: 'Mridul Manas Rai',
+      gender: 'Male',
       designation: 'Trustee',
       joinedDate: '2023-01-01',
+    },
+    {
+      name: 'Priyansh Manas Rai',
+      gender: 'Male',
+      designation: 'Co-Secretary',
+      joinedDate: '2022-07-14',
     },
     {
       name: 'Deepansh Manas Rai',
@@ -83,10 +59,34 @@ const TrustMembers = () => {
       joinedDate: '2023-01-01',
     },
     {
-      name: 'Mridul Manas Rai',
+      name: 'Mehair Tripathi',
       gender: 'Male',
       designation: 'Trustee',
+      joinedDate: '2025-06-01',
+    },
+    {
+      name: 'Sandeep Bharti',
+      gender: 'Male',
+      designation: 'Health Advisor',
+      joinedDate: '2023-04-01',
+    },
+    {
+      name: 'Swechha Rai',
+      gender: 'Female',
+      designation: 'Trustee',
       joinedDate: '2023-01-01',
+    },
+    {
+      name: 'Pramila Rai',
+      gender: 'Female',
+      designation: 'Trustee',
+      joinedDate: '2025-04-01',
+    },
+    {
+      name: 'Abeer Rai',
+      gender: 'Male',
+      designation: 'Board Member',
+      joinedDate: '2025-04-01',
     },
   ];
 

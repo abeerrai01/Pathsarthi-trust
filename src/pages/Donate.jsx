@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import PaymentModal from '../components/PaymentModal';
 
 const Donate = () => {
   const [selectedAmount, setSelectedAmount] = useState('');
   const [customAmount, setCustomAmount] = useState('');
   const [isMobile, setIsMobile] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -62,8 +64,7 @@ const Donate = () => {
     e.preventDefault();
     const amount = customAmount || selectedAmount;
     if (isMobile) {
-      const upiLink = `upi://pay?pa=pathsarthi2022-1@okaxis&pn=PathSarthi%20Trust&cu=INR&am=${amount}`;
-      window.location.href = upiLink;
+      setShowPaymentModal(true);
     } else {
       setShowQR(true);
     }
@@ -204,6 +205,7 @@ const Donate = () => {
                 </p>
               </form>
             </div>
+            <PaymentModal open={showPaymentModal} onClose={() => setShowPaymentModal(false)} />
           </motion.div>
 
           {/* Impact Information */}

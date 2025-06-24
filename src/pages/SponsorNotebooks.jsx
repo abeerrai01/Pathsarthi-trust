@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import PaymentModal from '../components/PaymentModal';
 
 const SponsorNotebooks = () => {
   const [quantity, setQuantity] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const navigate = useNavigate();
   const pricePerNotebook = 25;
 
@@ -36,7 +38,7 @@ const SponsorNotebooks = () => {
 
   const handleSponsorNow = () => {
     if (isMobile) {
-      navigate('/checkout-notebooks', { state: { quantity } });
+      setShowPaymentModal(true);
     } else {
       setShowQR(true);
     }
@@ -122,6 +124,7 @@ const SponsorNotebooks = () => {
                 >
                   Sponsor Now
                 </button>
+                <PaymentModal open={showPaymentModal} onClose={() => setShowPaymentModal(false)} />
               </>
             ) : (
               <div className="text-center">
