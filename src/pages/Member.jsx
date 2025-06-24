@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const members = [
   { name: 'Sameer Sharma', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Sameer Sharma.jpg' },
@@ -26,6 +26,7 @@ const members = [
   { name: 'Anil Kumar Sharma', gender: 'Male', district: 'Guna', state: 'Madhya Pradesh' },
   { name: 'Rajendra Kumar Dhingra', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
   { name: 'Kailash Chandra Sharma', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
+  { name: 'Parminder Sharma', gender: 'Male', district: 'Ludhiana', state: 'Punjab' },
   // Add more members as needed
 ];
 
@@ -43,10 +44,47 @@ function getInitials(name) {
 }
 
 const Member = () => {
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedState, setSelectedState] = useState('');
+
+  // Get unique districts and states for filter dropdowns
+  const districts = Array.from(new Set(members.map(m => m.district))).sort();
+  const states = Array.from(new Set(members.map(m => m.state))).sort();
+
+  // Filter logic
+  const filteredMembers = sortedMembers.filter(member => {
+    const districtMatch = selectedDistrict ? member.district === selectedDistrict : true;
+    const stateMatch = selectedState ? member.state === selectedState : true;
+    return districtMatch && stateMatch;
+  });
+
   return (
     <div className="py-12">
       <div className="max-w-4xl mx-auto px-4">
         <h1 className="text-3xl font-bold mb-8 text-center">Member List</h1>
+        {/* Filter Box */}
+        <div className="flex flex-col md:flex-row gap-4 mb-6 justify-center">
+          <select
+            className="border rounded px-3 py-2"
+            value={selectedDistrict}
+            onChange={e => setSelectedDistrict(e.target.value)}
+          >
+            <option value="">All Districts</option>
+            {districts.map(district => (
+              <option key={district} value={district}>{district}</option>
+            ))}
+          </select>
+          <select
+            className="border rounded px-3 py-2"
+            value={selectedState}
+            onChange={e => setSelectedState(e.target.value)}
+          >
+            <option value="">All States</option>
+            {states.map(state => (
+              <option key={state} value={state}>{state}</option>
+            ))}
+          </select>
+        </div>
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white rounded-lg shadow">
             <thead>
@@ -59,7 +97,7 @@ const Member = () => {
               </tr>
             </thead>
             <tbody>
-              {sortedMembers.map((member, idx) => (
+              {filteredMembers.map((member, idx) => (
                 <tr key={idx} className="hover:bg-gray-100">
                   <td className="py-2 px-4 border-b">
                     {member.image ? (

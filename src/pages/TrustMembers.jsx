@@ -17,6 +17,7 @@ const TrustMembers = () => {
     { name: 'Swechha Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2023-01-01' },
     { name: 'Pramila Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2025-04-01' },
     { name: 'Abeer Rai', gender: 'Male', designation: 'Board Member', joinedDate: '2025-04-01' },
+    { name: 'Srinivas Rai', gender: 'Male', designation: 'State President', district: 'Manali', state: 'Himachal Pradesh', joinedDate: '2024-06-01' },
   ];
 
   // Remove custom sorting, just use members as is
