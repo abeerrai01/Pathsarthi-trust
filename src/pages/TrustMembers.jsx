@@ -84,10 +84,16 @@ const TrustMembers = () => {
   ];
 
   // Sort members by joining date, but ensure Ravi Prakash Rai is first
+  // and Ankit Rastogi and Amrit Agrawal are always last (in that order)
   const sortedMembers = [...members].sort((a, b) => {
     // Always put Ravi Prakash Rai first
     if (a.name === 'Mr. Ravi Prakash Rai') return -1;
     if (b.name === 'Mr. Ravi Prakash Rai') return 1;
+    // Always put Ankit Rastogi and Amrit Agrawal last (in that order)
+    if (a.name === 'Ankit Rastogi') return 1;
+    if (b.name === 'Ankit Rastogi') return -1;
+    if (a.name === 'Amrit Agrawal') return 1;
+    if (b.name === 'Amrit Agrawal') return -1;
     // For other members, sort by joining date
     return new Date(a.joinedDate) - new Date(b.joinedDate);
   });
