@@ -164,10 +164,16 @@ const Home = () => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-6">PathSarthi Trust Introduction by Chairman Ravi Prakash Rai</h2>
-          <video controls className="w-full rounded-lg shadow-lg">
-            <source src="/Pathsarthi.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <div className="aspect-w-16 aspect-h-9 w-full rounded-lg shadow-lg overflow-hidden mx-auto">
+            <iframe
+              src="https://www.youtube.com/embed/upicFvhg1Qk"
+              title="PathSarthi Trust Introduction by Chairman Ravi Prakash Rai"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-96"
+            ></iframe>
+          </div>
         </div>
       </section>
 

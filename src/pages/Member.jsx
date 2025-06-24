@@ -9,9 +9,27 @@ const members = [
   { name: 'Pradeep Kumar Tripathi', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
   { name: 'Bhag Singh', gender: 'Male', district: 'Bijnor', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01' },
   { name: 'Neeraj Gupta', gender: 'Male', district: 'Bareilly', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01' },
-  { name: 'Neeraj Chaturvedi', gender: 'Male', district: '', state: '', designation: 'Member', joinedDate: '2023-01-01' },
-  { name: 'Sanjeev Rastogi', gender: 'Male', district: '', state: '', designation: 'Member', joinedDate: '2023-01-01' },
+  { name: 'Neeraj Chaturvedi', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01' },
+  { name: 'Sanjeev Rastogi', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01' },
+  { name: 'Ravi Rai', gender: 'Male', district: 'Jatadhari Rai Jaunpur', state: 'Uttar Pradesh' },
+  { name: 'Manoj Sinha', gender: 'Male', district: 'Noida', state: 'Uttar Pradesh' },
+  { name: 'Shailendra Singh', gender: 'Male', district: 'Chandausi', state: 'Uttar Pradesh' },
+  { name: 'Gaurav Kathuriya', gender: 'Male', district: 'Delhi', state: 'Delhi' },
+  { name: 'Sanjay Rai', gender: 'Male', district: 'Ghaziabad', state: 'Uttar Pradesh' },
+  { name: 'Sanjay Rai', gender: 'Male', district: 'Mumbai', state: 'Mumbai' },
+  { name: 'Pradeep Rai', gender: 'Male', district: 'Azamgarh', state: 'Uttar Pradesh' },
+  { name: 'Navneet Kumar Saxena', gender: 'Male', district: 'Rampur', state: 'Uttar Pradesh' },
+  { name: 'Rajendra Prasad Singh', gender: 'Male', district: 'Varanasi', state: 'Uttar Pradesh' },
+  { name: 'Madan Singh Negi', gender: 'Male', district: 'Noida', state: 'Uttar Pradesh' },
+  { name: 'Nathi Singh Bartwal', gender: 'Male', district: 'Noida', state: 'Uttar Pradesh' },
+  { name: 'Yashu Sharma', gender: 'Male', district: 'Guna', state: 'Madhya Pradesh' },
+  { name: 'Anil Kumar Sharma', gender: 'Male', district: 'Guna', state: 'Madhya Pradesh' },
   // Add more members as needed
+];
+
+const sortedMembers = [
+  members[0], // Sameer Sharma always first
+  ...members.slice(1).sort((a, b) => a.name.localeCompare(b.name)),
 ];
 
 function getInitials(name) {
@@ -39,7 +57,7 @@ const Member = () => {
               </tr>
             </thead>
             <tbody>
-              {members.map((member, idx) => (
+              {sortedMembers.map((member, idx) => (
                 <tr key={idx} className="hover:bg-gray-100">
                   <td className="py-2 px-4 border-b">
                     {member.image ? (
