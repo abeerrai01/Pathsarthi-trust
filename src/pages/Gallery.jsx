@@ -39,6 +39,14 @@ const Gallery = () => {
   return (
     <div className="py-12">
       <div className="max-w-7xl mx-auto px-4">
+        <div className="flex justify-center mb-6">
+          <img 
+            src="/PathSarthi logo.png" 
+            alt="PathSarthi Logo" 
+            className="h-24 w-auto object-contain" 
+            style={{ maxWidth: '200px' }}
+          />
+        </div>
         <h1 className="text-4xl font-bold text-center mb-12">Our Gallery</h1>
 
         {/* Unified Image Grid */}
