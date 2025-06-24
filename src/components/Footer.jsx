@@ -46,7 +46,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li className="text-gray-300">
                 <span className="block">PathSarthi Trust</span>
-                <span className="block">E-374-375, Kashinam Nagar</span>
+                <span className="block">E-374-375, Kashiram Nagar</span>
                 <span className="block">Moradabad, Uttar Pradesh</span>
                 <span className="block">India – PIN 244001</span>
               </li>

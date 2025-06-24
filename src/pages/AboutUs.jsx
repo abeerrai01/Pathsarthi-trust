@@ -113,7 +113,7 @@ const AboutUs = () => {
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-2">Registered Office</h2>
               <p className="text-gray-600">
-                E-374-375, Kashinam Nagar, Moradabad, Uttar Pradesh, India – PIN 244001
+                E-374-375, Kashiram Nagar, Moradabad, Uttar Pradesh, India – PIN 244001
               </p>
             </div>
             <div className="mb-6">

@@ -34,6 +34,18 @@ const TrustMembers = () => {
       joinedDate: '2022-02-23',
     },
     {
+      name: 'Sandeep Bharti',
+      gender: 'Male',
+      designation: 'Health Advisor',
+      joinedDate: '2023-04-01',
+    },
+    {
+      name: 'Sanjay Sharma',
+      gender: 'Male',
+      designation: 'District President',
+      joinedDate: '2024-10-01',
+    },
+    {
       name: 'Abeer Rai',
       gender: 'Male',
       designation: 'Board Member',
@@ -44,6 +56,30 @@ const TrustMembers = () => {
       gender: 'Female',
       designation: 'Trustee',
       joinedDate: '2025-04-01',
+    },
+    {
+      name: 'Mehair Tripathi',
+      gender: 'Male',
+      designation: 'Trustee',
+      joinedDate: '2025-06-01',
+    },
+    {
+      name: 'Ankit Rastogi',
+      gender: 'Male',
+      designation: 'Member',
+      joinedDate: '2022-01-01',
+    },
+    {
+      name: 'Amrit Agrawal',
+      gender: 'Male',
+      designation: 'Member',
+      joinedDate: '2022-01-01',
+    },
+    {
+      name: 'Vikas Mathur',
+      gender: 'Male',
+      designation: 'Member',
+      joinedDate: '2023-01-01',
     },
   ];
 
