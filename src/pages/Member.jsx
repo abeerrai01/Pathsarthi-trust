@@ -9,6 +9,8 @@ const members = [
   { name: 'Pradeep Kumar Tripathi', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
   { name: 'Bhag Singh', gender: 'Male', district: 'Bijnor', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01' },
   { name: 'Neeraj Gupta', gender: 'Male', district: 'Bareilly', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01' },
+  { name: 'Neeraj Chaturvedi', gender: 'Male', district: '', state: '', designation: 'Member', joinedDate: '2023-01-01' },
+  { name: 'Sanjeev Rastogi', gender: 'Male', district: '', state: '', designation: 'Member', joinedDate: '2023-01-01' },
   // Add more members as needed
 ];
 

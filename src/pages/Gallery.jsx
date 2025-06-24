@@ -62,8 +62,12 @@ const Gallery = () => {
     { id: 'b5', src: '/B5.jpg' },
     { id: 'be1', src: '/Be1.jpeg' },
     { id: 'd2', src: '/D2.jpeg' },
-    // be2-be31
-    ...Array.from({ length: 30 }, (_, i) => ({ id: `be${i+2}`, src: `/be${i+2}.jpeg` })),
+    // be2-be31 except be10 and be27
+    ...Array.from({ length: 30 }, (_, i) => {
+      const n = i + 2;
+      if (n === 10 || n === 27) return null;
+      return { id: `be${n}`, src: `/be${n}.jpeg` };
+    }).filter(Boolean),
   ];
 
   // Combine all images into one array
