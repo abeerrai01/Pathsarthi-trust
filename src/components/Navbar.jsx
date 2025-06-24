@@ -60,7 +60,8 @@ const Navbar = () => {
                 <Link to="/contribution" className={getNavLinkClass('/contribution')} onClick={() => handleNavClick('/contribution')}>Contribution</Link>
                 <Link to="/donate" className={getNavLinkClass('/donate')} onClick={() => handleNavClick('/donate')}>Donate</Link>
                 <Link to="/sponsor-notebooks" className={getNavLinkClass('/sponsor-notebooks')} onClick={() => handleNavClick('/sponsor-notebooks')}>Sponsor Notebooks</Link>
-                <Link to="/trust-members" className={getNavLinkClass('/trust-members')} onClick={() => handleNavClick('/trust-members')}>Trust Members</Link>
+                <Link to="/trust-members" className={getNavLinkClass('/trust-members')} onClick={() => handleNavClick('/trust-members')}>Board of Trustee</Link>
+                <Link to="/member" className={getNavLinkClass('/member')} onClick={() => handleNavClick('/member')}>Member</Link>
                 <Link to="/social-media" className={getNavLinkClass('/social-media')} onClick={() => handleNavClick('/social-media')}>Social Media</Link>
                 <Link to="/about" className={getNavLinkClass('/about')} onClick={() => handleNavClick('/about')}>About Us</Link>
               </div>
@@ -196,7 +197,18 @@ const Navbar = () => {
             }`}
             onClick={() => handleNavClick('/trust-members')}
           >
-            Trust Members
+            Board of Trustee
+          </Link>
+          <Link
+            to="/member"
+            className={`block px-3 py-2 rounded-md text-base font-medium ${
+              isActive('/member')
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+            }`}
+            onClick={() => handleNavClick('/member')}
+          >
+            Member
           </Link>
           <Link
             to="/social-media"

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 const TrustMembers = () => {
   const members = [
     {
-      name: 'Mr. Ravi Prakash Rai',
+      name: 'Ravi Prakash Rai',
       gender: 'Male',
       designation: 'Chairman',
       joinedDate: '2022-02-23',
@@ -65,40 +65,28 @@ const TrustMembers = () => {
       joinedDate: '2025-06-01',
     },
     {
-      name: 'Ankit Rastogi',
-      gender: 'Male',
-      designation: 'Member',
-      joinedDate: '2022-01-01',
-    },
-    {
-      name: 'Amrit Agrawal',
-      gender: 'Male',
-      designation: 'Member',
-      joinedDate: '2022-01-01',
-    },
-    {
-      name: 'Vikas Mathur',
-      gender: 'Male',
-      designation: 'Member',
-      joinedDate: '2023-01-01',
-    },
-    {
-      name: 'Shri Satya Prakash Rai',
+      name: 'Satya Prakash Rai',
       gender: 'Male',
       designation: 'Member',
       joinedDate: '2022-07-14',
     },
     {
-      name: 'Pradeep Kumar Tripathi',
-      gender: 'Male',
-      designation: 'Member',
-      joinedDate: '2024-01-01',
+      name: 'Swechha Rai',
+      gender: 'Female',
+      designation: 'Trustee',
+      joinedDate: '2023-01-01',
     },
     {
-      name: 'Pawan Thakur',
+      name: 'Deepansh Manas Rai',
       gender: 'Male',
-      designation: 'Member',
-      joinedDate: '2022-04-01',
+      designation: 'Trustee',
+      joinedDate: '2023-01-01',
+    },
+    {
+      name: 'Mridul Manas Rai',
+      gender: 'Male',
+      designation: 'Trustee',
+      joinedDate: '2023-01-01',
     },
   ];
 
@@ -106,8 +94,8 @@ const TrustMembers = () => {
   // and Ankit Rastogi and Amrit Agrawal are always last (in that order)
   const sortedMembers = [...members].sort((a, b) => {
     // Always put Ravi Prakash Rai first
-    if (a.name === 'Mr. Ravi Prakash Rai') return -1;
-    if (b.name === 'Mr. Ravi Prakash Rai') return 1;
+    if (a.name === 'Ravi Prakash Rai') return -1;
+    if (b.name === 'Ravi Prakash Rai') return 1;
     // Always put Ankit Rastogi and Amrit Agrawal last (in that order)
     if (a.name === 'Ankit Rastogi') return 1;
     if (b.name === 'Ankit Rastogi') return -1;
