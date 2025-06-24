@@ -9,14 +9,14 @@ const Contribution = () => {
       title: "Empowering Through Education",
       name: "Priya's Story",
       description: "From struggling to access basic education to becoming a community teacher, Priya's journey showcases the transformative power of educational support.",
-      image: "/education.jpg",
+      image: "/Background1.jpg",
     },
     {
       id: 2,
       title: "Healthcare Access",
       name: "Village Health Initiative",
       description: "Our mobile health clinics have provided essential healthcare services to over 500 families in remote villages, significantly improving community health outcomes.",
-      image: "/HC4.jpg",
+      image: "/medical.jpg",
     },
     {
       id: 3,

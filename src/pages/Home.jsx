@@ -67,7 +67,7 @@ const Home = () => {
       <section
         className="relative text-white py-20"
         style={{
-          backgroundImage: 'url(/Background.jpg)',
+          backgroundImage: 'url(/ub21.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -82,14 +82,14 @@ const Home = () => {
                 transition={{ duration: 0.6 }}
               >
                 <img
-                  src="/Logo-2.jpg"
+                  src="/Logo-2.png"
                   alt="PathSarthi Trust"
                   className="mx-auto md:mx-0 h-32 w-auto mb-6"
                 />
-                <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-yellow-300 drop-shadow-lg">
                   Welcome to PathSarthi Trust - Empowering Lives Through Action
                 </h1>
-                <p className="text-xl text-gray-300 mb-8">
+                <p className="text-xl mb-8 text-cyan-100 drop-shadow">
                   PathSarthi Trust is a leading Moradabad NGO dedicated to empowering communities through education, healthcare, and sustainable development initiatives. Join us to make a difference—donate to NGO in India and help transform lives today.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
