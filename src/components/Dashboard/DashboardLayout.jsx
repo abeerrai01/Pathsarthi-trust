@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
+import UploadGallery from "./UploadGallery";
 
 const Button = ({ children, onClick, className = "", variant = "ghost" }) => (
   <button
@@ -43,7 +44,7 @@ const DashboardLayout = () => {
         </div>
         {/* Main Content */}
         <div className="flex-1 p-8 overflow-auto">
-          {activeSection === "upload" && <UploadPhotos />}
+          {activeSection === "upload" && <UploadGallery />}
           {activeSection === "team" && <TeamMembers />}
           {activeSection === "mission" && <UpdateMission />}
           {activeSection === "analytics" && <AnalyticsPanel />}
