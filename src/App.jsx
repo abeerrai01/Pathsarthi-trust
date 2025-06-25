@@ -17,6 +17,7 @@ import CheckoutNotebooks from './pages/CheckoutNotebooks';
 import SocialMedia from './pages/SocialMedia';
 import Member from './pages/Member';
 import JoinUs from './pages/JoinUs';
+import Login from './pages/Login';
 import './App.css';
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/social-media" element={<SocialMedia />} />
                 <Route path="/member" element={<Member />} />
                 <Route path="/join-us" element={<JoinUs />} />
+                <Route path="/login" element={<Login />} />
 
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" />} />
