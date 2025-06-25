@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AdminNavbar from "./AdminNavbar";
 
 const Button = ({ children, onClick, className = "", variant = "ghost" }) => (
   <button
@@ -29,22 +30,24 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <div className="w-64 bg-gray-800 text-white p-4 space-y-4">
-        <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
-        <Button onClick={() => setActiveSection("upload")}>📸 Upload Photos</Button>
-        <Button onClick={() => setActiveSection("team")}>🧑‍🤝‍🧑 Team Members</Button>
-        <Button onClick={() => setActiveSection("mission")}>🎯 Update Mission</Button>
-        <Button onClick={() => setActiveSection("analytics")}>📊 Website Analytics</Button>
-        <Button variant="outline" className="mt-10" onClick={handleLogout}>🔒 Logout</Button>
-      </div>
-      {/* Main Content */}
-      <div className="flex-1 p-8 overflow-auto">
-        {activeSection === "upload" && <UploadPhotos />}
-        {activeSection === "team" && <TeamMembers />}
-        {activeSection === "mission" && <UpdateMission />}
-        {activeSection === "analytics" && <AnalyticsPanel />}
+    <div className="flex flex-col h-screen">
+      <AdminNavbar onLogout={handleLogout} />
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <div className="w-64 bg-gray-800 text-white p-4 space-y-4">
+          <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
+          <Button onClick={() => setActiveSection("upload")}>📸 Upload Photos</Button>
+          <Button onClick={() => setActiveSection("team")}>🧑‍🤝‍🧑 Team Members</Button>
+          <Button onClick={() => setActiveSection("mission")}>🎯 Update Mission</Button>
+          <Button onClick={() => setActiveSection("analytics")}>📊 Website Analytics</Button>
+        </div>
+        {/* Main Content */}
+        <div className="flex-1 p-8 overflow-auto">
+          {activeSection === "upload" && <UploadPhotos />}
+          {activeSection === "team" && <TeamMembers />}
+          {activeSection === "mission" && <UpdateMission />}
+          {activeSection === "analytics" && <AnalyticsPanel />}
+        </div>
       </div>
     </div>
   );
