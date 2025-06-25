@@ -18,6 +18,7 @@ import SocialMedia from './pages/SocialMedia';
 import Member from './pages/Member';
 import JoinUs from './pages/JoinUs';
 import Login from './pages/Login';
+import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/member" element={<Member />} />
                 <Route path="/join-us" element={<JoinUs />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" />} />
