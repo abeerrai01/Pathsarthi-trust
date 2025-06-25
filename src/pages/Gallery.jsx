@@ -1,82 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { db } from '../config/firebase';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 const Gallery = () => {
-  // Health Camp images
-  const healthCampImages = [
-    { id: 1, src: '/HC1.jpg' },
-    { id: 2, src: '/HC2.jpg' },
-    { id: 3, src: '/HC3.jpg' },
-    { id: 4, src: '/HC4.jpg' },
-    { id: 5, src: '/HC5.jpg' },
-    { id: 6, src: '/HC6.jpg' },
-    { id: 7, src: '/HC7.jpg' },
-    { id: 8, src: '/HC8.jpg' },
-    { id: 9, src: '/HC9.jpg' },
-    { id: 10, src: '/HC10.jpg' },
-    { id: 11, src: '/HC11.jpg' },
-    { id: 12, src: '/HC12.jpg' },
-    { id: 13, src: '/HC13.jpg' },
-    { id: 14, src: '/HC14.jpg' },
-    { id: 15, src: '/HC15.jpg' },
-    { id: 16, src: '/HC16.jpg' },
-  ];
+  const [photos, setPhotos] = useState([]);
 
-  // Meetup images
-  const meetupImages = [
-    { id: 1, src: '/gallery1.jpg' },
-    { id: 2, src: '/gallery4.jpg' },
-  ];
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      const q = query(collection(db, "gallery"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setPhotos(data);
+    };
 
-  // Ub images
-  const ubImages = [
-    { id: 'ub1', src: '/Ub1.jpg' },
-    { id: 'ub2', src: '/Ub2.jpg' },
-    { id: 'ub3', src: '/Ub3.jpg' },
-    { id: 'ub4', src: '/Ub4.jpg' },
-    { id: 'ub5', src: '/Ub5.jpg' },
-    { id: 'ub6', src: '/Ub6.jpg' },
-    { id: 'ub7', src: '/Ub7.jpg' },
-    { id: 'ub8', src: '/Ub8.jpg' },
-    { id: 'ub9', src: '/ub9.jpg' },
-    { id: 'ub10', src: '/ub10.jpg' },
-    { id: 'ub11', src: '/ub11.jpg' },
-    { id: 'ub12', src: '/ub12.jpg' },
-    { id: 'ub13', src: '/ub13.jpg' },
-    { id: 'ub14', src: '/ub14.jpg' },
-    { id: 'ub15', src: '/ub15.jpg' },
-    { id: 'ub16', src: '/ub16.jpg' },
-    { id: 'ub17', src: '/ub17.jpg' },
-    { id: 'ub18', src: '/Ub18.jpg' },
-    { id: 'ub19', src: '/Ub19.jpg' },
-    { id: 'ub20', src: '/Ub20.jpg' },
-    { id: 'ub21', src: '/ub21.jpg' },
-  ];
+    fetchPhotos();
+  }, []);
 
-  // B, Be, D images
-  const bImages = [
-    { id: 'b1', src: '/B1.jpg' },
-    { id: 'b2', src: '/B2.jpg' },
-    { id: 'b3', src: '/B3.jpg' },
-    { id: 'b4', src: '/B4.jpg' },
-    { id: 'b5', src: '/B5.jpg' },
-    { id: 'be1', src: '/Be1.jpeg' },
-    { id: 'd2', src: '/D2.jpeg' },
-    // be2-be31 except be10 and be27
-    ...Array.from({ length: 30 }, (_, i) => {
-      const n = i + 2;
-      if (n === 10 || n === 27) return null;
-      return { id: `be${n}`, src: `/be${n}.jpeg` };
-    }).filter(Boolean),
-  ];
-
-  // Combine all images into one array
-  const allImages = [
-    ...healthCampImages,
-    ...meetupImages,
-    ...ubImages,
-    ...bImages,
-  ];
+  // Group photos by heading
+  const grouped = photos.reduce((acc, photo) => {
+    if (!acc[photo.heading]) acc[photo.heading] = [];
+    acc[photo.heading].push(photo);
+    return acc;
+  }, {});
 
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -91,28 +37,31 @@ const Gallery = () => {
             style={{ maxWidth: '200px' }}
           />
         </div>
-        <h1 className="text-4xl font-bold text-center mb-12">Our Gallery</h1>
+        <h1 className="text-4xl font-bold text-center mb-12">📸 Weekly Event Gallery</h1>
 
-        {/* Unified Image Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-16">
-          {allImages.map((image, index) => (
-            <motion.div
-              key={image.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.05 }}
-              className="relative group cursor-pointer flex items-center justify-center bg-transparent"
-              onClick={() => setSelectedImage(image)}
-            >
-              <img
-                src={image.src}
-                alt={image.title}
-                className="w-full h-48 object-cover rounded-md shadow-sm"
-                style={{ aspectRatio: '4/3' }}
-              />
-            </motion.div>
-          ))}
-        </div>
+        {Object.keys(grouped).map((heading, idx) => (
+          <div key={idx} className="mb-10">
+            <div className="text-xl font-semibold mb-2 text-center">{heading}</div>
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {grouped[heading].map((photo, index) => (
+                <motion.div
+                  key={photo.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                  className="relative group cursor-pointer flex items-center justify-center bg-transparent"
+                  onClick={() => setSelectedImage(photo)}
+                >
+                  <img
+                    src={photo.imageUrl}
+                    alt={`Gallery ${index}`}
+                    className="w-full h-60 object-cover rounded-md shadow-sm"
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        ))}
 
         {/* Lightbox */}
         <AnimatePresence>
@@ -150,7 +99,7 @@ const Gallery = () => {
                   </svg>
                 </button>
                 <img
-                  src={selectedImage.src}
+                  src={selectedImage.imageUrl}
                   alt={selectedImage.title}
                   className="w-full rounded-lg"
                 />

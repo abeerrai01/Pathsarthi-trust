@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
-import UploadGallery from "./UploadGallery";
+import MultiPhotoUpload from "./MultiPhotoUpload";
+import PhotoUpload from "./PhotoUpload";
 
 const Button = ({ children, onClick, className = "", variant = "ghost" }) => (
   <button
@@ -16,13 +17,12 @@ const Button = ({ children, onClick, className = "", variant = "ghost" }) => (
   </button>
 );
 
-const UploadPhotos = () => <div>Upload Photos Section (Coming Soon)</div>;
 const TeamMembers = () => <div>Team Members Section (Coming Soon)</div>;
 const UpdateMission = () => <div>Update Mission Section (Coming Soon)</div>;
 const AnalyticsPanel = () => <div>Analytics Panel Section (Coming Soon)</div>;
 
 const DashboardLayout = () => {
-  const [activeSection, setActiveSection] = useState("upload");
+  const [activeSection, setActiveSection] = useState("multi-upload");
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -37,14 +37,16 @@ const DashboardLayout = () => {
         {/* Sidebar */}
         <div className="w-64 bg-gray-800 text-white p-4 space-y-4">
           <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
-          <Button onClick={() => setActiveSection("upload")}>📸 Upload Photos</Button>
+          <Button onClick={() => setActiveSection("multi-upload")}>🖼️ Multi-Image Upload</Button>
+          <Button onClick={() => setActiveSection("single-upload")}>📷 Single Photo Upload</Button>
           <Button onClick={() => setActiveSection("team")}>🧑‍🤝‍🧑 Team Members</Button>
           <Button onClick={() => setActiveSection("mission")}>🎯 Update Mission</Button>
           <Button onClick={() => setActiveSection("analytics")}>📊 Website Analytics</Button>
         </div>
         {/* Main Content */}
         <div className="flex-1 p-8 overflow-auto">
-          {activeSection === "upload" && <UploadGallery />}
+          {activeSection === "multi-upload" && <MultiPhotoUpload />}
+          {activeSection === "single-upload" && <PhotoUpload />}
           {activeSection === "team" && <TeamMembers />}
           {activeSection === "mission" && <UpdateMission />}
           {activeSection === "analytics" && <AnalyticsPanel />}
