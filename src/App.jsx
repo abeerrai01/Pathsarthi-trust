@@ -37,6 +37,14 @@ function MissionPopup() {
     }
   }, [location.pathname]);
 
+  // Auto-dismiss after 10 seconds
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => setShow(false), 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [show]);
+
   const playBlip = () => {
     if (blipRef.current) {
       blipRef.current.currentTime = 0;
