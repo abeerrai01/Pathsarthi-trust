@@ -20,6 +20,10 @@ import JoinUs from './pages/JoinUs';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import Developer from './pages/Developer';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsAndConditions from './pages/TermsAndConditions';
+import RefundPolicy from './pages/RefundPolicy';
+import DonationDisclaimer from './pages/DonationDisclaimer';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
@@ -143,6 +147,10 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/developer" element={<Developer />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsAndConditions />} />
+                <Route path="/refund-policy" element={<RefundPolicy />} />
+                <Route path="/donation-disclaimer" element={<DonationDisclaimer />} />
 
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" />} />

@@ -117,6 +117,13 @@ const Footer = () => {
           </div>
         </div>
 
+        <div className="text-sm mt-4 text-gray-500 text-center">
+          <a href="/privacy-policy" className="mr-4 underline">Privacy Policy</a>
+          <a href="/terms" className="mr-4 underline">Terms & Conditions</a>
+          <a href="/refund-policy" className="mr-4 underline">Refund Policy</a>
+          <a href="/donation-disclaimer" className="underline">Donation Disclaimer</a>
+        </div>
+
         <div className="mt-8 border-t border-gray-700 pt-8">
           <p className="text-center text-gray-400 text-sm">
             © {new Date().getFullYear()} Path Sarthi Trust. All rights reserved.
