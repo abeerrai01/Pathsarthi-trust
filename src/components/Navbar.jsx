@@ -49,19 +49,19 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 w-full">
           {/* Logo and site name */}
-          <div className="flex items-center flex-shrink-0">
+          <div className="flex items-center flex-shrink-0 mr-4">
             <Link to="/" className="flex items-center" onClick={() => handleNavClick('/')} aria-label="Go to home page">
               <img
                 src="/PathSarthi logo.png"
                 alt="PathSarthi Trust Logo"
-                className="h-10 w-auto mr-2 drop-shadow"
+                className="h-10 w-auto mr-3 drop-shadow"
                 style={{ background: 'transparent' }}
               />
               <span className="text-gray-900 font-extrabold text-2xl tracking-tight">PathSarthi Trust</span>
             </Link>
           </div>
           {/* Desktop nav links */}
-          <div className="hidden md:flex gap-2 items-center flex-1 justify-end">
+          <div className="hidden md:flex gap-2 items-center flex-grow justify-end">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
