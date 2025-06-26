@@ -22,7 +22,7 @@ const RefundPolicy = () => {
 
       <h2 className="text-xl font-semibold mt-6 mb-2">3. Contact Us</h2>
       <p>
-        For refund queries, email us at: <strong>pathsarthitrust@gmail.com</strong>
+        For refund queries, email us at: <strong>pathsarthi2022@gmail.com</strong>
       </p>
     </div>
   );

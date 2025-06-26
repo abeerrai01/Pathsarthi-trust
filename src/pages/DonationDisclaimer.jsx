@@ -26,7 +26,7 @@ const DonationDisclaimer = () => {
       </p>
 
       <p>
-        Questions? Email us at: <strong>pathsarthitrust@gmail.com</strong>
+        Questions? Email us at: <strong>pathsarthi2022@gmail.com</strong>
       </p>
     </div>
   );

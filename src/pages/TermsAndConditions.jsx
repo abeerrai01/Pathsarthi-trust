@@ -32,7 +32,7 @@ const TermsAndConditions = () => {
 
       <h2 className="text-xl font-semibold mt-6 mb-2">5. Contact</h2>
       <p>
-        For questions regarding these Terms, please contact: <strong>pathsarthitrust@gmail.com</strong>
+        For questions regarding these Terms, please contact: <strong>pathsarthi2022@gmail.com</strong>
       </p>
     </div>
   );

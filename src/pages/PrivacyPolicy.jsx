@@ -28,7 +28,7 @@ const PrivacyPolicy = () => {
 
       <h2 className="text-xl font-semibold mt-6 mb-2">5. Contact</h2>
       <p className="mb-4">
-        If you have questions about this policy, email us at <strong>pathsarthitrust@gmail.com</strong>
+        If you have questions about this policy, email us at <strong>pathsarthi2022@gmail.com</strong>
       </p>
     </div>
   );
