@@ -19,6 +19,7 @@ import Member from './pages/Member';
 import JoinUs from './pages/JoinUs';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
+import Developer from './pages/Developer';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
@@ -141,6 +142,7 @@ function App() {
                 <Route path="/join-us" element={<JoinUs />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/developer" element={<Developer />} />
 
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" />} />

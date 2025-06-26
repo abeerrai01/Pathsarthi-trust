@@ -37,6 +37,11 @@ const Footer = () => {
                   Social Media
                 </Link>
               </li>
+              <li>
+                <Link to="/developer" className="text-gray-300 hover:text-white text-sm">
+                  Developer
+                </Link>
+              </li>
             </ul>
           </div>
 
