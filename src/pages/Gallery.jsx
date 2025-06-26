@@ -42,22 +42,15 @@ const Gallery = () => {
         {Object.keys(grouped).map((heading, idx) => (
           <div key={idx} className="mb-10">
             <div className="text-xl font-semibold mb-2 text-center">{heading}</div>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {grouped[heading].map((photo, index) => (
-                <motion.div
-                  key={photo.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="relative group cursor-pointer flex items-center justify-center bg-transparent"
-                  onClick={() => setSelectedImage(photo)}
-                >
+                <div key={photo.id} className="bg-white p-2 rounded shadow">
                   <img
                     src={photo.imageUrl}
-                    alt={`Gallery ${index}`}
-                    className="w-full h-60 object-cover rounded-md shadow-sm"
+                    alt={heading}
+                    className="w-full h-auto object-contain"
                   />
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
