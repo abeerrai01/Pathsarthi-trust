@@ -57,7 +57,7 @@ const Navbar = () => {
                 className="h-10 w-auto mr-3 drop-shadow"
                 style={{ background: 'transparent' }}
               />
-              <span className="text-gray-900 font-extrabold text-2xl tracking-tight">PathSarthi Trust</span>
+              <span className="text-gray-900 font-extrabold text-2xl tracking-tight">Path Sarthi Trust</span>
             </Link>
           </div>
           {/* Desktop nav links */}
