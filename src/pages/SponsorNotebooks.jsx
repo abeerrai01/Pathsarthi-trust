@@ -130,7 +130,7 @@ const SponsorNotebooks = () => {
               <div className="text-center">
                 <h2 className="text-2xl font-semibold mb-4">Scan to Pay</h2>
                 <img
-                  src="/qr-code-3.jpg"
+                  src="/Qr-code-3.jpg"
                   alt="Scan to Pay"
                   className="w-48 mx-auto mb-4 rounded-lg border"
                 />

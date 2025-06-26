@@ -166,7 +166,7 @@ const Donate = () => {
                       ) : (
                         <div className="text-center">
                           <img
-                            src="/qr-code-3.jpg"
+                            src="/Qr-code-3.jpg"
                             alt="Scan to Donate"
                             className="w-48 mx-auto mb-4 rounded-lg border"
                           />

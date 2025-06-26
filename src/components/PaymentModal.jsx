@@ -19,7 +19,7 @@ const PaymentModal = ({ open, onClose }) => {
           or pay with QR code below.
         </p>
         <div className="flex justify-center mb-2">
-          <img src="/qr-code-3.jpg" alt="QR Code" className="h-48 w-48 object-contain rounded" />
+          <img src="/Qr-code-3.jpg" alt="QR Code" className="h-48 w-48 object-contain rounded" />
         </div>
       </div>
     </div>
