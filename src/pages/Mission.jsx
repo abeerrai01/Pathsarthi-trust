@@ -96,7 +96,13 @@ const Mission = () => {
                 <span className="block text-2xl md:text-3xl text-yellow-800 mb-2 font-extrabold">Path Sarthi Trust ला रहा है —</span>
                 <span className="block text-xl md:text-2xl text-indigo-700 mb-2 font-bold">'एक किताब, एक भविष्य' अभियान।</span>
                 <span className="block text-lg md:text-xl text-gray-700 mb-2">आपकी दी हुई एक किताब, किसी बच्चे का भविष्य बना सकती है।</span>
-                <span className="block text-lg md:text-xl text-pink-700 font-semibold italic">बस एक छोटा सा कदम… और कोई बच्चा भी कह सकेगा —<br/> 'अब मेरी भी किताब है, अब मेरा&nbsp;भी&nbsp;सपना&nbsp;है…'</span>
+                <span className="block text-lg md:text-xl text-pink-700 font-semibold italic mb-4">बस एक छोटा सा कदम… और कोई बच्चा भी कह सकेगा —<br/> 'अब मेरी भी किताब है, अब मेरा&nbsp;भी&nbsp;सपना&nbsp;है…'</span>
+                <button
+                  onClick={() => window.location.href = '/donate'}
+                  className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold px-8 py-3 rounded-full shadow-lg text-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2"
+                >
+                  सहयोग करें
+                </button>
               </div>
             </div>
           </div>
