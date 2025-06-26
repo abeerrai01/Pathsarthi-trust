@@ -37,10 +37,10 @@ function MissionPopup() {
     }
   }, [location.pathname]);
 
-  // Auto-dismiss after 10 seconds
+  // Auto-dismiss after 5 seconds
   useEffect(() => {
     if (show) {
-      const timer = setTimeout(() => setShow(false), 10000);
+      const timer = setTimeout(() => setShow(false), 5000);
       return () => clearTimeout(timer);
     }
   }, [show]);
