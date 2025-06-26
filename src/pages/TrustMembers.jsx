@@ -14,8 +14,8 @@ const TrustMembers = () => {
     { name: 'Deepansh Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
     { name: 'Mehair Tripathi', gender: 'Male', designation: 'Trustee', joinedDate: '2025-06-01' },
     { name: 'Sandeep Bharti', gender: 'Male', designation: 'Health Advisor', joinedDate: '2023-04-01' },
-    { name: 'Swechha Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2023-01-01' },
-    { name: 'Pramila Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2025-04-01' },
+    { name: 'Swechha Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2023-01-01', image: '/Swechha.jpg' },
+    { name: 'Pramila Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2025-04-01', image: '/Pramila.jpg' },
     { name: 'Abeer Rai', gender: 'Male', designation: 'Board Member', joinedDate: '2025-04-01', image: '/abeer.jpg' },
     { name: 'Srinivas Rai', gender: 'Male', designation: 'State President', district: 'Manali', state: 'Himachal Pradesh', joinedDate: '2024-06-01', image: '/Srinavas.jpg' },
   ];
