@@ -14,17 +14,17 @@ const Home = () => {
     {
       title: 'Education Support',
       description: 'Providing quality education and learning resources to underprivileged children.',
-      image: '/images/education.jpg',
+      image: '/Background1.jpg',
     },
     {
       title: 'Healthcare Access',
       description: 'Facilitating medical care and health awareness in rural communities.',
-      image: '/images/healthcare.jpg',
+      image: '/medical.jpg',
     },
     {
       title: 'Women Empowerment',
       description: 'Supporting women through skill development and entrepreneurship programs.',
-      image: '/images/women-empowerment.jpg',
+      image: '/women-empowerment-in-2019.png',
     },
   ];
 
