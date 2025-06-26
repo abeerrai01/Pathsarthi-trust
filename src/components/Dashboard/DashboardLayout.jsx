@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import MultiPhotoUpload from "./MultiPhotoUpload";
 import PhotoUpload from "./PhotoUpload";
+import GalleryManager from "./GalleryManager";
 
 const Button = ({ children, onClick, className = "", variant = "ghost" }) => (
   <button
@@ -58,6 +59,7 @@ const DashboardLayout = () => {
             <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
             <Button onClick={() => handleNav("multi-upload")}>🖼️ Multi-Image Upload</Button>
             <Button onClick={() => handleNav("single-upload")}>📷 Single Photo Upload</Button>
+            <Button onClick={() => handleNav("gallery-manager")}>🗑️ Manage Gallery</Button>
             <Button onClick={() => handleNav("team")}>🧑‍🤝‍🧑 Team Members</Button>
             <Button onClick={() => handleNav("mission")}>🎯 Update Mission</Button>
             <Button onClick={() => handleNav("analytics")}>📊 Website Analytics</Button>
@@ -75,6 +77,7 @@ const DashboardLayout = () => {
         <div className="flex-1 p-4 md:p-8 overflow-auto">
           {activeSection === "multi-upload" && <MultiPhotoUpload />}
           {activeSection === "single-upload" && <PhotoUpload />}
+          {activeSection === "gallery-manager" && <GalleryManager />}
           {activeSection === "team" && <TeamMembers />}
           {activeSection === "mission" && <UpdateMission />}
           {activeSection === "analytics" && <AnalyticsPanel />}
