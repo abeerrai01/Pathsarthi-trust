@@ -38,7 +38,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/developer" className="text-gray-300 hover:text-white text-sm">
+                <Link to="/developer" className="text-gray-300 hover:text-white text-sm" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                   Developer
                 </Link>
               </li>
