@@ -108,7 +108,7 @@ const AboutUs = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl font-bold mb-6">About PathSarthi Trust</h1>
+          <h1 className="text-4xl font-bold mb-6">About Path Sarthi Trust</h1>
           <div className="bg-white rounded-lg shadow-sm p-8 max-w-3xl mx-auto">
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-2">Registered Office</h2>
@@ -125,8 +125,8 @@ const AboutUs = () => {
             </div>
             <div>
               <p className="text-gray-600">
-                PathSarthi is an NGO based in Moradabad, Uttar Pradesh, India. Established in 2022, 
-                PathSarthi Trust is actively contributing to the well-being of children, elderly individuals, 
+                Path Sarthi is an NGO based in Moradabad, Uttar Pradesh, India. Established in 2022, 
+                Path Sarthi Trust is actively contributing to the well-being of children, elderly individuals, 
                 and the underprivileged through structured programs in health, education, and welfare.
                 The trust currently operates with three branches across India.
               </p>
@@ -146,12 +146,12 @@ const AboutUs = () => {
               <h2 className="text-2xl font-semibold mb-4">Our Vision</h2>
               <p className="text-gray-600 mb-4">
                 To enhance the quality of life in education and health through collaboration with 
-                individuals and communities. PathSarthi aims to ensure continuous financial and 
+                individuals and communities. Path Sarthi aims to ensure continuous financial and 
                 emotional support for people with special needs, leading innovative solutions and 
                 enabling them to reach their full potential.
               </p>
               <p className="text-indigo-600 italic">
-                "With a mission to empower children in slums, PathSarthi is reaching out to transform 
+                "With a mission to empower children in slums, Path Sarthi is reaching out to transform 
                 lives through education and skills."
               </p>
             </div>
@@ -246,7 +246,7 @@ const AboutUs = () => {
 
           <div className="mt-12 text-center">
             <p className="text-xl text-gray-600 italic max-w-3xl mx-auto">
-              "At PathSarthi, we believe your support — no matter how big or small — is the reason 
+              "At Path Sarthi, we believe your support — no matter how big or small — is the reason 
               we can help children survive, thrive, and grow."
             </p>
           </div>

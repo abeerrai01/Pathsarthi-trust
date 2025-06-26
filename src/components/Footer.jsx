@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
           <div className="col-span-1">
-            <h3 className="text-lg font-semibold mb-4">PathSarthi Trust</h3>
+            <h3 className="text-lg font-semibold mb-4">Path Sarthi Trust</h3>
             <p className="text-gray-300 text-sm">
               Empowering communities through education, healthcare, and sustainable development.
             </p>
@@ -45,7 +45,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-2 text-sm">
               <li className="text-gray-300">
-                <span className="block">PathSarthi Trust</span>
+                <span className="block">Path Sarthi Trust</span>
                 <span className="block">E-374-375, Kashiram Nagar</span>
                 <span className="block">Moradabad, Uttar Pradesh</span>
                 <span className="block">India – PIN 244001</span>
@@ -114,7 +114,7 @@ const Footer = () => {
 
         <div className="mt-8 border-t border-gray-700 pt-8">
           <p className="text-center text-gray-400 text-sm">
-            © {new Date().getFullYear()} PathSarthi Trust. All rights reserved.
+            © {new Date().getFullYear()} Path Sarthi Trust. All rights reserved.
           </p>
           <p className="text-center text-gray-400 text-sm mt-2">
             Registered with Niti Aayog Darpan, Government of India<br />

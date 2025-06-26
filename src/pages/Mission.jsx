@@ -81,7 +81,7 @@ const Mission = () => {
           <h1 className="text-4xl font-bold mb-6">🌟 Our Mission: Empowering Lives, One Step at a Time</h1>
           <div className="max-w-3xl mx-auto">
             <p className="text-xl text-gray-600 mb-6">
-              At PathSarthi Trust, our mission goes beyond charity — it's a heartfelt commitment to stand with those who have been overlooked, to serve with compassion, and to uplift with dignity. Founded in 2022 in Moradabad, Uttar Pradesh, our journey began with a single belief:
+              At Path Sarthi Trust, our mission goes beyond charity — it's a heartfelt commitment to stand with those who have been overlooked, to serve with compassion, and to uplift with dignity. Founded in 2022 in Moradabad, Uttar Pradesh, our journey began with a single belief:
             </p>
             <p className="text-2xl font-semibold text-indigo-600 italic mb-6">
               "Every life, no matter where it begins, deserves a chance to dream, to heal, and to rise."
@@ -172,7 +172,7 @@ const Mission = () => {
           <div className="bg-indigo-50 rounded-lg p-8 max-w-3xl mx-auto">
             <h2 className="text-2xl font-bold mb-6">🌱 A Movement of Hope</h2>
             <p className="text-gray-600 mb-6">
-              PathSarthi is more than an organization — it's a family of change-makers, including volunteers, donors, and advisors who believe that small acts of kindness can ripple out into big changes. With over 70 active donors, 52+ volunteers, and a committed core team, we're not just running programs — we're nurturing a movement powered by compassion.
+              Path Sarthi is more than an organization — it's a family of change-makers, including volunteers, donors, and advisors who believe that small acts of kindness can ripple out into big changes. With over 70 active donors, 52+ volunteers, and a committed core team, we're not just running programs — we're nurturing a movement powered by compassion.
             </p>
             <div className="text-xl font-semibold text-indigo-600 italic">
               "We don't need to change the whole world at once — we just need to change someone's world every day."

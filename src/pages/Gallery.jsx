@@ -32,7 +32,7 @@ const Gallery = () => {
         <div className="flex justify-center mb-6">
           <img 
             src="/PathSarthi logo.png" 
-            alt="PathSarthi Logo" 
+            alt="Path Sarthi Logo" 
             className="h-24 w-auto object-contain" 
             style={{ maxWidth: '200px' }}
           />

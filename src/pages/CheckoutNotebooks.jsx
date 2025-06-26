@@ -10,7 +10,7 @@ const CheckoutNotebooks = () => {
   const totalAmount = quantity * pricePerNotebook;
 
   const handlePayment = () => {
-    const upiLink = `upi://pay?pa=pathsarthi2022-1@okaxis&pn=PathSarthi%20Trust&cu=INR&am=${totalAmount}`;
+    const upiLink = `upi://pay?pa=pathsarthi2022-1@okaxis&pn=Path Sarthi%20Trust&cu=INR&am=${totalAmount}`;
     window.location.href = upiLink;
   };
 

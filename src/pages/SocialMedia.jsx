@@ -89,7 +89,7 @@ const SocialMedia = () => {
           <div className="aspect-w-16 aspect-h-9">
             <iframe
               src="https://www.youtube.com/embed/videoseries?list=UCH85rcaMHgCtN2fV8W_51LQ"
-              title="PathSarthi Trust YouTube Channel"
+              title="Path Sarthi Trust YouTube Channel"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

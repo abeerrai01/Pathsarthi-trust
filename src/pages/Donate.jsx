@@ -235,7 +235,7 @@ const Donate = () => {
               </div>
 
               <div className="mt-8 p-6 bg-indigo-50 rounded-lg">
-                <h3 className="text-lg font-semibold mb-4">Why Donate to PathSarthi Trust?</h3>
+                <h3 className="text-lg font-semibold mb-4">Why Donate to Path Sarthi Trust?</h3>
                 <ul className="space-y-3 text-gray-600">
                   <li className="flex items-start">
                     <svg className="w-6 h-6 text-indigo-600 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

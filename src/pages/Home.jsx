@@ -81,14 +81,14 @@ const Home = () => {
         >
           <img
             src="/Logo-2.png"
-            alt="PathSarthi Trust"
+            alt="Path Sarthi Trust"
             className="h-32 w-auto mb-6"
           />
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 text-center">
-            Welcome to PathSarthi Trust - Empowering Lives Through Action
+            Welcome to Path Sarthi Trust - Empowering Lives Through Action
           </h1>
           <p className="text-xl mb-8 text-gray-800 text-center">
-            PathSarthi Trust is a leading Moradabad NGO dedicated to empowering communities through education, healthcare, and sustainable development initiatives. Join us to make a difference—donate to NGO in India and help transform lives today.
+            Path Sarthi Trust is a leading Moradabad NGO dedicated to empowering communities through education, healthcare, and sustainable development initiatives. Join us to make a difference—donate to NGO in India and help transform lives today.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
             <Link
@@ -160,14 +160,14 @@ const Home = () => {
         </div>
       </section>
 
-      {/* PathSarthi Trust Introduction Video */}
+      {/* Path Sarthi Trust Introduction Video */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-6">PathSarthi Trust Introduction by Chairman Ravi Prakash Rai</h2>
+          <h2 className="text-2xl font-bold mb-6">Path Sarthi Trust Introduction by Chairman Ravi Prakash Rai</h2>
           <div className="aspect-w-16 aspect-h-9 w-full rounded-lg shadow-lg overflow-hidden mx-auto">
             <iframe
               src="https://www.youtube.com/embed/upicFvhg1Qk"
-              title="PathSarthi Trust Introduction by Chairman Ravi Prakash Rai"
+              title="Path Sarthi Trust Introduction by Chairman Ravi Prakash Rai"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

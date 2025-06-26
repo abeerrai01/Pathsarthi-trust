@@ -50,7 +50,7 @@ const TrustMembers = () => {
         >
           <h1 className="text-4xl font-bold mb-6">Our Trust Members</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Meet the dedicated individuals who lead PathSarthi Trust in its mission to create positive change.
+            Meet the dedicated individuals who lead Path Sarthi Trust in its mission to create positive change.
           </p>
         </motion.div>
 

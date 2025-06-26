@@ -29,7 +29,7 @@ const Contribution = () => {
       id: 4,
       title: "Community Development Project",
       name: "Project Uplift",
-      description: "Project Uplift is one of PathSarthi Trust's flagship initiatives, focusing on holistic community development in rural Moradabad. Through education, healthcare, and skill-building workshops, the project has empowered hundreds of families to achieve self-reliance and a better quality of life.",
+      description: "Project Uplift is one of Path Sarthi Trust's flagship initiatives, focusing on holistic community development in rural Moradabad. Through education, healthcare, and skill-building workshops, the project has empowered hundreds of families to achieve self-reliance and a better quality of life.",
       image: "/Project.jpg",
     },
   ];

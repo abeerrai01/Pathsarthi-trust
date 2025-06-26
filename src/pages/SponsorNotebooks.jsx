@@ -138,7 +138,7 @@ const SponsorNotebooks = () => {
                   Scan using any UPI app to pay ₹{quantity * pricePerNotebook}
                 </p>
                 <p className="text-sm font-medium mb-2">UPI ID:</p>
-                <p className="text-blue-600 font-mono mb-4">pathsarthi2022-1@okaxis</p>
+                <p className="text-blue-600 font-mono mb-4">Path Sarthi2022-1@okaxis</p>
                 <button
                   onClick={() => setShowQR(false)}
                   className="text-indigo-600 hover:text-indigo-700 font-medium"
