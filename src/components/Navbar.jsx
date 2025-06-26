@@ -95,7 +95,7 @@ const Navbar = () => {
       {/* Mobile menu overlay */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex md:hidden">
-          <div className="relative w-4/5 max-w-xs bg-white h-full shadow-xl flex flex-col">
+          <div className="relative w-4/5 max-w-xs bg-white h-full shadow-xl flex flex-col overflow-y-auto max-h-screen">
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="absolute top-4 right-4 p-2 rounded-full text-gray-700 hover:bg-gray-200 focus:outline-none"
