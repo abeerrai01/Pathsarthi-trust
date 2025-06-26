@@ -89,6 +89,16 @@ const Mission = () => {
             <p className="text-lg text-gray-600">
               We aim to bring lasting transformation in the lives of underprivileged children, the elderly, persons with disabilities, and marginalized communities through structured, compassionate, and deeply impactful initiatives.
             </p>
+            {/* Upcoming Mission Box */}
+            <div className="my-8 bg-yellow-50 border-4 border-yellow-400 rounded-xl shadow-lg p-6 flex flex-col items-center animate-fade-in">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-yellow-700 mb-2 tracking-wide text-center">Upcoming Mission</h2>
+              <div className="text-lg md:text-xl font-bold text-gray-800 text-center leading-relaxed">
+                <span className="block text-2xl md:text-3xl text-yellow-800 mb-2 font-extrabold">Path Sarthi Trust ला रहा है —</span>
+                <span className="block text-xl md:text-2xl text-indigo-700 mb-2 font-bold">'एक किताब, एक भविष्य' अभियान।</span>
+                <span className="block text-lg md:text-xl text-gray-700 mb-2">आपकी दी हुई एक किताब, किसी बच्चे का भविष्य बना सकती है।</span>
+                <span className="block text-lg md:text-xl text-pink-700 font-semibold italic">बस एक छोटा सा कदम… और कोई बच्चा भी कह सकेगा —<br/> 'अब मेरी भी किताब है, अब मेरा&nbsp;भी&nbsp;सपना&nbsp;है…'</span>
+              </div>
+            </div>
           </div>
         </motion.section>
 
