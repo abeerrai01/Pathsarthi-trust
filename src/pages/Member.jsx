@@ -27,6 +27,9 @@ const members = [
   { name: 'Rajendra Kumar Dhingra', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
   { name: 'Kailash Chandra Sharma', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
   { name: 'Parminder Sharma', gender: 'Male', district: 'Ludhiana', state: 'Punjab' },
+  { name: 'Amit Kumar Shukla', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/amit kumar.jpg' },
+  { name: 'Varun', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/varun.jpg' },
+  { name: 'Pradeep Kumar Tripathi', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/pradeep.jpg' },
   // Add more members as needed
 ];
 
