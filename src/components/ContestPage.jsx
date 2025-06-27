@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ContestForm from './ContestForm';
-import contestBanner from '../../assets/images/contest-banner.jpg'; // placeholder path
-import prizeImg from '../../assets/images/kit.png'; // placeholder path
 
 const Confetti = ({ show }) => (
   <AnimatePresence>
@@ -26,7 +24,7 @@ const ContestPage = () => {
       <Confetti show={confetti} />
       {/* 🎉 Hero Section */}
       <div className="text-center bg-[#ffe7cc] p-8 rounded-b-3xl shadow-md">
-        <img src={contestBanner} alt="Pathsarthi Contest Banner" className="mx-auto rounded-xl max-h-[400px]" />
+        <img src="/banner-1.jpg" alt="Pathsarthi Contest Banner" className="mx-auto rounded-xl max-h-[400px]" />
         <h1 className="text-4xl md:text-5xl font-bold mt-4 font-bubblegum">🎨 Pathsarthi Kids Creativity Contest</h1>
         <p className="text-lg md:text-xl mt-2">Win amazing kits and certificates! Open to all kids 🧒👧</p>
       </div>
@@ -53,7 +51,7 @@ const ContestPage = () => {
               <li>Top 10 Kids: Exclusive Pathsarthi Kit</li>
               <li>All Participants: Digital Certificate</li>
             </ul>
-            <img src={prizeImg} alt="Pathsarthi Kit" className="mt-2 rounded-lg shadow-lg" />
+            <img src="/banner-2.jpg" alt="Pathsarthi Kit" className="mt-2 rounded-lg shadow-lg" />
           </div>
         </div>
 
