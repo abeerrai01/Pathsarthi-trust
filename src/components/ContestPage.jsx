@@ -51,7 +51,6 @@ const ContestPage = () => {
               <li>Top 10 Kids: Exclusive Pathsarthi Kit</li>
               <li>All Participants: Digital Certificate</li>
             </ul>
-            <img src="/banner-1.jpg" alt="Pathsarthi Kit" className="mt-2 rounded-lg shadow-lg" />
           </div>
         </div>
 
