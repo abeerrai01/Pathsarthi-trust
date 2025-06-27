@@ -24,6 +24,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
 import RefundPolicy from './pages/RefundPolicy';
 import DonationDisclaimer from './pages/DonationDisclaimer';
+import ContestPage from './components/ContestPage';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
@@ -121,10 +122,42 @@ function MissionPopup() {
   );
 }
 
+function GlobalConfetti({ show, onClose }) {
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[9999] pointer-events-none flex items-start justify-center"
+        >
+          <img src="https://cdn.jsdelivr.net/gh/stevenlei/party-js-confetti/confetti.gif" alt="Confetti" className="w-full max-w-2xl mt-10" />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 function App() {
+  const [globalConfetti, setGlobalConfetti] = useState(false);
+  const triggerConfetti = () => {
+    setGlobalConfetti(true);
+    setTimeout(() => setGlobalConfetti(false), 2500);
+  };
   return (
     <Router>
       <AuthProvider>
+        <GlobalConfetti show={globalConfetti} />
+        {/* Floating Confetti Button */}
+        <button
+          onClick={triggerConfetti}
+          className="fixed bottom-6 right-6 z-[9999] bg-pink-500 hover:bg-pink-600 text-white rounded-full shadow-lg p-4 text-2xl animate-bounce focus:outline-none"
+          title="Celebrate!"
+          aria-label="Show Confetti"
+        >
+          🎉
+        </button>
         <MissionPopup />
         <div className="min-h-screen flex flex-col bg-gray-50">
           <Navbar />
@@ -151,6 +184,7 @@ function App() {
                 <Route path="/terms" element={<TermsAndConditions />} />
                 <Route path="/refund-policy" element={<RefundPolicy />} />
                 <Route path="/donation-disclaimer" element={<DonationDisclaimer />} />
+                <Route path="/contest" element={<ContestPage />} />
 
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" />} />

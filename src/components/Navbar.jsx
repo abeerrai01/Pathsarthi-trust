@@ -25,6 +25,7 @@ const Navbar = () => {
 
   const navLinks = [
     { to: '/', label: 'Home' },
+    { to: '/contest', label: '✨ Contest' },
     { to: '/gallery', label: 'Gallery' },
     { to: '/mission', label: 'Mission' },
     { to: '/contribution', label: 'Contribution' },
