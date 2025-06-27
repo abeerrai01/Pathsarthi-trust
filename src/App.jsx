@@ -168,15 +168,6 @@ function App() {
     <Router>
       <AuthProvider>
         <GlobalConfetti show={globalConfetti} />
-        {/* Floating Confetti Button */}
-        <button
-          onClick={triggerConfetti}
-          className="fixed bottom-6 right-6 z-[9999] bg-pink-500 hover:bg-pink-600 text-white rounded-full shadow-lg p-4 text-2xl animate-bounce focus:outline-none"
-          title="Celebrate!"
-          aria-label="Show Confetti"
-        >
-          🎉
-        </button>
         <MissionPopup />
         <div className="min-h-screen flex flex-col bg-gray-50">
           <Navbar />
