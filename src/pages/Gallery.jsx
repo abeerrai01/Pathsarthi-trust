@@ -5,6 +5,7 @@ import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 const Gallery = () => {
   const [photos, setPhotos] = useState([]);
+  const [expandedHeadings, setExpandedHeadings] = useState([]);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -24,6 +25,14 @@ const Gallery = () => {
     return acc;
   }, {});
 
+  const toggleHeading = (heading) => {
+    setExpandedHeadings(prev =>
+      prev.includes(heading)
+        ? prev.filter(h => h !== heading)
+        : [...prev, heading]
+    );
+  };
+
   const [selectedImage, setSelectedImage] = useState(null);
 
   return (
@@ -42,16 +51,44 @@ const Gallery = () => {
         {Object.keys(grouped).map((heading, idx) => (
           <div key={idx} className="mb-10">
             <div className="text-xl font-semibold mb-2 text-center">{heading}</div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {grouped[heading].map((photo, index) => (
-                <div key={photo.id} className="bg-white p-2 rounded shadow">
-                  <img
-                    src={photo.imageUrl}
-                    alt={heading}
-                    className="w-full h-auto object-contain"
-                  />
-                </div>
-              ))}
+            
+            <AnimatePresence>
+              <motion.div
+                layout
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+              >
+                {(expandedHeadings.includes(heading)
+                  ? grouped[heading]
+                  : grouped[heading].slice(0, 2)
+                ).map((photo, index) => (
+                  <motion.div
+                    key={photo.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-white p-2 rounded shadow"
+                  >
+                    <img
+                      src={photo.imageUrl}
+                      alt={heading}
+                      className="w-full h-auto object-contain"
+                    />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="text-center mt-2">
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
+                onClick={() => toggleHeading(heading)}
+                className="text-blue-600 hover:underline text-sm"
+              >
+                {expandedHeadings.includes(heading) ? "Show Less" : "View All"}
+              </motion.button>
             </div>
           </div>
         ))}
