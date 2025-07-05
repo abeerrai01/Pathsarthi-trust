@@ -29,6 +29,8 @@ import Internship from './pages/Internship';
 import InternshipForm from './pages/InternshipForm';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
+import CertificateGenerator from './components/Dashboard/CertificateGenerator';
+import VerifyCertificate from './pages/VerifyCertificate';
 
 function MissionPopup() {
   const [show, setShow] = useState(false);
@@ -199,6 +201,8 @@ function App() {
                 <Route path="/contest" element={<ContestPage />} />
                 <Route path="/internship" element={<Internship />} />
                 <Route path="/internship-form" element={<InternshipForm />} />
+                <Route path="/admin/certificates" element={<CertificateGenerator />} />
+                <Route path="/verify/:id" element={<VerifyCertificate />} />
 
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" />} />
