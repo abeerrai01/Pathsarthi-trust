@@ -25,6 +25,8 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import RefundPolicy from './pages/RefundPolicy';
 import DonationDisclaimer from './pages/DonationDisclaimer';
 import ContestPage from './components/ContestPage';
+import Internship from './pages/Internship';
+import InternshipForm from './pages/InternshipForm';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
@@ -195,6 +197,8 @@ function App() {
                 <Route path="/refund-policy" element={<RefundPolicy />} />
                 <Route path="/donation-disclaimer" element={<DonationDisclaimer />} />
                 <Route path="/contest" element={<ContestPage />} />
+                <Route path="/internship" element={<Internship />} />
+                <Route path="/internship-form" element={<InternshipForm />} />
 
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" />} />

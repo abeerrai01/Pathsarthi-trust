@@ -71,6 +71,11 @@ const Navbar = () => {
       ]
     },
     { 
+      to: '/internship',
+      label: 'Internship',
+      type: 'link'
+    },
+    { 
       label: 'Others', 
       type: 'dropdown',
       items: [
