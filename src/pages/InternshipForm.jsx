@@ -28,7 +28,7 @@ const InternshipForm = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-orange-50 py-12">
       <form
-        action="https://formspree.io/f/xnnvypvg"
+        action="https://usebasin.com/f/d06d9fc6b353"
         method="POST"
         className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full"
         onSubmit={() => setSubmitted(true)}
