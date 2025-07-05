@@ -48,50 +48,63 @@ const Gallery = () => {
         </div>
         <h1 className="text-4xl font-bold text-center mb-12">📸 Weekly Event Gallery</h1>
 
-        {Object.keys(grouped).map((heading, idx) => (
-          <div key={idx} className="mb-10">
-            <div className="text-xl font-semibold mb-2 text-center">{heading}</div>
-            
-            <AnimatePresence>
-              <motion.div
-                layout
-                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
-              >
-                {(expandedHeadings.includes(heading)
-                  ? grouped[heading]
-                  : grouped[heading].slice(0, 2)
-                ).map((photo, index) => (
+        {Object.keys(grouped).map((heading, idx) => {
+          const totalImages = grouped[heading].length;
+          const previewCount = totalImages <= 2 ? 1 : 2;
+          const showViewAllButton = totalImages > previewCount;
+          
+          return (
+            <div key={idx} className="mb-10">
+              <div className="text-xl font-semibold mb-4 text-center">{heading}</div>
+              
+              <div className="flex items-start gap-4">
+                <AnimatePresence>
                   <motion.div
-                    key={photo.id}
                     layout
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.3 }}
-                    className="bg-white p-2 rounded shadow"
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1"
                   >
-                    <img
-                      src={photo.imageUrl}
-                      alt={heading}
-                      className="w-full h-auto object-contain"
-                    />
+                    {(expandedHeadings.includes(heading)
+                      ? grouped[heading]
+                      : grouped[heading].slice(0, previewCount)
+                    ).map((photo, index) => (
+                      <motion.div
+                        key={photo.id}
+                        layout
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.3 }}
+                        className="bg-white p-2 rounded shadow"
+                      >
+                        <img
+                          src={photo.imageUrl}
+                          alt={heading}
+                          className="w-full h-auto object-contain"
+                        />
+                      </motion.div>
+                    ))}
                   </motion.div>
-                ))}
-              </motion.div>
-            </AnimatePresence>
+                </AnimatePresence>
 
-            <div className="text-center mt-2">
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                whileHover={{ scale: 1.05 }}
-                onClick={() => toggleHeading(heading)}
-                className="text-blue-600 hover:underline text-sm"
-              >
-                {expandedHeadings.includes(heading) ? "Show Less" : "View All"}
-              </motion.button>
+                {showViewAllButton && (
+                  <div className="flex-shrink-0">
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={() => toggleHeading(heading)}
+                      className="px-6 py-3 bg-gradient-to-r from-blue-500 to-orange-500 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-white/20"
+                    >
+                      {expandedHeadings.includes(heading) ? "Show Less" : "View All"}
+                    </motion.button>
+                  </div>
+                )}
+              </div>
+
+              {/* Beautiful gradient line */}
+              <div className="mt-8 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 rounded-full opacity-60"></div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* Lightbox */}
         <AnimatePresence>
