@@ -32,6 +32,13 @@ const Contribution = () => {
       description: "Project Uplift is one of Path Sarthi Trust's flagship initiatives, focusing on holistic community development in rural Moradabad. Through education, healthcare, and skill-building workshops, the project has empowered hundreds of families to achieve self-reliance and a better quality of life.",
       image: "/Project.jpg",
     },
+    {
+      id: 5,
+      title: "Child Welfare",
+      name: "Hope for Children",
+      description: "We help vulnerable children by providing care, education, and opportunities for a brighter future. Every child deserves a safe and nurturing environment.",
+      image: "/ChildWelfare.jpg",
+    },
   ];
 
   const contributionWays = [

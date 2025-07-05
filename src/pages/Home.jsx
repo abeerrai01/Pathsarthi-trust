@@ -26,6 +26,11 @@ const Home = () => {
       description: 'Supporting women through skill development and entrepreneurship programs.',
       image: '/women-empowerment-in-2019.png',
     },
+    {
+      title: 'Child Welfare',
+      description: 'We support vulnerable children by providing care, education, and opportunities for a brighter future.',
+      image: '/ChildWelfare.jpg',
+    },
   ];
 
   // Ref for the counter container
