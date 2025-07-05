@@ -49,14 +49,16 @@ export default function CertificateGenerator() {
         <div
           style={{
             position: "absolute",
-            top: "520px",
+            top: "700px",
             left: "0",
             width: "100%",
             textAlign: "center",
-            fontSize: "36px",
-            fontWeight: "bold",
-            color: "#000000",
-            letterSpacing: "1px",
+            fontSize: "30px",
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontWeight: 600,
+            color: "#6b4f2a",
+            letterSpacing: "0.5px",
+            textTransform: "capitalize",
           }}
         >
           {name}
