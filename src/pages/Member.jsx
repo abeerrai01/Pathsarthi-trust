@@ -30,7 +30,8 @@ const members = [
   { name: 'Amit Kumar Shukla', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/amit kumar.jpg' },
   { name: 'Varun', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/varun.jpg' },
   { name: 'Pradeep Kumar Tripathi', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/pradeep.jpg' },
-  // Add more members as needed
+  // New member
+  { name: 'Shreyansh Rai', gender: 'Male', district: 'Dehradun', state: 'Uttrakhand', image: '/Shreyansh.jpg' },
 ];
 
 const sortedMembers = [
