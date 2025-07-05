@@ -77,7 +77,7 @@ const Gallery = () => {
                         className="bg-white p-2 rounded shadow"
                       >
                         <img
-                          src={photo.imageUrl}
+                          src={photo.imageUrl.replace('/upload/', '/upload/q_auto,f_auto/')}
                           alt={heading}
                           className="w-full h-auto object-contain"
                         />
@@ -142,7 +142,7 @@ const Gallery = () => {
                   </svg>
                 </button>
                 <img
-                  src={selectedImage.imageUrl}
+                  src={selectedImage.imageUrl.replace('/upload/', '/upload/q_auto,f_auto/')}
                   alt={selectedImage.title}
                   className="w-full rounded-lg"
                 />

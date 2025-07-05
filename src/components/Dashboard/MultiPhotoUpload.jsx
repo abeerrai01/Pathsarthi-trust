@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { db } from "../../config/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import imageCompression from "browser-image-compression";
 
 const MultiPhotoUpload = () => {
   const [heading, setHeading] = useState("");
@@ -16,8 +17,14 @@ const MultiPhotoUpload = () => {
     setUploading(true);
     try {
       for (const img of images) {
+        // Compress the image
+        const compressedImg = await imageCompression(img, {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1080,
+          useWebWorker: true
+        });
         const formData = new FormData();
-        formData.append("file", img);
+        formData.append("file", compressedImg);
         formData.append("upload_preset", "admin-uploads");
 
         const response = await axios.post(

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import imageCompression from 'browser-image-compression';
 
 const PhotoUpload = () => {
   const [heading, setHeading] = useState('');
@@ -12,11 +13,17 @@ const PhotoUpload = () => {
     if (!file || !heading) return alert("Heading and file required!");
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'admin-uploads'); // your Cloudinary preset
-
     try {
+      // Compress the image
+      const compressedImg = await imageCompression(file, {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1080,
+        useWebWorker: true
+      });
+      const formData = new FormData();
+      formData.append('file', compressedImg);
+      formData.append('upload_preset', 'admin-uploads'); // your Cloudinary preset
+
       const cloudRes = await axios.post(
         'https://api.cloudinary.com/v1_1/dgmhz64fs/image/upload',
         formData
