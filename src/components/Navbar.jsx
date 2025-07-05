@@ -5,6 +5,7 @@ const Navbar = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +17,7 @@ const Navbar = () => {
 
   const handleNavClick = (path) => {
     setIsMobileMenuOpen(false);
+    setActiveDropdown(null);
     if (location.pathname !== path) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -23,20 +25,58 @@ const Navbar = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  const navLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/contest', label: '✨ Contest' },
-    { to: '/gallery', label: 'Gallery' },
-    { to: '/mission', label: 'Mission' },
-    { to: '/contribution', label: 'Contribution' },
-    { to: '/donate', label: 'Donate' },
-    { to: '/sponsor-notebooks', label: 'Sponsor Notebooks' },
-    { to: '/trust-members', label: 'Board of Trustee' },
-    { to: '/member', label: 'Member' },
-    { to: '/join-us', label: 'Join Us' },
-    { to: '/social-media', label: 'Social Media' },
-    { to: '/about', label: 'About Us' },
-    { to: '/login', label: 'Login' },
+  const toggleDropdown = (dropdown) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  };
+
+  const navItems = [
+    { to: '/', label: 'Home', type: 'link' },
+    { 
+      label: 'Gallery', 
+      type: 'link', 
+      to: '/gallery' 
+    },
+    { 
+      label: 'Projects', 
+      type: 'dropdown',
+      items: [
+        { to: '/contest', label: 'Contest' },
+        { to: '/mission', label: 'Mission' },
+        { to: '/contribution', label: 'Contribution' }
+      ]
+    },
+    { 
+      label: 'Fuel a Dream', 
+      type: 'dropdown',
+      items: [
+        { to: '/donate', label: 'Donate' },
+        { to: '/sponsor-notebooks', label: 'Sponsor Us' }
+      ]
+    },
+    { 
+      label: 'Pillars', 
+      type: 'dropdown',
+      items: [
+        { to: '/trust-members', label: 'Board of Trustee' },
+        { to: '/member', label: 'Member' }
+      ]
+    },
+    { 
+      label: 'Who are we', 
+      type: 'dropdown',
+      items: [
+        { to: '/about', label: 'About Us' },
+        { to: '/social-media', label: 'Social Media' },
+        { to: '/join-us', label: 'Join Us' }
+      ]
+    },
+    { 
+      label: 'Others', 
+      type: 'dropdown',
+      items: [
+        { to: '/login', label: 'Login' }
+      ]
+    }
   ];
 
   return (
@@ -61,23 +101,66 @@ const Navbar = () => {
               <span className="text-gray-900 font-extrabold text-2xl tracking-tight">Path Sarthi Trust</span>
             </Link>
           </div>
+          
           {/* Desktop nav links */}
           <div className="hidden md:flex gap-2 items-center flex-grow justify-end">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
-                  isActive(link.to)
-                    ? 'bg-indigo-600 text-white shadow'
-                    : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'
-                }`}
-                onClick={() => handleNavClick(link.to)}
-              >
-                {link.label}
-              </Link>
+            {navItems.map((item, index) => (
+              <div key={index} className="relative">
+                {item.type === 'link' ? (
+                  <Link
+                    to={item.to}
+                    className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                      isActive(item.to)
+                        ? 'bg-indigo-600 text-white shadow'
+                        : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'
+                    }`}
+                    onClick={() => handleNavClick(item.to)}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <div className="relative">
+                    <button
+                      onClick={() => toggleDropdown(item.label)}
+                      className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                        activeDropdown === item.label
+                          ? 'bg-indigo-600 text-white shadow'
+                          : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'
+                      }`}
+                    >
+                      {item.label}
+                      <svg
+                        className={`ml-1 inline-block w-4 h-4 transition-transform duration-200 ${
+                          activeDropdown === item.label ? 'rotate-180' : ''
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    
+                    {activeDropdown === item.label && (
+                      <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                        {item.items.map((subItem, subIndex) => (
+                          <Link
+                            key={subIndex}
+                            to={subItem.to}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150"
+                            onClick={() => handleNavClick(subItem.to)}
+                          >
+                            {subItem.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
+
           {/* Hamburger for mobile */}
           <div className="md:hidden flex items-center">
             <button
@@ -93,6 +176,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
       {/* Mobile menu overlay */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex md:hidden">
@@ -107,19 +191,60 @@ const Navbar = () => {
               </svg>
             </button>
             <div className="flex flex-col gap-2 mt-20 px-6">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`block px-4 py-3 rounded-lg text-lg font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
-                    isActive(link.to)
-                      ? 'bg-indigo-600 text-white shadow'
-                      : 'text-gray-800 hover:bg-indigo-50 hover:text-indigo-700'
-                  }`}
-                  onClick={() => handleNavClick(link.to)}
-                >
-                  {link.label}
-                </Link>
+              {navItems.map((item, index) => (
+                <div key={index}>
+                  {item.type === 'link' ? (
+                    <Link
+                      to={item.to}
+                      className={`block px-4 py-3 rounded-lg text-lg font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                        isActive(item.to)
+                          ? 'bg-indigo-600 text-white shadow'
+                          : 'text-gray-800 hover:bg-indigo-50 hover:text-indigo-700'
+                      }`}
+                      onClick={() => handleNavClick(item.to)}
+                    >
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <div>
+                      <button
+                        onClick={() => toggleDropdown(item.label)}
+                        className={`w-full text-left px-4 py-3 rounded-lg text-lg font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                          activeDropdown === item.label
+                            ? 'bg-indigo-600 text-white shadow'
+                            : 'text-gray-800 hover:bg-indigo-50 hover:text-indigo-700'
+                        }`}
+                      >
+                        {item.label}
+                        <svg
+                          className={`ml-2 inline-block w-5 h-5 transition-transform duration-200 ${
+                            activeDropdown === item.label ? 'rotate-180' : ''
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                      
+                      {activeDropdown === item.label && (
+                        <div className="ml-4 mt-2 space-y-1">
+                          {item.items.map((subItem, subIndex) => (
+                            <Link
+                              key={subIndex}
+                              to={subItem.to}
+                              className="block px-4 py-2 text-base text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150 rounded"
+                              onClick={() => handleNavClick(subItem.to)}
+                            >
+                              {subItem.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>
