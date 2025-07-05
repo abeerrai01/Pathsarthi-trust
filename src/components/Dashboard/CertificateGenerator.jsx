@@ -23,23 +23,32 @@ export default function CertificateGenerator() {
 
     const template = document.getElementById("cert-template");
 
-    html2canvas(template).then(async (canvas) => {
-      const pdf = new jsPDF("landscape", "pt", [canvas.width, canvas.height]);
-      const imgData = canvas.toDataURL("image/png");
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-      pdf.save(`${name}_${type}_certificate.pdf`);
+    // Wait for background image to load before html2canvas
+    const bgImage = new window.Image();
+    bgImage.src = "/certs/appreciation.jpg";
+    bgImage.onload = () => {
+      html2canvas(template).then(async (canvas) => {
+        const pdf = new jsPDF("landscape", "pt", [canvas.width, canvas.height]);
+        const imgData = canvas.toDataURL("image/png");
+        pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+        pdf.save(`${name}_${type}_certificate.pdf`);
 
-      await addDoc(collection(db, "certificates"), {
-        name,
-        type,
-        dateIssued: type === "Internship" ? dateIssued : new Date().toISOString().slice(0, 10),
-        verified: true,
-        id: certId,
-        timestamp: serverTimestamp()
+        await addDoc(collection(db, "certificates"), {
+          name,
+          type,
+          dateIssued: type === "Internship" ? dateIssued : new Date().toISOString().slice(0, 10),
+          verified: true,
+          id: certId,
+          timestamp: serverTimestamp()
+        });
+
+        alert("✅ Certificate Generated & Stored!");
       });
-
-      alert("✅ Certificate Generated & Stored!");
-    });
+    };
+    bgImage.onerror = () => {
+      console.error("❌ Background image failed to load.");
+      alert("Background image failed to load. Please check the file path.");
+    };
   };
 
   return (
@@ -62,7 +71,7 @@ export default function CertificateGenerator() {
           display: "none",
           width: "1086px",
           height: "768px",
-          backgroundImage: `url('/certs/appreciation.png')`,
+          backgroundImage: `url('/certs/appreciation.jpg')`,
           backgroundSize: "cover",
           position: "relative",
           fontFamily: "Georgia, serif",
