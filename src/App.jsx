@@ -29,7 +29,8 @@ import Internship from './pages/Internship';
 import InternshipForm from './pages/InternshipForm';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
-import CertificateGenerator from './components/Dashboard/CertificateGenerator';
+import { lazy, Suspense } from 'react';
+const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
 import VerifyCertificate from './pages/VerifyCertificate';
 
 function MissionPopup() {
@@ -201,7 +202,11 @@ function App() {
                 <Route path="/contest" element={<ContestPage />} />
                 <Route path="/internship" element={<Internship />} />
                 <Route path="/internship-form" element={<InternshipForm />} />
-                <Route path="/admin/certificates" element={<CertificateGenerator />} />
+                <Route path="/admin/certificates" element={
+                  <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Certificate Generator...</div>}>
+                    <CertificateGenerator />
+                  </Suspense>
+                } />
                 <Route path="/verify/:name" element={<VerifyCertificate />} />
 
                 {/* Catch all route */}

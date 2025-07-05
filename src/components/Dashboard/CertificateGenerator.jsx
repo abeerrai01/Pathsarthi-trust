@@ -1,12 +1,23 @@
-import React, { useState } from "react";
-import html2canvas from "html2canvas";
+import React, { useState, useEffect } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../config/firebase";
 
 const CertificateGenerator = () => {
   const [name, setName] = useState("");
+  const [html2canvas, setHtml2canvas] = useState(null);
+
+  // Lazy load html2canvas only on client side
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      import("html2canvas").then((module) => {
+        setHtml2canvas(() => module.default);
+      });
+    }
+  }, []);
 
   const waitForImagesToLoad = (element) => {
+    if (typeof window === "undefined") return Promise.resolve();
+    
     const images = element.querySelectorAll("img");
     const promises = Array.from(images).map((img) => {
       if (img.complete) return Promise.resolve();
@@ -24,7 +35,16 @@ const CertificateGenerator = () => {
       return;
     }
 
+    if (!html2canvas || typeof window === "undefined") {
+      alert("Please wait for the page to load completely");
+      return;
+    }
+
     const cert = document.getElementById("cert-template");
+    if (!cert) {
+      alert("Certificate template not found");
+      return;
+    }
 
     // Wait for all images (QR code) to load
     await waitForImagesToLoad(cert);
@@ -66,8 +86,16 @@ const CertificateGenerator = () => {
         onChange={(e) => setName(e.target.value)}
         className="border p-2"
       />
-      <button onClick={generateImage} className="bg-green-600 text-white px-4 py-2 rounded ml-2">
-        Download Certificate as PNG
+      <button 
+        onClick={generateImage} 
+        disabled={!html2canvas}
+        className={`px-4 py-2 rounded ml-2 ${
+          html2canvas 
+            ? "bg-green-600 text-white hover:bg-green-700" 
+            : "bg-gray-400 text-gray-200 cursor-not-allowed"
+        }`}
+      >
+        {html2canvas ? "Download Certificate as PNG" : "Loading..."}
       </button>
 
       {/* Hidden Certificate Template */}
@@ -113,4 +141,6 @@ const CertificateGenerator = () => {
       </div>
     </div>
   );
-} 
+};
+
+export default CertificateGenerator; 
