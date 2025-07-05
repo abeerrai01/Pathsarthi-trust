@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import MultiPhotoUpload from "./MultiPhotoUpload";
 import PhotoUpload from "./PhotoUpload";
@@ -63,6 +63,12 @@ const DashboardLayout = () => {
             <Button onClick={() => handleNav("team")}>🧑‍🤝‍🧑 Team Members</Button>
             <Button onClick={() => handleNav("mission")}>🎯 Update Mission</Button>
             <Button onClick={() => handleNav("analytics")}>📊 Website Analytics</Button>
+            <Link
+              to="/admin/certificates"
+              className="block w-full text-left px-4 py-2 rounded transition font-medium bg-green-600 hover:bg-green-700 text-white mt-2"
+            >
+              🏅 Certificate Generator
+            </Link>
             {/* Logout button for mobile */}
             <Button
               variant="outline"
