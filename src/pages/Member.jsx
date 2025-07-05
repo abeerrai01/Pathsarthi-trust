@@ -31,7 +31,7 @@ const members = [
   { name: 'Varun', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/varun.jpg' },
   { name: 'Pradeep Kumar Tripathi', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/pradeep.jpg' },
   // New member
-  { name: 'Shreyansh Rai', gender: 'Male', district: 'Dehradun', state: 'Uttrakhand', image: '/Shreyansh.jpg' },
+  { name: 'Shreyansh Rai', gender: 'Male', district: 'Dehradun', state: 'Uttarakhand', image: '/Shreyansh.jpg' },
 ];
 
 const sortedMembers = members.slice().sort((a, b) => a.name.localeCompare(b.name));
