@@ -34,10 +34,7 @@ const members = [
   { name: 'Shreyansh Rai', gender: 'Male', district: 'Dehradun', state: 'Uttrakhand', image: '/Shreyansh.jpg' },
 ];
 
-const sortedMembers = [
-  members[0], // Sameer Sharma always first
-  ...members.slice(1).sort((a, b) => a.name.localeCompare(b.name)),
-];
+const sortedMembers = members.slice().sort((a, b) => a.name.localeCompare(b.name));
 
 function getInitials(name) {
   return name
