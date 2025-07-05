@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -66,6 +66,21 @@ const Home = () => {
     };
   }, []);
 
+  const certificateImages = [
+    '/Certificates/Certificate 1.jpg',
+    '/Certificates/Certificate 2.jpg',
+    '/Certificates/Certificate 3.jpg',
+  ];
+
+  // Add this state for the certificate slideshow
+  const [currentCert, setCurrentCert] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentCert((prev) => (prev + 1) % certificateImages.length);
+    }, 3000); // 3 seconds per slide
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="space-y-16">
       {/* Hero Section */}
@@ -129,6 +144,34 @@ const Home = () => {
                 <div className="text-4xl font-bold text-indigo-600 mb-2">{stat.value}</div>
                 <div className="text-gray-600">{stat.label}</div>
               </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Proof of Trust Legitimacy */}
+      <section className="py-16 bg-white">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-6 text-blue-700">Proof of Trust Legitimacy</h2>
+          <p className="mb-8 text-gray-600">We are a registered and recognized organization. Here are some of our official certificates and recognitions:</p>
+          <div className="relative flex justify-center items-center h-96">
+            <div className="absolute left-0 right-0 mx-auto w-full max-w-md h-80 rounded-xl shadow-2xl bg-white flex items-center justify-center overflow-hidden">
+              <img
+                src={certificateImages[currentCert]}
+                alt={`Certificate ${currentCert + 1}`}
+                className="w-full h-full object-contain transition-all duration-700 ease-in-out drop-shadow-lg"
+                style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}
+              />
+            </div>
+          </div>
+          <div className="flex justify-center mt-4 gap-2">
+            {certificateImages.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentCert(idx)}
+                className={`w-3 h-3 rounded-full ${currentCert === idx ? 'bg-blue-600' : 'bg-gray-300'} transition-colors`}
+                aria-label={`Go to certificate ${idx + 1}`}
+              />
             ))}
           </div>
         </div>
