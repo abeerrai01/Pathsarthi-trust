@@ -202,7 +202,7 @@ function App() {
                 <Route path="/internship" element={<Internship />} />
                 <Route path="/internship-form" element={<InternshipForm />} />
                 <Route path="/admin/certificates" element={<CertificateGenerator />} />
-                <Route path="/verify/:id" element={<VerifyCertificate />} />
+                <Route path="/verify/:name" element={<VerifyCertificate />} />
 
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" />} />

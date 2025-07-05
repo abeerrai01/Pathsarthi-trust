@@ -1,24 +1,60 @@
 import React, { useState } from "react";
 import html2canvas from "html2canvas";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../../config/firebase";
 
-export default function CertificateGenerator() {
+const CertificateGenerator = () => {
   const [name, setName] = useState("");
 
-  const generateImage = async () => {
-    const cert = document.getElementById("cert-template");
-    setTimeout(async () => {
-      const canvas = await html2canvas(cert, {
-        useCORS: true,
-        scale: 2,
+  const waitForImagesToLoad = (element) => {
+    const images = element.querySelectorAll("img");
+    const promises = Array.from(images).map((img) => {
+      if (img.complete) return Promise.resolve();
+      return new Promise((resolve) => {
+        img.onload = resolve;
+        img.onerror = resolve;
       });
-      const imgData = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.href = imgData;
-      link.download = `${name}_certificate.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }, 300);
+    });
+    return Promise.all(promises);
+  };
+
+  const generateImage = async () => {
+    if (!name.trim()) {
+      alert("Please enter a name");
+      return;
+    }
+
+    const cert = document.getElementById("cert-template");
+
+    // Wait for all images (QR code) to load
+    await waitForImagesToLoad(cert);
+
+    const canvas = await html2canvas(cert, {
+      useCORS: true,
+      scale: 2,
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    // Download PNG
+    const link = document.createElement("a");
+    link.href = imgData;
+    link.download = `${name}_certificate.png`;
+    link.click();
+
+    // Save data to Firebase
+    try {
+      await addDoc(collection(db, "certificates"), {
+        name,
+        type: "Appreciation",
+        dateIssued: new Date().toISOString().split("T")[0],
+        verified: true,
+        createdAt: serverTimestamp(),
+      });
+      console.log("Certificate saved to Firebase");
+    } catch (error) {
+      console.error("Error saving to Firebase:", error);
+    }
   };
 
   return (
