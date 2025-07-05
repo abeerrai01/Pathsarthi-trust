@@ -113,11 +113,11 @@ const CertificateGenerator = () => {
         <div
           style={{
             position: "absolute",
-            top: "700px",
+            top: "750px",
             left: "0",
             width: "100%",
             textAlign: "center",
-            fontSize: "30px",
+            fontSize: "50px",
             fontFamily: "'Playfair Display', Georgia, serif",
             fontWeight: 600,
             color: "#6b4f2a",
