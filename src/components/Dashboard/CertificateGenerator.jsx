@@ -23,32 +23,25 @@ export default function CertificateGenerator() {
 
     const template = document.getElementById("cert-template");
 
-    // Wait for background image to load before html2canvas
-    const bgImage = new window.Image();
-    bgImage.src = "/certs/appreciation.jpg";
-    bgImage.onload = () => {
-      html2canvas(template).then(async (canvas) => {
-        const pdf = new jsPDF("landscape", "pt", [canvas.width, canvas.height]);
-        const imgData = canvas.toDataURL("image/png");
-        pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-        pdf.save(`${name}_${type}_certificate.pdf`);
+    // Wait a bit to ensure QR & fonts are loaded
+    setTimeout(async () => {
+      const canvas = await html2canvas(template);
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("landscape", "pt", [canvas.width, canvas.height]);
+      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+      pdf.save(`${name}_${type}_certificate.pdf`);
 
-        await addDoc(collection(db, "certificates"), {
-          name,
-          type,
-          dateIssued: type === "Internship" ? dateIssued : new Date().toISOString().slice(0, 10),
-          verified: true,
-          id: certId,
-          timestamp: serverTimestamp()
-        });
-
-        alert("✅ Certificate Generated & Stored!");
+      await addDoc(collection(db, "certificates"), {
+        name,
+        type,
+        dateIssued: type === "Internship" ? dateIssued : new Date().toISOString().slice(0, 10),
+        verified: true,
+        id: certId,
+        timestamp: serverTimestamp()
       });
-    };
-    bgImage.onerror = () => {
-      console.error("❌ Background image failed to load.");
-      alert("Background image failed to load. Please check the file path.");
-    };
+
+      alert("✅ Certificate Generated & Stored!");
+    }, 500);
   };
 
   return (
