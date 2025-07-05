@@ -57,7 +57,7 @@ const Gallery = () => {
             <div key={idx} className="mb-10">
               <div className="text-xl font-semibold mb-4 text-center">{heading}</div>
               
-              <div className="flex items-start gap-4">
+              <div className="flex items-center gap-4">
                 <AnimatePresence>
                   <motion.div
                     layout
@@ -87,7 +87,7 @@ const Gallery = () => {
                 </AnimatePresence>
 
                 {showViewAllButton && (
-                  <div className="flex-shrink-0">
+                  <div className="flex-shrink-0 flex items-center">
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       whileHover={{ scale: 1.05 }}
