@@ -67,9 +67,9 @@ const Home = () => {
   }, []);
 
   const certificateImages = [
-    '/Certificates/Certificate 1.jpg',
-    '/Certificates/Certificate 2.jpg',
-    '/Certificates/Certificate 3.jpg',
+    '/Certificate 1.jpg',
+    '/Certificate 2.jpg',
+    '/Certificate 3.jpg',
   ];
 
   // Add this state for the certificate slideshow
