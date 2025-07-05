@@ -154,8 +154,8 @@ const Home = () => {
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6 text-blue-700">Proof of Trust Legitimacy</h2>
           <p className="mb-8 text-gray-600">We are a registered and recognized organization. Here are some of our official certificates and recognitions:</p>
-          <div className="relative flex justify-center items-center h-96">
-            <div className="absolute left-0 right-0 mx-auto w-full max-w-md h-80 md:max-w-2xl md:h-[32rem] rounded-xl shadow-2xl bg-white flex items-center justify-center overflow-hidden">
+          <div className="flex justify-center items-center mb-8">
+            <div className="w-full max-w-md h-80 md:max-w-2xl md:h-[32rem] rounded-xl shadow-2xl bg-white flex items-center justify-center overflow-hidden">
               <img
                 src={certificateImages[currentCert]}
                 alt={`Certificate ${currentCert + 1}`}
