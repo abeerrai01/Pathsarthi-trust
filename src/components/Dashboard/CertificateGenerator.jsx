@@ -34,68 +34,10 @@ export default function CertificateGenerator() {
         Download Certificate as PNG
       </button>
 
-      {/* Visible scaled-down preview */}
-      <div
-        style={{
-          maxWidth: "360px",
-          width: "100%",
-          height: "auto",
-          margin: "40px auto 0 auto",
-          position: "relative",
-          border: "1px solid #eee",
-          borderRadius: "8px",
-          overflow: "hidden",
-          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-        }}
-      >
-        <div
-          style={{
-            width: "1086px",
-            height: "1536px",
-            backgroundImage: `url('/certs/appreciation.jpg')`,
-            backgroundSize: "cover",
-            position: "relative",
-            fontFamily: "'Playfair Display', Georgia, serif",
-            transform: "scale(0.33)",
-            transformOrigin: "top left",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: "700px",
-              left: "0",
-              width: "100%",
-              textAlign: "center",
-              fontSize: "30px",
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontWeight: 600,
-              color: "#6b4f2a",
-              letterSpacing: "0.5px",
-              textTransform: "capitalize",
-            }}
-          >
-            {name}
-          </div>
-          <img
-            src={`https://api.qrserver.com/v1/create-qr-code/?data=https://pathsarthi.in/verify/${encodeURIComponent(name)}&size=120x120`}
-            alt="QR Code"
-            style={{
-              position: "absolute",
-              bottom: "65px",
-              right: "75px",
-              width: "100px",
-              height: "100px",
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Hidden Certificate Template for PNG export */}
+      {/* Hidden Certificate Template */}
       <div
         id="cert-template"
         style={{
-          display: "none",
           width: "1086px",
           height: "1536px",
           backgroundImage: `url('/certs/appreciation.jpg')`,
