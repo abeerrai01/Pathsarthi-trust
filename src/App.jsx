@@ -168,7 +168,7 @@ function App() {
     <Router>
       <AuthProvider>
         <GlobalConfetti show={globalConfetti} />
-        <MissionPopup />
+        {/* <MissionPopup /> */}
         <div className="min-h-screen flex flex-col bg-gray-50">
           <Navbar />
           <main className="flex-grow pt-16">

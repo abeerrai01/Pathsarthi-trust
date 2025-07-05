@@ -12,6 +12,11 @@ const Home = () => {
 
   const initiatives = [
     {
+      title: 'Child Welfare',
+      description: 'We support vulnerable children by providing care, education, and opportunities for a brighter future.',
+      image: '/ChildWelfare.jpg',
+    },
+    {
       title: 'Education Support',
       description: 'Providing quality education and learning resources to underprivileged children.',
       image: '/Background1.jpg',
@@ -25,11 +30,6 @@ const Home = () => {
       title: 'Women Empowerment',
       description: 'Supporting women through skill development and entrepreneurship programs.',
       image: '/women-empowerment-in-2019.png',
-    },
-    {
-      title: 'Child Welfare',
-      description: 'We support vulnerable children by providing care, education, and opportunities for a brighter future.',
-      image: '/ChildWelfare.jpg',
     },
   ];
 
