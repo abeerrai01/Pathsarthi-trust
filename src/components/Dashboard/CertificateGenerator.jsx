@@ -53,7 +53,7 @@ export default function CertificateGenerator() {
             left: "0",
             width: "100%",
             textAlign: "center",
-            fontSize: "40px",
+            fontSize: "50px",
             fontFamily: "'Playfair Display', Georgia, serif",
             fontWeight: 600,
             color: "#6b4f2a",
