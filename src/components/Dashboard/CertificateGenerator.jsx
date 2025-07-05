@@ -38,8 +38,7 @@ export default function CertificateGenerator() {
         id="cert-template"
         style={{
           width: "1086px",
-          height: "768px",
-          marginTop: "40px",
+          height: "1536px",
           backgroundImage: `url('/certs/appreciation.jpg')`,
           backgroundSize: "cover",
           position: "relative",
@@ -50,27 +49,28 @@ export default function CertificateGenerator() {
         <div
           style={{
             position: "absolute",
-            top: "375px",
+            top: "520px",
             left: "0",
             width: "100%",
             textAlign: "center",
-            fontSize: "34px",
+            fontSize: "36px",
             fontWeight: "bold",
-            color: "#000",
+            color: "#000000",
             letterSpacing: "1px",
           }}
         >
           {name}
         </div>
-        {/* QR Code near signature */}
+        {/* QR Code near Chairman signature */}
         <img
-          src={`https://api.qrserver.com/v1/create-qr-code/?data=https://pathsarthi.in/verify/${encodeURIComponent(name)}&size=100x100`}
+          src={`https://api.qrserver.com/v1/create-qr-code/?data=https://pathsarthi.in/verify/${encodeURIComponent(name)}&size=120x120`}
           alt="QR Code"
           style={{
             position: "absolute",
-            bottom: "40px",
-            right: "60px",
+            bottom: "65px",
+            right: "75px",
             width: "100px",
+            height: "100px",
           }}
         />
       </div>
