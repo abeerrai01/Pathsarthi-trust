@@ -289,7 +289,7 @@ const CertificateGenerator = () => {
           <div
             style={{
               position: "absolute",
-              top: "830px",
+              top: "850px",
               left: "0",
               width: "100%",
               textAlign: "center",
@@ -323,7 +323,7 @@ const CertificateGenerator = () => {
           <div
             style={{
               position: "absolute",
-              bottom: "145px",
+              bottom: "125px",
               left: "50%",
               transform: "translateX(-50%)",
               fontSize: "20px",
