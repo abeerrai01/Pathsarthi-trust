@@ -254,7 +254,7 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "985px",
+                top: "986px",
                 left: "715px",
                 maxWidth: "500px",
                 textAlign: "center",
