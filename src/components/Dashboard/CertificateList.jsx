@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import { useNavigate } from "react-router-dom";
 
 const CertificateList = () => {
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCertificates = async () => {
@@ -25,6 +27,12 @@ const CertificateList = () => {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
+      <button
+        onClick={() => navigate('/admin-dashboard')}
+        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+      >
+        ← Back to Admin Dashboard
+      </button>
       <h1 className="text-2xl font-bold mb-6">All Generated Certificates</h1>
       {loading ? (
         <div className="text-center text-gray-500">Loading certificates...</div>

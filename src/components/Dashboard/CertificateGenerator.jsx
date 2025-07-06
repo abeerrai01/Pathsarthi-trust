@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import { useNavigate } from "react-router-dom";
 
 const CertificateGenerator = () => {
   const [name, setName] = useState("");
@@ -10,6 +11,8 @@ const CertificateGenerator = () => {
   const [endDate, setEndDate] = useState("");
   const [appreciationDate, setAppreciationDate] = useState("");
   const [html2canvas, setHtml2canvas] = useState(null);
+
+  const navigate = useNavigate();
 
   // Lazy load html2canvas only on client side
   useEffect(() => {
@@ -103,6 +106,12 @@ const CertificateGenerator = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
+      <button
+        onClick={() => navigate('/admin-dashboard')}
+        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+      >
+        ← Back to Admin Dashboard
+      </button>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Certificate Generator</h1>
       
       <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
