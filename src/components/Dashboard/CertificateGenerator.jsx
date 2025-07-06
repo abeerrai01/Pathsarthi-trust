@@ -224,9 +224,9 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "900px",
+                top: "920px",
                 left: "400px",
-                fontSize: "25px",
+                fontSize: "22px",
                 fontWeight: 600,
                 fontFamily: "'Playfair Display', serif",
                 color: "#6B4F2A",
@@ -239,9 +239,9 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "900px",
-                left: "600px",
-                fontSize: "25px",
+                top: "920px",
+                left: "550px",
+                fontSize: "22px",
                 fontWeight: 600,
                 fontFamily: "'Playfair Display', serif",
                 color: "#6B4F2A",
@@ -255,7 +255,7 @@ const CertificateGenerator = () => {
               style={{
                 position: "absolute",
                 top: "980px",
-                left: "850px",
+                left: "780px",
                 maxWidth: "500px",
                 textAlign: "center",
                 fontSize: "25px",
