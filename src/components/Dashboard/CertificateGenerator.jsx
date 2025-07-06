@@ -240,7 +240,7 @@ const CertificateGenerator = () => {
               style={{
                 position: "absolute",
                 top: "915px",
-                left: "545px",
+                left: "547px",
                 fontSize: "22px",
                 fontWeight: 600,
                 fontFamily: "'Playfair Display', serif",
@@ -254,7 +254,7 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "986px",
+                top: "987px",
                 left: "715px",
                 maxWidth: "500px",
                 textAlign: "center",
