@@ -228,8 +228,8 @@ const CertificateGenerator = () => {
                 left: "395px",
                 fontSize: "22px",
                 fontWeight: 600,
-                fontFamily: "'Playfair Display', serif",
-                color: "#6B4F2A",
+                fontFamily: "'Public Sans', sans-serif",
+                color: "#000000",
               }}
             >
               {startDate}
@@ -243,8 +243,8 @@ const CertificateGenerator = () => {
                 left: "547px",
                 fontSize: "22px",
                 fontWeight: 600,
-                fontFamily: "'Playfair Display', serif",
-                color: "#6B4F2A",
+                fontFamily: "'Public Sans', sans-serif",
+                color: "#000000",
               }}
             >
               {endDate}
@@ -260,8 +260,8 @@ const CertificateGenerator = () => {
                 textAlign: "center",
                 fontSize: "25px",
                 fontWeight: 600,
-                fontFamily: "'Playfair Display', serif",
-                color: "#6B4F2A",
+                fontFamily: "'Public Sans', sans-serif",
+                color: "#000000",
               }}
             >
               {field}
