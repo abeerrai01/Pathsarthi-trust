@@ -219,25 +219,54 @@ const CertificateGenerator = () => {
         </div>
         
         {type === "Internship" && (
-          <div
-            style={{
-              position: "absolute",
-              top: "850px",
-              left: "0",
-              width: "100%",
-              textAlign: "center",
-              fontSize: "18px",
-              fontFamily: "'Open Sans', sans-serif",
-              fontWeight: 400,
-              color: "#6b4f2a",
-              lineHeight: "1.8",
-              padding: "0 50px",
-            }}
-          >
-            <p className="certificate-line">
-              has successfully completed their internship with PathSarthi Trust, held from <strong>{startDate}</strong> to <strong>{endDate}</strong>. During this period, they demonstrated remarkable dedication and actively contributed in the field of <strong>{field}</strong>.
-            </p>
-          </div>
+          <>
+            {/* Start Date */}
+            <div
+              style={{
+                position: "absolute",
+                top: "810px",
+                left: "460px",
+                fontSize: "18px",
+                color: "#000",
+                fontFamily: "'Open Sans', sans-serif",
+                fontWeight: 600,
+              }}
+            >
+              {startDate}
+            </div>
+
+            {/* End Date */}
+            <div
+              style={{
+                position: "absolute",
+                top: "810px",
+                left: "680px",
+                fontSize: "18px",
+                color: "#000",
+                fontFamily: "'Open Sans', sans-serif",
+                fontWeight: 600,
+              }}
+            >
+              {endDate}
+            </div>
+
+            {/* Field */}
+            <div
+              style={{
+                position: "absolute",
+                top: "870px",
+                left: "610px",
+                fontSize: "18px",
+                color: "#000",
+                fontFamily: "'Open Sans', sans-serif",
+                fontWeight: 600,
+                textAlign: "center",
+                maxWidth: "500px",
+              }}
+            >
+              {field}
+            </div>
+          </>
         )}
         
         <img
@@ -256,4 +285,4 @@ const CertificateGenerator = () => {
   );
 };
 
-export default CertificateGenerator; 
+export default CertificateGenerator;
