@@ -235,13 +235,13 @@ const CertificateGenerator = () => {
           <div
             style={{
               position: "absolute",
-              bottom: "149px",
+              bottom: "145px",
               left: "50%",
               transform: "translateX(-50%)",
               fontSize: "20px",
               fontWeight: 600,
               fontFamily: "'Playfair Display', serif",
-              color: "#6B4F2A",
+              color: "#000000",
             }}
           >
             {`DATE : ${appreciationDate.split('-').reverse().join('-')}`}
