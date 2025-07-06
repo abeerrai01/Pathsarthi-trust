@@ -224,12 +224,12 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "915px",
+                top: "917px",
                 left: "395px",
                 fontSize: "22px",
                 fontWeight: 600,
                 fontFamily: "'Public Sans', sans-serif",
-                color: "#000000",
+                color: "#3D3D3D",
               }}
             >
               {startDate}
@@ -239,12 +239,12 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "915px",
+                top: "917px",
                 left: "547px",
                 fontSize: "22px",
                 fontWeight: 600,
                 fontFamily: "'Public Sans', sans-serif",
-                color: "#000000",
+                color: "#3D3D3D",
               }}
             >
               {endDate}
@@ -254,14 +254,14 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "987px",
+                top: "989px",
                 left: "715px",
                 maxWidth: "500px",
                 textAlign: "center",
                 fontSize: "25px",
                 fontWeight: 600,
                 fontFamily: "'Public Sans', sans-serif",
-                color: "#000000",
+                color: "#3D3D3D",
               }}
             >
               {field}
