@@ -49,6 +49,12 @@ const CertificateGenerator = () => {
         return;
       }
     }
+    if (type === "Recognition") {
+      if (!field.trim() || !appreciationDate) {
+        alert("Please fill all recognition details");
+        return;
+      }
+    }
 
     if (!html2canvas || typeof window === "undefined") {
       alert("Please wait for the page to load completely");
@@ -82,7 +88,12 @@ const CertificateGenerator = () => {
       const certificateData = {
         name,
         type,
-        dateIssued: type === "Appreciation" ? appreciationDate : new Date().toISOString().split("T")[0],
+        dateIssued:
+          type === "Appreciation"
+            ? appreciationDate
+            : type === "Recognition"
+            ? appreciationDate
+            : new Date().toISOString().split("T")[0],
         verified: true,
         createdAt: serverTimestamp(),
       };
@@ -91,6 +102,9 @@ const CertificateGenerator = () => {
         certificateData.field = field;
         certificateData.startDate = startDate;
         certificateData.endDate = endDate;
+      }
+      if (type === "Recognition") {
+        certificateData.field = field;
       }
 
       await addDoc(collection(db, "certificates"), certificateData);
@@ -101,7 +115,10 @@ const CertificateGenerator = () => {
   };
 
   const getBackgroundImage = () => {
-    return type === "Appreciation" ? "/certs/appreciation.jpg" : "/certs/internship.jpg";
+    if (type === "Appreciation") return "/certs/appreciation.jpg";
+    if (type === "Internship") return "/certs/internship.jpg";
+    if (type === "Recognition") return "/certs/recognition.jpg";
+    return "/certs/appreciation.jpg";
   };
 
   return (
@@ -127,6 +144,7 @@ const CertificateGenerator = () => {
             >
               <option value="Appreciation">Appreciation Certificate</option>
               <option value="Internship">Internship Certificate</option>
+              <option value="Recognition">Recognition Certificate</option>
             </select>
           </div>
           
@@ -143,6 +161,33 @@ const CertificateGenerator = () => {
             />
           </div>
         </div>
+        {type === "Recognition" && (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Field
+              </label>
+              <input
+                type="text"
+                placeholder="e.g., Social Work, Leadership"
+                value={field}
+                onChange={(e) => setField(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Date
+              </label>
+              <input
+                type="date"
+                value={appreciationDate}
+                onChange={e => setAppreciationDate(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+          </>
+        )}
         {type === "Appreciation" && (
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -240,7 +285,41 @@ const CertificateGenerator = () => {
         >
           {name}
         </div>
+        {type === "Recognition" && field && (
+          <div
+            style={{
+              position: "absolute",
+              top: "830px",
+              left: "0",
+              width: "100%",
+              textAlign: "center",
+              fontSize: "32px",
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontWeight: 500,
+              color: "#6b4f2a",
+              letterSpacing: "0.5px",
+            }}
+          >
+            {field}
+          </div>
+        )}
         {type === "Appreciation" && appreciationDate && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "145px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              fontSize: "20px",
+              fontWeight: 600,
+              fontFamily: "'Playfair Display', serif",
+              color: "#000000",
+            }}
+          >
+            {`DATE : ${appreciationDate.split('-').reverse().join('-')}`}
+          </div>
+        )}
+        {type === "Recognition" && appreciationDate && (
           <div
             style={{
               position: "absolute",

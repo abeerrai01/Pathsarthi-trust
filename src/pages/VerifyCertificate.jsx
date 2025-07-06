@@ -77,6 +77,12 @@ export default function VerifyCertificate() {
                   <span className="font-semibold text-gray-700">Certificate Type:</span>
                   <p className="text-lg font-medium">{cert.type}</p>
                 </div>
+                {cert.type === 'Recognition' && cert.field && (
+                  <div>
+                    <span className="font-semibold text-gray-700">Field:</span>
+                    <p className="text-lg font-medium">{cert.field}</p>
+                  </div>
+                )}
                 <div>
                   <span className="font-semibold text-gray-700">Date Issued:</span>
                   <p className="text-lg font-medium">{cert.dateIssued}</p>
