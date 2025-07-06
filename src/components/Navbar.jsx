@@ -195,13 +195,13 @@ const Navbar = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <div className="flex flex-col gap-2 mt-20 px-6">
+            <div className="flex flex-col gap-2 mt-20 px-6 items-center text-center">
               {navItems.map((item, index) => (
-                <div key={index}>
+                <div key={index} className="w-full">
                   {item.type === 'link' ? (
                     <Link
                       to={item.to}
-                      className={`block px-4 py-3 rounded-lg text-lg font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                      className={`block px-4 py-3 rounded-lg text-lg font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full text-center mx-auto ${
                         isActive(item.to)
                           ? 'bg-indigo-600 text-white shadow'
                           : 'text-gray-800 hover:bg-indigo-50 hover:text-indigo-700'
@@ -211,16 +211,16 @@ const Navbar = () => {
                       {item.label}
                     </Link>
                   ) : (
-                    <div>
+                    <div className="w-full">
                       <button
                         onClick={() => toggleDropdown(item.label)}
-                        className={`w-full text-left px-4 py-3 rounded-lg text-lg font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                        className={`w-full px-4 py-3 rounded-lg text-lg font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center ${
                           activeDropdown === item.label
                             ? 'bg-indigo-600 text-white shadow'
                             : 'text-gray-800 hover:bg-indigo-50 hover:text-indigo-700'
                         }`}
                       >
-                        {item.label}
+                        <span>{item.label}</span>
                         <svg
                           className={`ml-2 inline-block w-5 h-5 transition-transform duration-200 ${
                             activeDropdown === item.label ? 'rotate-180' : ''
@@ -232,14 +232,13 @@ const Navbar = () => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
                       </button>
-                      
                       {activeDropdown === item.label && (
-                        <div className="ml-4 mt-2 space-y-1">
+                        <div className="mt-2 space-y-1 w-full">
                           {item.items.map((subItem, subIndex) => (
                             <Link
                               key={subIndex}
                               to={subItem.to}
-                              className="block px-4 py-2 text-base text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150 rounded"
+                              className="block px-4 py-2 text-base text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150 rounded text-center"
                               onClick={() => handleNavClick(subItem.to)}
                             >
                               {subItem.label}
