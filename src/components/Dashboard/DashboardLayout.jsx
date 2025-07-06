@@ -69,6 +69,12 @@ const DashboardLayout = () => {
             >
               🏅 Certificate Generator
             </Link>
+            <Link
+              to="/admin/certificates-list"
+              className="block w-full text-left px-4 py-2 rounded transition font-medium bg-blue-600 hover:bg-blue-700 text-white mt-2"
+            >
+              📋 Certificate List
+            </Link>
             {/* Logout button for mobile */}
             <Button
               variant="outline"

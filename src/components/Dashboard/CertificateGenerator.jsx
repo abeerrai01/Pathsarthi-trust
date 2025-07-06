@@ -192,7 +192,7 @@ const CertificateGenerator = () => {
         <button 
           onClick={generateImage} 
           disabled={!html2canvas}
-          className={`w-full md:w-auto px-6 py-3 rounded-md font-medium transition-colors ${
+          className={`block mx-auto px-6 py-3 rounded-md font-medium transition-colors ${
             html2canvas 
               ? "bg-green-600 text-white hover:bg-green-700" 
               : "bg-gray-400 text-gray-200 cursor-not-allowed"

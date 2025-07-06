@@ -31,6 +31,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 import { lazy, Suspense } from 'react';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
+const CertificateList = lazy(() => import('./components/Dashboard/CertificateList'));
 import VerifyCertificate from './pages/VerifyCertificate';
 
 function MissionPopup() {
@@ -205,6 +206,11 @@ function App() {
                 <Route path="/admin/certificates" element={
                   <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Certificate Generator...</div>}>
                     <CertificateGenerator />
+                  </Suspense>
+                } />
+                <Route path="/admin/certificates-list" element={
+                  <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Certificate List...</div>}>
+                    <CertificateList />
                   </Suspense>
                 } />
                 <Route path="/verify/:name" element={<VerifyCertificate />} />
