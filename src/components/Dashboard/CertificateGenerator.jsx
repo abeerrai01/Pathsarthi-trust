@@ -255,7 +255,7 @@ const CertificateGenerator = () => {
               style={{
                 position: "absolute",
                 top: "919px",
-                left: "393px",
+                left: "391px",
                 fontSize: "22px",
                 fontWeight: 600,
                 fontFamily: "'Public Sans', sans-serif",
