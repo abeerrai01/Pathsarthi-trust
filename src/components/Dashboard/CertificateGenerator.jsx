@@ -8,6 +8,7 @@ const CertificateGenerator = () => {
   const [field, setField] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [appreciationDate, setAppreciationDate] = useState("");
   const [html2canvas, setHtml2canvas] = useState(null);
 
   // Lazy load html2canvas only on client side
@@ -78,7 +79,7 @@ const CertificateGenerator = () => {
       const certificateData = {
         name,
         type,
-        dateIssued: new Date().toISOString().split("T")[0],
+        dateIssued: type === "Appreciation" ? appreciationDate : new Date().toISOString().split("T")[0],
         verified: true,
         createdAt: serverTimestamp(),
       };
@@ -133,6 +134,19 @@ const CertificateGenerator = () => {
             />
           </div>
         </div>
+        {type === "Appreciation" && (
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Date
+            </label>
+            <input
+              type="date"
+              value={appreciationDate}
+              onChange={e => setAppreciationDate(e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+        )}
 
         {type === "Internship" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -217,6 +231,22 @@ const CertificateGenerator = () => {
         >
           {name}
         </div>
+        {type === "Appreciation" && appreciationDate && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "65px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              fontSize: "20px",
+              fontWeight: 600,
+              fontFamily: "'Playfair Display', serif",
+              color: "#6B4F2A",
+            }}
+          >
+            {appreciationDate}
+          </div>
+        )}
         
         {type === "Internship" && (
           <>
