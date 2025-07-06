@@ -254,7 +254,7 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "909px",
+                top: "908px",
                 left: "391px",
                 fontSize: "22px",
                 fontWeight: 600,
@@ -270,7 +270,7 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "909px",
+                top: "908px",
                 left: "547px",
                 fontSize: "22px",
                 fontWeight: 600,
@@ -286,7 +286,7 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "975px",
+                top: "976px",
                 left: "715px",
                 maxWidth: "500px",
                 textAlign: "center",
