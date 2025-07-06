@@ -224,12 +224,12 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "810px",
-                left: "460px",
-                fontSize: "18px",
-                color: "#000",
-                fontFamily: "'Open Sans', sans-serif",
+                top: "870px",
+                left: "420px",
+                fontSize: "20px",
                 fontWeight: 600,
+                fontFamily: "'Playfair Display', serif",
+                color: "#6B4F2A",
               }}
             >
               {startDate}
@@ -239,12 +239,12 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "810px",
+                top: "870px",
                 left: "680px",
-                fontSize: "18px",
-                color: "#000",
-                fontFamily: "'Open Sans', sans-serif",
+                fontSize: "20px",
                 fontWeight: 600,
+                fontFamily: "'Playfair Display', serif",
+                color: "#6B4F2A",
               }}
             >
               {endDate}
@@ -254,14 +254,14 @@ const CertificateGenerator = () => {
             <div
               style={{
                 position: "absolute",
-                top: "870px",
-                left: "610px",
-                fontSize: "18px",
-                color: "#000",
-                fontFamily: "'Open Sans', sans-serif",
-                fontWeight: 600,
-                textAlign: "center",
+                top: "930px",
+                left: "490px",
                 maxWidth: "500px",
+                textAlign: "center",
+                fontSize: "20px",
+                fontWeight: 600,
+                fontFamily: "'Playfair Display', serif",
+                color: "#6B4F2A",
               }}
             >
               {field}
