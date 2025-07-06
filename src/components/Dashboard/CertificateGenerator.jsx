@@ -4,6 +4,10 @@ import { db } from "../../config/firebase";
 
 const CertificateGenerator = () => {
   const [name, setName] = useState("");
+  const [type, setType] = useState("Appreciation");
+  const [field, setField] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [html2canvas, setHtml2canvas] = useState(null);
 
   // Lazy load html2canvas only on client side
@@ -35,6 +39,13 @@ const CertificateGenerator = () => {
       return;
     }
 
+    if (type === "Internship") {
+      if (!field.trim() || !startDate || !endDate) {
+        alert("Please fill all internship details");
+        return;
+      }
+    }
+
     if (!html2canvas || typeof window === "undefined") {
       alert("Please wait for the page to load completely");
       return;
@@ -59,44 +70,123 @@ const CertificateGenerator = () => {
     // Download PNG
     const link = document.createElement("a");
     link.href = imgData;
-    link.download = `${name}_certificate.png`;
+    link.download = `${name}_${type.toLowerCase()}_certificate.png`;
     link.click();
 
     // Save data to Firebase
     try {
-      await addDoc(collection(db, "certificates"), {
+      const certificateData = {
         name,
-        type: "Appreciation",
+        type,
         dateIssued: new Date().toISOString().split("T")[0],
         verified: true,
         createdAt: serverTimestamp(),
-      });
+      };
+
+      if (type === "Internship") {
+        certificateData.field = field;
+        certificateData.startDate = startDate;
+        certificateData.endDate = endDate;
+      }
+
+      await addDoc(collection(db, "certificates"), certificateData);
       console.log("Certificate saved to Firebase");
     } catch (error) {
       console.error("Error saving to Firebase:", error);
     }
   };
 
+  const getBackgroundImage = () => {
+    return type === "Appreciation" ? "/certs/appreciation.jpg" : "/certs/internship.jpg";
+  };
+
   return (
-    <div className="p-4">
-      <input
-        type="text"
-        placeholder="Enter Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="border p-2"
-      />
-      <button 
-        onClick={generateImage} 
-        disabled={!html2canvas}
-        className={`px-4 py-2 rounded ml-2 ${
-          html2canvas 
-            ? "bg-green-600 text-white hover:bg-green-700" 
-            : "bg-gray-400 text-gray-200 cursor-not-allowed"
-        }`}
-      >
-        {html2canvas ? "Download Certificate as PNG" : "Loading..."}
-      </button>
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Certificate Generator</h1>
+      
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Certificate Type
+            </label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              <option value="Appreciation">Appreciation Certificate</option>
+              <option value="Internship">Internship Certificate</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+        </div>
+
+        {type === "Internship" && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Internship Field
+              </label>
+              <input
+                type="text"
+                placeholder="e.g., Web Development, Marketing"
+                value={field}
+                onChange={(e) => setField(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                End Date
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+          </div>
+        )}
+
+        <button 
+          onClick={generateImage} 
+          disabled={!html2canvas}
+          className={`w-full md:w-auto px-6 py-3 rounded-md font-medium transition-colors ${
+            html2canvas 
+              ? "bg-green-600 text-white hover:bg-green-700" 
+              : "bg-gray-400 text-gray-200 cursor-not-allowed"
+          }`}
+        >
+          {html2canvas ? `Generate ${type} Certificate` : "Loading..."}
+        </button>
+      </div>
 
       {/* Hidden Certificate Template */}
       <div
@@ -104,7 +194,7 @@ const CertificateGenerator = () => {
         style={{
           width: "1086px",
           height: "1536px",
-          backgroundImage: `url('/certs/appreciation.jpg')`,
+          backgroundImage: `url('${getBackgroundImage()}')`,
           backgroundSize: "cover",
           position: "relative",
           fontFamily: "'Playfair Display', Georgia, serif",
@@ -127,6 +217,29 @@ const CertificateGenerator = () => {
         >
           {name}
         </div>
+        
+        {type === "Internship" && (
+          <div
+            style={{
+              position: "absolute",
+              top: "850px",
+              left: "0",
+              width: "100%",
+              textAlign: "center",
+              fontSize: "18px",
+              fontFamily: "'Open Sans', sans-serif",
+              fontWeight: 400,
+              color: "#6b4f2a",
+              lineHeight: "1.8",
+              padding: "0 50px",
+            }}
+          >
+            <p className="certificate-line">
+              has successfully completed their internship with PathSarthi Trust, held from <strong>{startDate}</strong> to <strong>{endDate}</strong>. During this period, they demonstrated remarkable dedication and actively contributed in the field of <strong>{field}</strong>.
+            </p>
+          </div>
+        )}
+        
         <img
           src={`https://api.qrserver.com/v1/create-qr-code/?data=https://pathsarthi.in/verify/${encodeURIComponent(name)}&size=120x120`}
           alt="QR Code"
