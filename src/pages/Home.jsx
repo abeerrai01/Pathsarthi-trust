@@ -108,7 +108,7 @@ const Home = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentPartner((prev) => (prev + 1) % partners.length);
-    }, 3000);
+    }, 1000);
     return () => clearInterval(interval);
   }, [partners.length]);
 
