@@ -55,6 +55,12 @@ const CertificateGenerator = () => {
         return;
       }
     }
+    if (type === "Political") {
+      if (!appreciationDate) {
+        alert("Please fill all political details");
+        return;
+      }
+    }
 
     if (!html2canvas || typeof window === "undefined") {
       alert("Please wait for the page to load completely");
@@ -93,6 +99,8 @@ const CertificateGenerator = () => {
             ? appreciationDate
             : type === "Recognition"
             ? appreciationDate
+            : type === "Political"
+            ? appreciationDate
             : new Date().toISOString().split("T")[0],
         verified: true,
         createdAt: serverTimestamp(),
@@ -106,6 +114,9 @@ const CertificateGenerator = () => {
       if (type === "Recognition") {
         certificateData.field = field;
       }
+      if (type === "Political") {
+        // No field for Political, only date
+      }
 
       await addDoc(collection(db, "certificates"), certificateData);
       console.log("Certificate saved to Firebase");
@@ -118,6 +129,7 @@ const CertificateGenerator = () => {
     if (type === "Appreciation") return "/certs/appreciation.jpg";
     if (type === "Internship") return "/certs/internship.jpg";
     if (type === "Recognition") return "/certs/recognition.jpg";
+    if (type === "Political") return "/certs/political.jpg";
     return "/certs/appreciation.jpg";
   };
 
@@ -145,6 +157,7 @@ const CertificateGenerator = () => {
               <option value="Appreciation">Appreciation Certificate</option>
               <option value="Internship">Internship Certificate</option>
               <option value="Recognition">Recognition Certificate</option>
+              <option value="Political">Political Certificate</option>
             </select>
           </div>
           
@@ -189,6 +202,19 @@ const CertificateGenerator = () => {
           </>
         )}
         {type === "Appreciation" && (
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Date
+            </label>
+            <input
+              type="date"
+              value={appreciationDate}
+              onChange={e => setAppreciationDate(e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+        )}
+        {type === "Political" && (
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Date
@@ -320,6 +346,22 @@ const CertificateGenerator = () => {
           </div>
         )}
         {type === "Recognition" && appreciationDate && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "125px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              fontSize: "20px",
+              fontWeight: 600,
+              fontFamily: "'Playfair Display', serif",
+              color: "#000000",
+            }}
+          >
+            {`DATE : ${appreciationDate.split('-').reverse().join('-')}`}
+          </div>
+        )}
+        {type === "Political" && appreciationDate && (
           <div
             style={{
               position: "absolute",
