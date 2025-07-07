@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 
 const departments = [
   'Social Media',
@@ -11,6 +12,9 @@ const departments = [
 ];
 
 const InternshipForm = () => (
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, []),
   <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-orange-50 py-12">
     <form
       action="https://usebasin.com/f/d06d9fc6b353"

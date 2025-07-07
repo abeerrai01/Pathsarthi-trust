@@ -42,11 +42,10 @@ export default function Internship() {
               <tbody>
                 <tr><td className="py-2 px-4">📱 Social Media</td><td className="py-2 px-4">Content creation, Instagram reels, poster design, awareness campaigns</td></tr>
                 <tr><td className="py-2 px-4">🎯 Event Organizers</td><td className="py-2 px-4">Plan weekly drives, health camps, notebook distribution</td></tr>
-                <tr><td className="py-2 px-4">🧠 Community Recruiters</td><td className="py-2 px-4">Identify and invite new volunteers from colleges & society</td></tr>
+                <tr><td className="py-2 px-4">🧠 College Ambassador</td><td className="py-2 px-4">Identify and invite new volunteers from colleges & society</td></tr>
                 <tr><td className="py-2 px-4">💻 Tech Support</td><td className="py-2 px-4">Website, admin panel, or database help</td></tr>
                 <tr><td className="py-2 px-4">📝 Content Writers</td><td className="py-2 px-4">Blogs, impact stories, captions, contest ideas</td></tr>
                 <tr><td className="py-2 px-4">📷 Media & Photography</td><td className="py-2 px-4">Capture moments from our field programs</td></tr>
-                <tr><td className="py-2 px-4">🧑‍🏫 Education Ambassadors</td><td className="py-2 px-4">Teach, assist, or mentor students in slum and village communities</td></tr>
               </tbody>
             </table>
           </div>
