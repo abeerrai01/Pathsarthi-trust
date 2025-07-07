@@ -33,6 +33,7 @@ import { lazy, Suspense } from 'react';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
 const CertificateList = lazy(() => import('./components/Dashboard/CertificateList'));
 import VerifyCertificate from './pages/VerifyCertificate';
+import Partners from './pages/Partners';
 
 function MissionPopup() {
   const [show, setShow] = useState(false);
@@ -183,6 +184,7 @@ function App() {
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/gallery" element={<Gallery />} />
+                <Route path="/partners" element={<Partners />} />
                 <Route path="/mission" element={<Mission />} />
                 <Route path="/contribution" element={<Contribution />} />
                 <Route path="/donate" element={<Donate />} />
