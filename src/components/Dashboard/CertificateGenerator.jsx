@@ -10,6 +10,7 @@ const CertificateGenerator = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [appreciationDate, setAppreciationDate] = useState("");
+  const [title, setTitle] = useState("");
   const [html2canvas, setHtml2canvas] = useState(null);
 
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const CertificateGenerator = () => {
       }
     }
     if (type === "Political") {
-      if (!appreciationDate) {
+      if (!appreciationDate || !title.trim()) {
         alert("Please fill all political details");
         return;
       }
@@ -115,7 +116,7 @@ const CertificateGenerator = () => {
         certificateData.field = field;
       }
       if (type === "Political") {
-        // No field for Political, only date
+        certificateData.title = title;
       }
 
       await addDoc(collection(db, "certificates"), certificateData);
@@ -215,17 +216,31 @@ const CertificateGenerator = () => {
           </div>
         )}
         {type === "Political" && (
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Date
-            </label>
-            <input
-              type="date"
-              value={appreciationDate}
-              onChange={e => setAppreciationDate(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Title
+              </label>
+              <input
+                type="text"
+                placeholder="e.g., Chief Guest, Speaker"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Date
+              </label>
+              <input
+                type="date"
+                value={appreciationDate}
+                onChange={e => setAppreciationDate(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+          </>
         )}
 
         {type === "Internship" && (
@@ -311,6 +326,24 @@ const CertificateGenerator = () => {
         >
           {name}
         </div>
+        {type === "Political" && title && (
+          <div
+            style={{
+              position: "absolute",
+              top: "720px",
+              left: "0",
+              width: "100%",
+              textAlign: "center",
+              fontSize: "32px",
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontWeight: 500,
+              color: "#6b4f2a",
+              letterSpacing: "0.5px",
+            }}
+          >
+            {title}
+          </div>
+        )}
         {type === "Recognition" && field && (
           <div
             style={{
