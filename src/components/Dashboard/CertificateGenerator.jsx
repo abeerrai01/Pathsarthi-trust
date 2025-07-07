@@ -312,7 +312,7 @@ const CertificateGenerator = () => {
         <div
           style={{
             position: "absolute",
-            top: type === "Political" ? "660px" : "750px",
+            top: type === "Political" ? "680px" : "750px",
             left: "0",
             width: "100%",
             textAlign: "center",
@@ -330,7 +330,7 @@ const CertificateGenerator = () => {
           <div
             style={{
               position: "absolute",
-              top: "720px",
+              top: "740px",
               left: "0",
               width: "100%",
               textAlign: "center",
