@@ -32,6 +32,7 @@ const members = [
   { name: 'Pradeep Kumar Tripathi', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/pradeep.jpg' },
   // New member
   { name: 'Shreyansh Rai', gender: 'Male', district: 'Dehradun', state: 'Uttarakhand', image: '/Shreyansh.jpg' },
+  { name: 'Sachin Mittal', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/sachin mittal.jpg' },
 ];
 
 const sortedMembers = members.slice().sort((a, b) => a.name.localeCompare(b.name));
