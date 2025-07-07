@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import PartnerCard from '../components/PartnerCard';
+import SupporterCard from '../components/SupporterCard';
 
-const partners = [
+const supporters = [
   {
     name: "SNR Hotel",
     description: "Stay with comfort - SNR Hotel, Old Manali, Manali HP 175131. 9818637148",
     since: "2024",
-    story: "SNR Hotel joined as a partner in 2024, offering comfortable stays and supporting our mission in the heart of Manali. Their hospitality and commitment to community well-being have made a real difference for our volunteers and beneficiaries.",
+    story: "SNR Hotel joined as a supporter in 2024, offering comfortable stays and supporting our mission in the heart of Manali. Their hospitality and commitment to community well-being have made a real difference for our volunteers and beneficiaries.",
     logo: "/SNR hotel.jpg"
   },
   {
@@ -30,30 +30,25 @@ const partners = [
   },
 ];
 
-const Partners = () => {
-  const [selectedPartner, setSelectedPartner] = useState(null);
+const Supporters = () => {
+  const [selectedSupporter, setSelectedSupporter] = useState(null);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-3xl font-extrabold text-gray-900 mb-2">🤝 Our Pillars of Support</h2>
-        <p className="text-gray-600 mb-10">We thank our partners for standing with us to bring hope, health, and happiness. 🙏</p>
+        <p className="text-gray-600 mb-10">We thank our supporters for standing with us to bring hope, health, and happiness. 🙏</p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {partners.map((partner, index) => (
+          {supporters.map((supporter, index) => (
             <div key={index} className="flex flex-col items-center">
-              <PartnerCard
-                name={partner.name}
-                description={partner.description}
-                since={partner.since}
-                logo={partner.logo}
+              <SupporterCard
+                name={supporter.name}
+                description={supporter.description}
+                since={supporter.since}
+                logo={supporter.logo}
+                onClick={() => setSelectedSupporter(supporter)}
               />
-              <button
-                className="mt-2 px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm font-semibold"
-                onClick={() => setSelectedPartner(partner)}
-              >
-                Read More
-              </button>
             </div>
           ))}
         </div>
@@ -67,33 +62,33 @@ const Partners = () => {
             href="/join-us"
             className="inline-block bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
           >
-            Become a Partner 💙
+            Become a Supporter 💙
           </a>
         </div>
       </div>
-      {/* Modal for partner story */}
-      {selectedPartner && (
+      {/* Modal for supporter story */}
+      {selectedSupporter && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center relative">
             <button
               className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl font-bold"
-              onClick={() => setSelectedPartner(null)}
+              onClick={() => setSelectedSupporter(null)}
               aria-label="Close"
             >
               &times;
             </button>
-            {selectedPartner.logo ? (
-              <img src={selectedPartner.logo} alt={selectedPartner.name} className="w-32 h-32 object-contain mx-auto mb-4" />
+            {selectedSupporter.logo ? (
+              <img src={selectedSupporter.logo} alt={selectedSupporter.name} className="w-32 h-32 object-contain mx-auto mb-4" />
             ) : (
               <div className="w-20 h-20 flex items-center justify-center bg-gray-200 mx-auto mb-4 rounded-full text-4xl font-bold text-gray-600">
-                {selectedPartner.name.charAt(0)}
+                {selectedSupporter.name.charAt(0)}
               </div>
             )}
-            <h3 className="text-2xl font-bold mb-2 text-gray-800">{selectedPartner.name}</h3>
-            <p className="text-gray-600 mb-4">{selectedPartner.description}</p>
-            <p className="text-sm text-gray-500 mb-4">{selectedPartner.since && `Partner since ${selectedPartner.since}`}</p>
+            <h3 className="text-2xl font-bold mb-2 text-gray-800">{selectedSupporter.name}</h3>
+            <p className="text-gray-600 mb-4">{selectedSupporter.description}</p>
+            <p className="text-sm text-gray-500 mb-4">{selectedSupporter.since && `Supporter since ${selectedSupporter.since}`}</p>
             <div className="bg-blue-50 rounded p-4 text-blue-800 font-medium">
-              {selectedPartner.story}
+              {selectedSupporter.story}
             </div>
           </div>
         </div>
@@ -102,4 +97,4 @@ const Partners = () => {
   );
 };
 
-export default Partners; 
+export default Supporters; 

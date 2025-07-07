@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PartnerCard = ({ name, description, since, onClick }) => {
+const SupporterCard = ({ name, description, since, onClick }) => {
   return (
     <div
       className="bg-white shadow-md rounded-lg p-4 text-center cursor-pointer transition transform duration-300 hover:scale-105 hover:ring-4 hover:ring-blue-300 relative group"
@@ -15,9 +15,9 @@ const PartnerCard = ({ name, description, since, onClick }) => {
         Click to see their impact
       </div>
       <p className="text-sm text-gray-600 mt-2">{description}</p>
-      <p className="text-xs text-gray-500 mt-1">{since && `Partner since ${since}`}</p>
+      <p className="text-xs text-gray-500 mt-1">{since && `Supporter since ${since}`}</p>
     </div>
   );
 };
 
-export default PartnerCard; 
+export default SupporterCard; 

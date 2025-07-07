@@ -59,7 +59,7 @@ const Navbar = () => {
       items: [
         { to: '/trust-members', label: 'Board of Trustee' },
         { to: '/member', label: 'Member' },
-        { to: '/partners', label: 'Partners' }
+        { to: '/supporters', label: 'Supporters' }
       ]
     },
     { 

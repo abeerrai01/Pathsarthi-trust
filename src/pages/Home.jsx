@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import VisitorCounter from "../components/VisitorCounter";
-import PartnerCard from '../components/PartnerCard';
+import SupporterCard from '../components/SupporterCard';
 
 const Home = () => {
   const stats = [
@@ -83,7 +83,7 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const partners = [
+  const supporters = [
     {
       name: "SNR Hotel",
       logo: "/SNR hotel.jpg"
@@ -102,13 +102,13 @@ const Home = () => {
     },
   ];
 
-  // Partner carousel state
-  const [currentPartner, setCurrentPartner] = useState(0);
-  // Responsive partnersToShow
-  const [partnersToShow, setPartnersToShow] = useState(3);
+  // Supporter carousel state
+  const [currentSupporter, setCurrentSupporter] = useState(0);
+  // Responsive supportersToShow
+  const [supportersToShow, setSupportersToShow] = useState(3);
   useEffect(() => {
     const handleResize = () => {
-      setPartnersToShow(window.innerWidth < 768 ? 1 : 3);
+      setSupportersToShow(window.innerWidth < 768 ? 1 : 3);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -117,16 +117,16 @@ const Home = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentPartner((prev) => (prev + 1) % partners.length);
+      setCurrentSupporter((prev) => (prev + 1) % supporters.length);
     }, 1000);
     return () => clearInterval(interval);
-  }, [partners.length]);
+  }, [supporters.length]);
 
-  // Helper to get visible partners in a cyclic way
-  const getVisiblePartners = () => {
+  // Helper to get visible supporters in a cyclic way
+  const getVisibleSupporters = () => {
     const visible = [];
-    for (let i = 0; i < partnersToShow; i++) {
-      visible.push(partners[(currentPartner + i) % partners.length]);
+    for (let i = 0; i < supportersToShow; i++) {
+      visible.push(supporters[(currentSupporter + i) % supporters.length]);
     }
     return visible;
   };
@@ -258,35 +258,35 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Our Partners Slideshow */}
+      {/* Our Supporters Slideshow */}
       <section className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6 text-blue-700">Our Partners</h2>
+          <h2 className="text-3xl font-bold mb-6 text-blue-700">Our Supporters</h2>
           <div className="flex justify-center items-center mb-8 gap-6">
-            {getVisiblePartners().map((partner, idx) => (
+            {getVisibleSupporters().map((supporter, idx) => (
               <div key={idx} className="w-full max-w-xs h-64 rounded-xl shadow-2xl bg-white flex flex-col items-center justify-center overflow-hidden mx-auto transition-all duration-700">
-                {partner.logo ? (
+                {supporter.logo ? (
                   <img
-                    src={partner.logo}
-                    alt={partner.name}
+                    src={supporter.logo}
+                    alt={supporter.name}
                     className="w-32 h-32 object-contain mx-auto mb-2"
                   />
                 ) : (
                   <div className="w-32 h-32 flex items-center justify-center bg-black mx-auto mb-2 rounded-full text-4xl font-bold text-white">
-                    {partner.name.charAt(0)}
+                    {supporter.name.charAt(0)}
                   </div>
                 )}
-                <h3 className="text-xl font-bold text-gray-800 mt-2">{partner.name}</h3>
+                <h3 className="text-xl font-bold text-gray-800 mt-2">{supporter.name}</h3>
               </div>
             ))}
           </div>
           <div className="flex justify-center mt-4 gap-2">
-            {partners.map((_, idx) => (
+            {supporters.map((_, idx) => (
               <button
                 key={idx}
-                onClick={() => setCurrentPartner(idx)}
-                className={`w-3 h-3 rounded-full ${currentPartner === idx ? 'bg-blue-600' : 'bg-gray-300'} transition-colors`}
-                aria-label={`Go to partner ${idx + 1}`}
+                onClick={() => setCurrentSupporter(idx)}
+                className={`w-3 h-3 rounded-full ${currentSupporter === idx ? 'bg-blue-600' : 'bg-gray-300'} transition-colors`}
+                aria-label={`Go to supporter ${idx + 1}`}
               />
             ))}
           </div>
