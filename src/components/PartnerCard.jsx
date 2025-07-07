@@ -7,7 +7,7 @@ const PartnerCard = ({ name, description, since, onClick }) => {
       onClick={onClick}
     >
       <div className="w-24 h-24 flex items-center justify-center bg-gray-200 mx-auto mb-2 rounded-full text-3xl font-bold text-gray-600 group-hover:shadow-lg group-hover:ring-4 group-hover:ring-blue-400 transition-all duration-300">
-        {name.charAt(0)}
+        <span className="bg-black text-white w-full h-full flex items-center justify-center rounded-full">{name.charAt(0)}</span>
       </div>
       <h3 className="text-lg font-bold text-gray-800">{name}</h3>
       {/* Caption on hover */}

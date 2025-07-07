@@ -102,14 +102,24 @@ const Home = () => {
     },
   ];
 
-  // Partner slideshow state
+  // Partner carousel state
   const [currentPartner, setCurrentPartner] = useState(0);
+  const partnersToShow = 3;
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentPartner((prev) => (prev + 1) % partners.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [partners.length]);
+
+  // Helper to get visible partners in a cyclic way
+  const getVisiblePartners = () => {
+    const visible = [];
+    for (let i = 0; i < partnersToShow; i++) {
+      visible.push(partners[(currentPartner + i) % partners.length]);
+    }
+    return visible;
+  };
 
   return (
     <div className="space-y-16">
@@ -242,22 +252,24 @@ const Home = () => {
       <section className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6 text-blue-700">Our Partners</h2>
-          <div className="flex justify-center items-center mb-8">
-            <div className="w-full max-w-xs h-64 rounded-xl shadow-2xl bg-white flex items-center justify-center overflow-hidden mx-auto">
-              {partners[currentPartner].logo ? (
-                <img
-                  src={partners[currentPartner].logo}
-                  alt={partners[currentPartner].name}
-                  className="w-32 h-32 object-contain mx-auto mb-2"
-                />
-              ) : (
-                <div className="w-32 h-32 flex items-center justify-center bg-gray-200 mx-auto mb-2 rounded-full text-4xl font-bold text-gray-600">
-                  {partners[currentPartner].name.charAt(0)}
-                </div>
-              )}
-            </div>
+          <div className="flex justify-center items-center mb-8 gap-6">
+            {getVisiblePartners().map((partner, idx) => (
+              <div key={idx} className="w-full max-w-xs h-64 rounded-xl shadow-2xl bg-white flex flex-col items-center justify-center overflow-hidden mx-auto transition-all duration-700">
+                {partner.logo ? (
+                  <img
+                    src={partner.logo}
+                    alt={partner.name}
+                    className="w-32 h-32 object-contain mx-auto mb-2"
+                  />
+                ) : (
+                  <div className="w-32 h-32 flex items-center justify-center bg-black mx-auto mb-2 rounded-full text-4xl font-bold text-white">
+                    {partner.name.charAt(0)}
+                  </div>
+                )}
+                <h3 className="text-xl font-bold text-gray-800 mt-2">{partner.name}</h3>
+              </div>
+            ))}
           </div>
-          <h3 className="text-2xl font-bold mb-2 text-gray-800">{partners[currentPartner].name}</h3>
           <div className="flex justify-center mt-4 gap-2">
             {partners.map((_, idx) => (
               <button
