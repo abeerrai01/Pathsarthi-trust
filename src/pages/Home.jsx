@@ -6,9 +6,9 @@ import SupporterCard from '../components/SupporterCard';
 
 const Home = () => {
   const stats = [
-    { label: 'Lives Impacted', value: '10,000+' },
+    { label: 'Lives Impacted', value: '1000+' },
     { label: 'Projects Completed', value: '50+' },
-    { label: 'Volunteers', value: '500+' },
+    { label: 'Volunteers', value: '100+' },
     { label: 'Communities Served', value: '25+' },
   ];
 

@@ -42,13 +42,15 @@ const Supporters = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {supporters.map((supporter, index) => (
             <div key={index} className="flex flex-col items-center">
-              <SupporterCard
-                name={supporter.name}
-                description={supporter.description}
-                since={supporter.since}
-                logo={supporter.logo}
-                onClick={() => setSelectedSupporter(supporter)}
-              />
+              <div className='w-full max-w-xs h-80 flex items-stretch'>
+                <SupporterCard
+                  name={supporter.name}
+                  description={supporter.description}
+                  since={supporter.since}
+                  logo={supporter.logo}
+                  onClick={() => setSelectedSupporter(supporter)}
+                />
+              </div>
             </div>
           ))}
         </div>
