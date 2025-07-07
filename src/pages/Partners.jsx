@@ -41,14 +41,20 @@ const Partners = () => {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {partners.map((partner, index) => (
-            <PartnerCard
-              key={index}
-              name={partner.name}
-              description={partner.description}
-              since={partner.since}
-              onClick={() => setSelectedPartner(partner)}
-              logo={partner.logo}
-            />
+            <div key={index} className="flex flex-col items-center">
+              <PartnerCard
+                name={partner.name}
+                description={partner.description}
+                since={partner.since}
+                logo={partner.logo}
+              />
+              <button
+                className="mt-2 px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm font-semibold"
+                onClick={() => setSelectedPartner(partner)}
+              >
+                Read More
+              </button>
+            </div>
           ))}
         </div>
 

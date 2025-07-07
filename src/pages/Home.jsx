@@ -104,7 +104,17 @@ const Home = () => {
 
   // Partner carousel state
   const [currentPartner, setCurrentPartner] = useState(0);
-  const partnersToShow = 3;
+  // Responsive partnersToShow
+  const [partnersToShow, setPartnersToShow] = useState(3);
+  useEffect(() => {
+    const handleResize = () => {
+      setPartnersToShow(window.innerWidth < 768 ? 1 : 3);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentPartner((prev) => (prev + 1) % partners.length);
