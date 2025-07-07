@@ -4,11 +4,10 @@ import { useEffect } from 'react';
 const departments = [
   'Social Media',
   'Event Organizers',
-  'Community Recruiters',
+  'College Ambassador',
   'Tech Support',
   'Content Writers',
   'Media & Photography',
-  'Education Ambassadors',
 ];
 
 const InternshipForm = () => (
