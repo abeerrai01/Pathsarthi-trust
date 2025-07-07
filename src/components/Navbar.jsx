@@ -36,6 +36,11 @@ const Navbar = () => {
       type: 'link', 
       to: '/gallery' 
     },
+    {
+      to: '/partners',
+      label: 'Partners',
+      type: 'link'
+    },
     { 
       label: 'Projects', 
       type: 'dropdown',
