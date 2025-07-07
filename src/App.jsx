@@ -184,7 +184,7 @@ function App() {
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/gallery" element={<Gallery />} />
-                <Route path="/partners" element={<Supporters />} />
+                <Route path="/supporters" element={<Supporters />} />
                 <Route path="/mission" element={<Mission />} />
                 <Route path="/contribution" element={<Contribution />} />
                 <Route path="/donate" element={<Donate />} />
