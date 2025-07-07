@@ -36,11 +36,6 @@ const Navbar = () => {
       type: 'link', 
       to: '/gallery' 
     },
-    {
-      to: '/partners',
-      label: 'Partners',
-      type: 'link'
-    },
     { 
       label: 'Projects', 
       type: 'dropdown',
@@ -59,11 +54,12 @@ const Navbar = () => {
       ]
     },
     { 
-      label: 'Pillars', 
+      label: 'Pillars',
       type: 'dropdown',
       items: [
         { to: '/trust-members', label: 'Board of Trustee' },
-        { to: '/member', label: 'Member' }
+        { to: '/member', label: 'Member' },
+        { to: '/partners', label: 'Partners' }
       ]
     },
     { 

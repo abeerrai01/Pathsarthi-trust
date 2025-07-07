@@ -49,7 +49,7 @@ const Partners = () => {
             We're always looking for more hearts to join our mission.
           </p>
           <a
-            href="/partner-with-us"
+            href="/join-us"
             className="inline-block bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
           >
             Become a Partner 💙
