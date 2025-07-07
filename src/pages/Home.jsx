@@ -90,7 +90,7 @@ const Home = () => {
     },
     {
       name: "Sachin Tube Company",
-      logo: null
+      logo: "/Sachin tube.jpg"
     },
     {
       name: "Rastogi Provisional Store",

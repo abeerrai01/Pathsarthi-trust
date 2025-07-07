@@ -13,7 +13,8 @@ const partners = [
     name: "Sachin Tube Company",
     description: "Supported infrastructure for donation drives",
     since: "2024",
-    story: "Sachin Tube Company provided the essential infrastructure that enabled us to organize large-scale donation drives, reaching thousands in need."
+    story: "Sachin Tube Company provided the essential infrastructure that enabled us to organize large-scale donation drives, reaching thousands in need.",
+    logo: "/Sachin tube.jpg"
   },
   {
     name: "Rastogi Provisional Store",
