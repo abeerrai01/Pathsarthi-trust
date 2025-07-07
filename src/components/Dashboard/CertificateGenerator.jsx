@@ -297,7 +297,7 @@ const CertificateGenerator = () => {
         <div
           style={{
             position: "absolute",
-            top: type === "Political" ? "730px" : "750px",
+            top: type === "Political" ? "660px" : "750px",
             left: "0",
             width: "100%",
             textAlign: "center",
