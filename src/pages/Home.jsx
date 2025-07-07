@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import VisitorCounter from "../components/VisitorCounter";
+import PartnerCard from '../components/PartnerCard';
 
 const Home = () => {
   const stats = [
@@ -79,6 +80,34 @@ const Home = () => {
     const interval = setInterval(() => {
       setCurrentCert((prev) => (prev + 1) % certificateImages.length);
     }, 3000); // 3 seconds per slide
+    return () => clearInterval(interval);
+  }, []);
+
+  const partners = [
+    {
+      name: "SNR Hotel",
+      logo: "/SNR hotel.jpg"
+    },
+    {
+      name: "Sachin Tube Company",
+      logo: null
+    },
+    {
+      name: "Rastogi Provisional Store",
+      logo: null
+    },
+    {
+      name: "RJS Associates",
+      logo: null
+    },
+  ];
+
+  // Partner slideshow state
+  const [currentPartner, setCurrentPartner] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentPartner((prev) => (prev + 1) % partners.length);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -204,6 +233,39 @@ const Home = () => {
                   <p className="text-gray-600">{initiative.description}</p>
                 </div>
               </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Our Partners Slideshow */}
+      <section className="py-16 bg-white">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-6 text-blue-700">Our Partners</h2>
+          <div className="flex justify-center items-center mb-8">
+            <div className="w-full max-w-xs h-64 rounded-xl shadow-2xl bg-white flex items-center justify-center overflow-hidden mx-auto">
+              {partners[currentPartner].logo ? (
+                <img
+                  src={partners[currentPartner].logo}
+                  alt={partners[currentPartner].name}
+                  className="w-32 h-32 object-contain mx-auto mb-2"
+                />
+              ) : (
+                <div className="w-32 h-32 flex items-center justify-center bg-gray-200 mx-auto mb-2 rounded-full text-4xl font-bold text-gray-600">
+                  {partners[currentPartner].name.charAt(0)}
+                </div>
+              )}
+            </div>
+          </div>
+          <h3 className="text-2xl font-bold mb-2 text-gray-800">{partners[currentPartner].name}</h3>
+          <div className="flex justify-center mt-4 gap-2">
+            {partners.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentPartner(idx)}
+                className={`w-3 h-3 rounded-full ${currentPartner === idx ? 'bg-blue-600' : 'bg-gray-300'} transition-colors`}
+                aria-label={`Go to partner ${idx + 1}`}
+              />
             ))}
           </div>
         </div>
