@@ -9,7 +9,7 @@ const TrustMembers = () => {
     { name: 'Arun Kumar Singh', gender: 'Male', designation: 'Secretary', joinedDate: '2022-02-23' },
     { name: 'Rupesh Kumar Chauhan', gender: 'Male', designation: 'Vice-President', joinedDate: '2022-06-27' },
     { name: 'Sanjay Sharma', gender: 'Male', designation: 'District President', joinedDate: '2024-10-01' },
-    { name: 'Adv.Gurbachan Singh Chawla', gender: 'Male', designation: 'Legal Consultant', joinedDate: '2025-07-08', image: '/GURBACHAN SINGH CHAWLA.jpg', fatherName: 'Satnam Singh Chawla', address: 'L/2A, Rampur Garden, Near Agarsen Park, Bareilly', email: 'therajachawla@gmail.com', mobile: '98970 00001' },
+    { name: 'Adv.Gurbachan Singh Chawla', gender: 'Male', designation: 'Legal Advisor', joinedDate: '2025-07-08', image: '/GURBACHAN SINGH CHAWLA.jpg', fatherName: 'Satnam Singh Chawla', address: 'L/2A, Rampur Garden, Near Agarsen Park, Bareilly', email: 'therajachawla@gmail.com', mobile: '98970 00001' },
     { name: 'Srinivas Rai', gender: 'Male', designation: 'State President', district: 'Manali', state: 'Himachal Pradesh', joinedDate: '2024-06-01', image: '/Srinavas.jpg' },
     { name: 'Satya Prakash Rai', gender: 'Male', designation: 'Member', joinedDate: '2022-07-14' },
     { name: 'Mridul Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
