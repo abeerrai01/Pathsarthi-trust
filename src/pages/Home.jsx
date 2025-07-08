@@ -199,7 +199,7 @@ const Home = () => {
               <div className="text-gray-600">Communities Served</div>
             </div>
             <div className="text-center p-6 bg-gray-50 rounded-lg shadow-sm">
-              <div className="text-4xl font-bold text-orange-500 mb-2">12+</div>
+              <div className="text-4xl font-bold text-indigo-600 mb-2">12+</div>
               <div className="text-gray-600">Interns</div>
             </div>
           </div>
