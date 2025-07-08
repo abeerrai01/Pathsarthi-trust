@@ -20,7 +20,7 @@ const TrustMembers = () => {
     { name: 'Abeer Rai', gender: 'Male', designation: 'Technical Director', joinedDate: '2025-04-01', image: '/abeer.jpg' },
     { name: 'Srinivas Rai', gender: 'Male', designation: 'State President', district: 'Manali', state: 'Himachal Pradesh', joinedDate: '2024-06-01', image: '/Srinavas.jpg' },
     {
-      name: 'Gurbachan Singh Chawla',
+      name: 'Adv.Gurbachan Singh Chawla',
       gender: 'Male',
       designation: 'Legal Consultant',
       joinedDate: '2025-07-08',
