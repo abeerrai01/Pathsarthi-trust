@@ -15,6 +15,7 @@ const TrustMembers = () => {
     { name: 'Mridul Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
     { name: 'Priyansh Manas Rai', gender: 'Male', designation: 'Co-Secretary', joinedDate: '2022-07-14' },
     { name: 'Abeer Rai', gender: 'Male', designation: 'Technical Director', joinedDate: '2025-04-01', image: '/abeer.jpg' },
+    { name: 'Shreyansh Rai', gender: 'Male', designation: 'Internship Coordinator', joinedDate: '2025-07-01', image: '/Shreyansh.jpg' },
     { name: 'Mehair Tripathi', gender: 'Male', designation: 'Trustee', joinedDate: '2025-06-01' },
     { name: 'Sandeep Bharti', gender: 'Male', designation: 'Health Advisor', joinedDate: '2023-04-01' },
     { name: 'Swechha Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2023-01-01', image: '/Swechha.jpg' },
