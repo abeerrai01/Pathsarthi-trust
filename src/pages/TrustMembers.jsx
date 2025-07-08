@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 const TrustMembers = () => {
   const members = [
@@ -18,6 +19,18 @@ const TrustMembers = () => {
     { name: 'Pramila Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2025-04-01', image: '/Pramila.jpg' },
     { name: 'Abeer Rai', gender: 'Male', designation: 'Technical Director', joinedDate: '2025-04-01', image: '/abeer.jpg' },
     { name: 'Srinivas Rai', gender: 'Male', designation: 'State President', district: 'Manali', state: 'Himachal Pradesh', joinedDate: '2024-06-01', image: '/Srinavas.jpg' },
+    {
+      name: 'Gurbachan Singh Chawla',
+      gender: 'Male',
+      designation: 'Legal Consultant',
+      joinedDate: '2025-07-08',
+      image: '/GURBACHAN SINGH CHAWLA.jpg',
+      fatherName: 'Satnam Singh Chawla',
+      address: 'L/2A, Rampur Garden, Near Agarsen Park, Bareilly',
+      barCouncilNo: 'UP00284/04',
+      email: 'therajachawla@gmail.com',
+      mobile: '98970 00001',
+    },
   ];
 
   // Remove custom sorting, just use members as is
@@ -37,6 +50,8 @@ const TrustMembers = () => {
       .join('')
       .toUpperCase();
   };
+
+  const [selectedMember, setSelectedMember] = useState(null);
 
   return (
     <div className="py-12">
@@ -62,7 +77,8 @@ const TrustMembers = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => setSelectedMember(member)}
             >
               <div className="p-6">
                 {/* Avatar */}
@@ -101,6 +117,48 @@ const TrustMembers = () => {
             </motion.div>
           ))}
         </div>
+      {/* Profile Modal */}
+      {selectedMember && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full relative">
+            <button
+              onClick={() => setSelectedMember(null)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-2xl font-bold"
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <div className="flex flex-col items-center">
+              {selectedMember.image && (
+                <img
+                  src={selectedMember.image}
+                  alt={selectedMember.name}
+                  className="w-28 h-28 rounded-full object-cover border-4 border-indigo-200 shadow mb-4"
+                />
+              )}
+              <h2 className="text-2xl font-bold mb-2">{selectedMember.name}</h2>
+              <div className="text-indigo-600 font-bold mb-1">{selectedMember.designation}</div>
+              <div className="text-gray-600 mb-2">{selectedMember.gender}</div>
+              <div className="text-gray-600 mb-2">Member since {formatDate(selectedMember.joinedDate)}</div>
+              {selectedMember.fatherName && (
+                <div className="mb-1"><span className="font-semibold">Father's Name:</span> {selectedMember.fatherName}</div>
+              )}
+              {selectedMember.address && (
+                <div className="mb-1"><span className="font-semibold">Address:</span> {selectedMember.address}</div>
+              )}
+              {selectedMember.barCouncilNo && (
+                <div className="mb-1"><span className="font-semibold">Bar Council No:</span> {selectedMember.barCouncilNo}</div>
+              )}
+              {selectedMember.email && (
+                <div className="mb-1"><span className="font-semibold">Email:</span> <a href={`mailto:${selectedMember.email}`} className="text-blue-600 underline">{selectedMember.email}</a></div>
+              )}
+              {selectedMember.mobile && (
+                <div className="mb-1"><span className="font-semibold">Mobile:</span> <a href={`tel:${selectedMember.mobile}`} className="text-blue-600 underline">{selectedMember.mobile}</a></div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );
