@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import emailjs from 'emailjs-com';
+import { FaYoutube } from 'react-icons/fa';
 
 const SERVICE_ID = 'service_aj9ohf7';
 const TEMPLATE_ID = 'template_cikb2vt';
@@ -10,6 +11,8 @@ const JoinUs = () => {
   const [form, setForm] = useState({ name: '', age: '', email: '', phone: '', district: '', state: '' });
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
+  const [subscribeError, setSubscribeError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = e => {
@@ -18,6 +21,12 @@ const JoinUs = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    if (!subscribed) {
+      setSubscribeError("You must subscribe to our YouTube channel to submit the form.");
+      return;
+    } else {
+      setSubscribeError("");
+    }
     setSubmitting(true);
     try {
       await emailjs.send(
@@ -66,6 +75,34 @@ const JoinUs = () => {
           <label className="block mb-1 font-medium">State</label>
           <input name="state" value={form.state} onChange={handleChange} required className="w-full border rounded px-3 py-2" />
         </div>
+        <div className="mb-4 flex items-center">
+          <input
+            id="youtube-subscribe"
+            type="checkbox"
+            checked={subscribed}
+            onChange={e => setSubscribed(e.target.checked)}
+            className="mr-2"
+            required
+          />
+          <label htmlFor="youtube-subscribe" className="flex items-center cursor-pointer">
+            <FaYoutube className="text-red-600 text-2xl mr-2" />
+            <span>
+              I have subscribed to our
+              <a
+                href="https://www.youtube.com/channel/UCH85rcaMHgCtN2fV8W_51LQ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline ml-1"
+              >
+                YouTube channel
+              </a>
+              .
+            </span>
+          </label>
+        </div>
+        {subscribeError && (
+          <div className="mb-4 text-red-600 text-sm font-semibold">{subscribeError}</div>
+        )}
         <button type="submit" disabled={submitting} className="w-full bg-indigo-600 text-white py-2 rounded font-semibold hover:bg-indigo-700 transition">
           {submitting ? 'Submitting...' : 'Submit'}
         </button>
