@@ -133,7 +133,7 @@ export default function Internship() {
             ×
           </button>
           <img
-            src="/certs/internship.jpg"
+            src="/internship.png"
             alt="Internship Certificate Preview"
             style={{
               maxWidth: '90vw',
