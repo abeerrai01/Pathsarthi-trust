@@ -30,6 +30,7 @@ import InternshipForm from './pages/InternshipForm';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 import { lazy, Suspense } from 'react';
+import { logVisit } from './utils/logVisit';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
 const CertificateList = lazy(() => import('./components/Dashboard/CertificateList'));
 import VerifyCertificate from './pages/VerifyCertificate';
@@ -166,6 +167,9 @@ function GlobalConfetti({ show, onClose }) {
 }
 
 function App() {
+  useEffect(() => {
+    logVisit(window.location.pathname);
+  }, []);
   const [globalConfetti, setGlobalConfetti] = useState(false);
   const triggerConfetti = () => {
     setGlobalConfetti(true);
