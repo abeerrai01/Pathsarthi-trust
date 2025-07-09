@@ -234,6 +234,34 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Free Health Camp Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center gap-10">
+          <div className="flex-1 mb-8 md:mb-0">
+            <img
+              src="/news.jpg"
+              alt="Free Health Camp News"
+              className="w-full h-auto rounded-xl shadow-lg object-contain"
+            />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-3xl font-bold text-indigo-700 mb-4 flex items-center gap-2">🩺 Free Health Camp Organized!</h2>
+            <p className="text-lg text-gray-800 mb-4">
+              PathSarthi Trust, in collaboration with Ujala Cygnus Hospital, successfully organized a Free Health Checkup Camp at Kachahari Campus, Muradabad.
+            </p>
+            <ul className="list-disc pl-6 text-gray-700 mb-4">
+              <li>🧪 Free tests included BP, sugar, and thyroid for local citizens and advocates.</li>
+            </ul>
+            <p className="text-gray-800 mb-4">
+              👤 The camp was led by Chairman Advocate Ravi Prakash Rai, promoting health awareness with great public support.
+            </p>
+            <p className="text-green-700 font-semibold">
+              PathSarthi Trust continues its mission to serve society through health and care. 🌿
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Initiatives */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">

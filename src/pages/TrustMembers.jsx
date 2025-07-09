@@ -113,7 +113,7 @@ const TrustMembers = () => {
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full relative">
             <button
               onClick={() => setSelectedMember(null)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-2xl font-bold"
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-2xl font-bold z-10"
               aria-label="Close"
             >
               ×
@@ -123,7 +123,7 @@ const TrustMembers = () => {
                 <img
                   src={selectedMember.modalImage ? selectedMember.modalImage : selectedMember.image}
                   alt={selectedMember.name}
-                  className="w-full max-w-md h-auto object-contain border-4 border-indigo-200 shadow mb-4 mx-auto"
+                  className={selectedMember.modalImage ? "w-full max-w-md max-h-72 object-contain border-4 border-indigo-200 shadow mb-4 mx-auto" : "w-full max-w-md h-auto object-contain border-4 border-indigo-200 shadow mb-4 mx-auto"}
                   style={{ borderRadius: '1rem' }}
                 />
               )}
