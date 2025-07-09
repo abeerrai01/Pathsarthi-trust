@@ -56,8 +56,8 @@ const Footer = () => {
                 <span className="block">India – PIN 244001</span>
               </li>
               <li className="text-gray-300">
-                <a href="tel:+919837004175" className="hover:text-white">
-                  +91 983 700 4175
+                <a href="tel:+918958421200" className="hover:text-white">
+                  +91 895 842 1200
                 </a>
               </li>
               <li className="text-gray-300">

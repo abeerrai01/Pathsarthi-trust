@@ -15,7 +15,7 @@ const PaymentModal = ({ open, onClose }) => {
         <h2 className="text-lg font-bold mb-4 text-center">Payment Information</h2>
         <p className="mb-4 text-center text-gray-700">
           Please try to contact the administrator on phone number <br />
-          <span className="font-semibold">9837004175</span><br />
+          <span className="font-semibold">8958421200</span><br />
           or pay with QR code below.
         </p>
         <div className="flex justify-center mb-2">
