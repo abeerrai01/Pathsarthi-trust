@@ -79,7 +79,7 @@ const Home = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentCert((prev) => (prev + 1) % certificateImages.length);
-    }, 3000); // 3 seconds per slide
+    }, 1000); // 1 second per slide
     return () => clearInterval(interval);
   }, []);
 

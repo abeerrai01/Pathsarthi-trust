@@ -9,7 +9,7 @@ const TrustMembers = () => {
     { name: 'Arun Kumar Singh', gender: 'Male', designation: 'Secretary', joinedDate: '2022-02-23' },
     { name: 'Rupesh Kumar Chauhan', gender: 'Male', designation: 'Vice-President', joinedDate: '2022-06-27' },
     { name: 'Sanjay Sharma', gender: 'Male', designation: 'District President', joinedDate: '2024-10-01' },
-    { name: 'Adv.Gurbachan Singh Chawla', gender: 'Male', designation: 'Legal Advisor', joinedDate: '2025-07-08', image: '/GURBACHAN SINGH CHAWLA.jpg', fatherName: 'Satnam Singh Chawla', address: 'L/2A, Rampur Garden, Near Agarsen Park, Bareilly', email: 'therajachawla@gmail.com', mobile: '98970 00001' },
+    { name: 'Adv.Gurbachan Singh Chawla', gender: 'Male', designation: 'Legal Advisor', joinedDate: '2025-07-08', image: '/GURBACHAN SINGH CHAWLA.jpg', fatherName: 'Satnam Singh Chawla', address: 'L/2A, Rampur Garden, Near Agarsen Park, Bareilly', email: 'therajachawla@gmail.com', mobile: '98970 00001', modalImage: '/GURBACHAN SINGH CHAWLA. 1jpg.jpg' },
     { name: 'Srinivas Rai', gender: 'Male', designation: 'State President', district: 'Manali', state: 'Himachal Pradesh', joinedDate: '2024-06-01', image: '/Srinavas.jpg' },
     { name: 'Satya Prakash Rai', gender: 'Male', designation: 'Member', joinedDate: '2022-07-14' },
     { name: 'Mridul Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
@@ -121,9 +121,10 @@ const TrustMembers = () => {
             <div className="flex flex-col items-center">
               {selectedMember.image && (
                 <img
-                  src={selectedMember.image}
+                  src={selectedMember.modalImage ? selectedMember.modalImage : selectedMember.image}
                   alt={selectedMember.name}
-                  className="w-28 h-28 rounded-full object-cover border-4 border-indigo-200 shadow mb-4"
+                  className="w-full max-w-md h-auto object-contain border-4 border-indigo-200 shadow mb-4 mx-auto"
+                  style={{ borderRadius: '1rem' }}
                 />
               )}
               <h2 className="text-2xl font-bold mb-2">{selectedMember.name}</h2>
