@@ -5,7 +5,7 @@ import MultiPhotoUpload from "./MultiPhotoUpload";
 import PhotoUpload from "./PhotoUpload";
 import GalleryManager from "./GalleryManager";
 import { onSnapshot, doc, collection, getDocs } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db } from '../../config/firebase';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
