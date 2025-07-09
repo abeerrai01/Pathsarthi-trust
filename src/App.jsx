@@ -35,6 +35,7 @@ const CertificateGenerator = lazy(() => import('./components/Dashboard/Certifica
 const CertificateList = lazy(() => import('./components/Dashboard/CertificateList'));
 import VerifyCertificate from './pages/VerifyCertificate';
 import Supporters from './pages/Supporters';
+import TermsInterns from './pages/TermsInterns';
 
 function MissionPopup() {
   const [show, setShow] = useState(false);
@@ -209,6 +210,7 @@ function App() {
                 <Route path="/contest" element={<ContestPage />} />
                 <Route path="/internship" element={<Internship />} />
                 <Route path="/internship-form" element={<InternshipForm />} />
+                <Route path="/terms-interns" element={<TermsInterns />} />
                 <Route path="/admin/certificates" element={
                   <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Certificate Generator...</div>}>
                     <CertificateGenerator />
