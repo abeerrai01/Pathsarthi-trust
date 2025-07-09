@@ -247,7 +247,7 @@ const Home = () => {
           <div className="flex-1">
             <h2 className="text-3xl font-bold text-indigo-700 mb-4 flex items-center gap-2">🩺 Free Health Camp Organized!</h2>
             <p className="text-lg text-gray-800 mb-4">
-              PathSarthi Trust, in collaboration with Ujala Cygnus Hospital, successfully organized a Free Health Checkup Camp at Kachahari Campus, Muradabad.
+              PathSarthi Trust, in collaboration with Ujala Cygnus Hospital, successfully organized a Free Health Checkup Camp
             </p>
             <ul className="list-disc pl-6 text-gray-700 mb-4">
               <li>🧪 Free tests included BP, sugar, and thyroid for local citizens and advocates.</li>
