@@ -4,9 +4,30 @@ import { motion } from 'framer-motion';
 
 export default function Internship() {
   const [showPreview, setShowPreview] = useState(false);
+  const [showAlert, setShowAlert] = useState(true);
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-orange-50 min-h-screen py-12">
+      {showAlert && (
+        <div className="max-w-xl mx-auto mb-8">
+          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900 p-4 rounded-lg shadow flex flex-col gap-2 relative">
+            <div className="font-bold text-lg flex items-center gap-2">
+              <span role="img" aria-label="alert">📢</span> Internship Update
+            </div>
+            <div className="text-gray-800">
+              Internship slots for this month are now closed.<br />
+              But good news — applications for next month's batch are open!<br />
+              Submit the form now to be considered for the next round. 🚀
+            </div>
+            <button
+              onClick={() => setShowAlert(false)}
+              className="self-end mt-2 px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
       <div className="max-w-4xl mx-auto px-4">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
