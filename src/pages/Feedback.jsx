@@ -15,16 +15,18 @@ const Feedback = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-orange-50 py-12">
-      {/* Full-size video above the form */}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-orange-50 py-12 px-2">
+      {/* Responsive video above the form */}
       <div className="w-full flex flex-col items-center mb-8">
         <div className="w-full max-w-3xl flex flex-col items-center">
-          <video
-            src="/FEEDBACK-1.mp4"
-            className="w-full h-auto rounded-lg shadow"
-            controls
-            style={{ display: 'block', maxWidth: '100%' }}
-          />
+          <div className="w-full" style={{ position: 'relative' }}>
+            <video
+              src="/FEEDBACK-1.mp4"
+              className="w-full h-auto rounded-lg shadow"
+              controls
+              style={{ maxWidth: '100%', height: 'auto', display: 'block' }}
+            />
+          </div>
           <div className="mt-2 text-center text-gray-700 text-base max-w-2xl">
             <span className="font-semibold">Feedback from our community:</span> Watch this video to see what people are saying about Path Sarthi Trust!
           </div>
