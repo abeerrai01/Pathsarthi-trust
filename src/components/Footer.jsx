@@ -141,7 +141,8 @@ const Footer = () => {
           </p>
           <p className="text-center text-gray-400 text-sm mt-2">
             Registered with Niti Aayog Darpan, Government of India<br />
-            Registration ID: UP/2022/0317438
+            Registration ID: UP/2022/0317438<br />
+            Registration No.68/2022,( Indian Trust Act 1882)
           </p>
         </div>
       </div>

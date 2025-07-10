@@ -68,7 +68,8 @@ const Navbar = () => {
       items: [
         { to: '/about', label: 'About Us' },
         { to: '/social-media', label: 'Social Media' },
-        { to: '/join-us', label: 'Join Us' }
+        { to: '/join-us', label: 'Join Us' },
+        { to: '/feedback', label: 'Feedback' }
       ]
     },
     { 
