@@ -26,11 +26,10 @@ const Feedback = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-orange-50 py-12">
-      <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
-        <h1 className="text-3xl font-bold text-center text-indigo-800 mb-6">Feedback</h1>
-        {/* Video with play button overlay */}
-        <div className="mb-8 relative w-full aspect-video rounded-lg overflow-hidden shadow">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-orange-50 py-12">
+      {/* Full-width video above the form */}
+      <div className="w-full flex flex-col items-center mb-8">
+        <div className="w-full max-w-3xl aspect-video rounded-lg overflow-hidden shadow relative">
           <video
             ref={videoRef}
             src="/FEEDBACK-1.mp4"
@@ -54,6 +53,13 @@ const Feedback = () => {
             </button>
           )}
         </div>
+        <div className="mt-2 text-center text-gray-700 text-base max-w-2xl">
+          <span className="font-semibold">Feedback from our community:</span> Watch this video to see what people are saying about Path Sarthi Trust!
+        </div>
+      </div>
+      {/* Feedback form card */}
+      <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
+        <h1 className="text-3xl font-bold text-center text-indigo-800 mb-6">Feedback</h1>
         {submitted ? (
           <div className="text-center text-green-700 font-semibold text-lg">Thank you for your feedback!</div>
         ) : (
