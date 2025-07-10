@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 const Feedback = () => {
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', message: '' });
-  const [playing, setPlaying] = useState(false);
-  const videoRef = React.useRef(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,45 +14,20 @@ const Feedback = () => {
     // Here you could send the feedback to your backend or a service
   };
 
-  const handlePlay = () => {
-    setPlaying(true);
-    videoRef.current.play();
-  };
-
-  const handlePause = () => {
-    setPlaying(false);
-  };
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-orange-50 py-12">
-      {/* Full-width video above the form */}
+      {/* Full-size video above the form */}
       <div className="w-full flex flex-col items-center mb-8">
-        <div className="w-full max-w-3xl aspect-video rounded-lg overflow-hidden shadow relative">
+        <div className="w-full max-w-3xl flex flex-col items-center">
           <video
-            ref={videoRef}
             src="/FEEDBACK-1.mp4"
-            className="w-full h-full object-cover rounded-lg"
-            controls={playing}
-            onPause={handlePause}
-            onEnded={handlePause}
-            poster="/banner-1.jpg"
+            className="w-full h-auto rounded-lg shadow"
+            controls
+            style={{ display: 'block', maxWidth: '100%' }}
           />
-          {!playing && (
-            <button
-              onClick={handlePlay}
-              className="absolute inset-0 flex items-center justify-center w-full h-full bg-black bg-opacity-40 hover:bg-opacity-50 transition"
-              style={{ cursor: 'pointer' }}
-              aria-label="Play video"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" fill="rgba(0,0,0,0.5)" />
-                <polygon points="10,8 16,12 10,16" fill="white" />
-              </svg>
-            </button>
-          )}
-        </div>
-        <div className="mt-2 text-center text-gray-700 text-base max-w-2xl">
-          <span className="font-semibold">Feedback from our community:</span> Watch this video to see what people are saying about Path Sarthi Trust!
+          <div className="mt-2 text-center text-gray-700 text-base max-w-2xl">
+            <span className="font-semibold">Feedback from our community:</span> Watch this video to see what people are saying about Path Sarthi Trust!
+          </div>
         </div>
       </div>
       {/* Feedback form card */}
