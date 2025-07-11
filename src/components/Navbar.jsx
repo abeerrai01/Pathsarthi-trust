@@ -1,25 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiveDropdownPath, parentPath = []) {
+function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiveDropdownPath, parentPath = [], isMobile = false) {
   return items.map((item, idx) => {
     const currentPath = [...parentPath, item.label];
     const isOpen = activeDropdownPath.length >= currentPath.length && activeDropdownPath.slice(0, currentPath.length).join('>') === currentPath.join('>');
     const isNested = parentPath.length > 0;
     if (item.type === 'dropdown') {
       return (
-        <div key={item.label + currentPath.join('-')} className="relative group">
+        <div
+          key={item.label + currentPath.join('-')}
+          className={`relative group ${isMobile ? 'w-full' : ''}`}
+          onMouseEnter={!isMobile ? () => setActiveDropdownPath(currentPath) : undefined}
+          onMouseLeave={!isMobile ? () => setActiveDropdownPath(parentPath) : undefined}
+        >
           <button
             onClick={e => {
               e.stopPropagation();
-              if (isOpen) {
-                setActiveDropdownPath(parentPath);
-              } else {
-                setActiveDropdownPath(currentPath);
+              if (isMobile) {
+                if (isOpen) {
+                  setActiveDropdownPath(parentPath);
+                } else {
+                  setActiveDropdownPath(currentPath);
+                }
               }
             }}
-            className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center ${isOpen ? 'bg-indigo-600 text-white shadow' : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'} ${isNested ? 'justify-center w-full text-center' : ''}`}
-            style={isNested ? { justifyContent: 'center', width: '100%', textAlign: 'center' } : {}}
+            className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center ${isOpen ? 'bg-indigo-600 text-white shadow' : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'} ${isNested || isMobile ? 'justify-center w-full text-center' : ''}`}
+            style={(isNested || isMobile) ? { justifyContent: 'center', width: '100%', textAlign: 'center' } : {}}
+            type="button"
+            tabIndex={0}
           >
             {item.label}
             <svg
@@ -32,11 +41,17 @@ function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiv
             </svg>
           </button>
           {isOpen && (
-            <div className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 ${parentPath.length > 0 ? 'ml-48 -mt-8' : ''}`}
-              onMouseLeave={() => setActiveDropdownPath(parentPath)}
-            >
-              {renderDropdownItems(item.items, handleNavClick, activeDropdownPath, setActiveDropdownPath, currentPath)}
-            </div>
+            isMobile ? (
+              <div className="w-full flex flex-col items-center">
+                {renderDropdownItems(item.items, handleNavClick, activeDropdownPath, setActiveDropdownPath, currentPath, true)}
+              </div>
+            ) : (
+              <div className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 ${parentPath.length > 0 ? 'ml-48 -mt-8' : ''}`}
+                // No onMouseLeave here, handled by parent div
+              >
+                {renderDropdownItems(item.items, handleNavClick, activeDropdownPath, setActiveDropdownPath, currentPath, false)}
+              </div>
+            )
           )}
         </div>
       );
@@ -45,7 +60,7 @@ function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiv
         <Link
           key={item.to + currentPath.join('-')}
           to={item.to}
-          className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150"
+          className={`block px-4 py-2 text-sm transition-colors duration-150 ${isMobile ? 'text-center w-full text-gray-800 hover:bg-indigo-50 hover:text-indigo-700' : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'}`}
           onClick={() => handleNavClick(item.to)}
         >
           {item.label}
@@ -235,7 +250,7 @@ const Navbar = () => {
                       {item.label}
                     </Link>
                   ) : (
-                    renderDropdownItems([item], handleNavClick, activeDropdownPath, setActiveDropdownPath)
+                    renderDropdownItems([item], handleNavClick, activeDropdownPath, setActiveDropdownPath, [], true)
                   )}
                 </div>
               ))}
