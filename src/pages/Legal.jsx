@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 const Legal = () => {
   const members = [
     { name: 'Adv.Gurbachan Singh Chawla', gender: 'Male', designation: 'Tax', joinedDate: '2025-07-08', image: '/GURBACHAN SINGH CHAWLA.jpg', fatherName: 'Satnam Singh Chawla', address: 'L/2A, Rampur Garden, Near Agarsen Park, Bareilly', email: 'therajachawla@gmail.com', mobile: '98970 00001', modalImage: '/GURBACHAN SINGH CHAWLA. 1jpg.jpg' },
-    { name: 'Advocate Paramveer Singh', gender: 'Male', designation: 'Criminal', joinedDate: '2025-07-08', image: '/Paramveer singh.jpg', address: 'Baghpat, Uttar Pradesh', mobile: '9758933155' }
+    { name: 'Adv. Paramveer Singh', gender: 'Male', designation: 'Criminal', joinedDate: '2025-07-08', image: '/Paramveer singh.jpg', address: 'Baghpat, Uttar Pradesh', mobile: '9758933155' }
   ];
 
   const formatDate = (dateString) => {
@@ -95,7 +95,7 @@ const Legal = () => {
                   <img
                     src={selectedMember.modalImage ? selectedMember.modalImage : selectedMember.image}
                     alt={selectedMember.name}
-                    className={selectedMember.modalImage || selectedMember.name === 'Advocate Paramveer Singh' ? "w-full max-w-md max-h-72 object-contain border-4 border-indigo-200 shadow mb-4 mx-auto" : "w-full max-w-md h-auto object-contain border-4 border-indigo-200 shadow mb-4 mx-auto"}
+                    className={selectedMember.modalImage || selectedMember.name === 'Adv. Paramveer Singh' ? "w-full max-w-md max-h-72 object-contain border-4 border-indigo-200 shadow mb-4 mx-auto" : "w-full max-w-md h-auto object-contain border-4 border-indigo-200 shadow mb-4 mx-auto"}
                     style={{ borderRadius: '1rem' }}
                   />
                 )}
