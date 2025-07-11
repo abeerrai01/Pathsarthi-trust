@@ -8,7 +8,7 @@ const TEMPLATE_ID = 'template_cikb2vt';
 const PUBLIC_KEY = '0qpshPwH1REx-2KTB';
 
 const JoinUs = () => {
-  const [form, setForm] = useState({ name: '', age: '', email: '', phone: '', district: '', state: '', city: '', hearAbout: '' });
+  const [form, setForm] = useState({ name: '', age: '', email: '', phone: '', district: '', state: '', city: '', hearAbout: '', hearAboutDetail: '' });
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
@@ -105,6 +105,19 @@ const JoinUs = () => {
             <option value="Other">Other</option>
           </select>
         </div>
+        {(form.hearAbout === 'Member Referral' || form.hearAbout === 'Other') && (
+          <div className="mb-4">
+            <label className="block mb-1 font-medium">Please specify</label>
+            <input
+              name="hearAboutDetail"
+              value={form.hearAboutDetail}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+              placeholder={form.hearAbout === 'Member Referral' ? 'Who referred you?' : 'Please specify'}
+              required
+            />
+          </div>
+        )}
         <div className="mb-4 flex items-center">
           <input
             id="youtube-subscribe"
