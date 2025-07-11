@@ -8,7 +8,7 @@ const TEMPLATE_ID = 'template_cikb2vt';
 const PUBLIC_KEY = '0qpshPwH1REx-2KTB';
 
 const JoinUs = () => {
-  const [form, setForm] = useState({ name: '', age: '', email: '', phone: '', district: '', state: '' });
+  const [form, setForm] = useState({ name: '', age: '', email: '', phone: '', district: '', state: '', city: '', hearAbout: '' });
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
@@ -78,6 +78,32 @@ const JoinUs = () => {
         <div className="mb-4">
           <label className="block mb-1 font-medium">City</label>
           <input name="city" value={form.city || ''} onChange={handleChange} required className="w-full border rounded px-3 py-2" />
+        </div>
+        {/* How did you hear about us? (optional dropdown) */}
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">How did you hear about us? <span className="text-gray-400 text-xs">(Optional)</span></label>
+          <select
+            name="hearAbout"
+            value={form.hearAbout || ''}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="">Select an option</option>
+            <option value="Member Referral">Member Referral</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="WhatsApp Group">WhatsApp Group</option>
+            <option value="WhatsApp Status / Story">WhatsApp Status / Story</option>
+            <option value="Campus Ambassador">Campus Ambassador</option>
+            <option value="Poster / Banner">Poster / Banner</option>
+            <option value="YouTube / Shorts">YouTube / Shorts</option>
+            <option value="Email / Newsletter">Email / Newsletter</option>
+            <option value="Pathsarthi Website">Pathsarthi Website</option>
+            <option value="Google Search">Google Search</option>
+            <option value="Event">Event</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
         <div className="mb-4 flex items-center">
           <input
