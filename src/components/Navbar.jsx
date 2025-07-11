@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-function renderDropdownItems(items, handleNavClick, isActive, activeDropdown, toggleDropdown, level = 0) {
+function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiveDropdownPath, parentPath = []) {
   return items.map((item, idx) => {
+    const currentPath = [...parentPath, item.label];
+    const isOpen = activeDropdownPath.length >= currentPath.length && activeDropdownPath.slice(0, currentPath.length).join('>') === currentPath.join('>');
+    const isNested = parentPath.length > 0;
     if (item.type === 'dropdown') {
       return (
-        <div key={item.label + level + idx} className="relative group">
+        <div key={item.label + currentPath.join('-')} className="relative group">
           <button
-            onClick={() => toggleDropdown(item.label)}
-            className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center ${
-              activeDropdown === item.label
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'
-            }`}
+            onClick={e => {
+              e.stopPropagation();
+              if (isOpen) {
+                setActiveDropdownPath(parentPath);
+              } else {
+                setActiveDropdownPath(currentPath);
+              }
+            }}
+            className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center ${isOpen ? 'bg-indigo-600 text-white shadow' : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'} ${isNested ? 'justify-center w-full text-center' : ''}`}
+            style={isNested ? { justifyContent: 'center', width: '100%', textAlign: 'center' } : {}}
           >
             {item.label}
             <svg
-              className={`ml-1 inline-block w-4 h-4 transition-transform duration-200 ${
-                activeDropdown === item.label ? 'rotate-180' : ''
-              }`}
+              className={`ml-1 inline-block w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -26,9 +31,11 @@ function renderDropdownItems(items, handleNavClick, isActive, activeDropdown, to
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          {activeDropdown === item.label && (
-            <div className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 ${level > 0 ? 'ml-48 -mt-8' : ''}`}>
-              {renderDropdownItems(item.items, handleNavClick, isActive, activeDropdown, toggleDropdown, level + 1)}
+          {isOpen && (
+            <div className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 ${parentPath.length > 0 ? 'ml-48 -mt-8' : ''}`}
+              onMouseLeave={() => setActiveDropdownPath(parentPath)}
+            >
+              {renderDropdownItems(item.items, handleNavClick, activeDropdownPath, setActiveDropdownPath, currentPath)}
             </div>
           )}
         </div>
@@ -36,7 +43,7 @@ function renderDropdownItems(items, handleNavClick, isActive, activeDropdown, to
     } else {
       return (
         <Link
-          key={item.to + level + idx}
+          key={item.to + currentPath.join('-')}
           to={item.to}
           className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150"
           onClick={() => handleNavClick(item.to)}
@@ -52,7 +59,7 @@ const Navbar = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [activeDropdownPath, setActiveDropdownPath] = useState([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,17 +71,13 @@ const Navbar = () => {
 
   const handleNavClick = (path) => {
     setIsMobileMenuOpen(false);
-    setActiveDropdown(null);
+    setActiveDropdownPath([]);
     if (location.pathname !== path) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const isActive = (path) => location.pathname === path;
-
-  const toggleDropdown = (dropdown) => {
-    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
-  };
 
   const navItems = [
     { to: '/', label: 'Home', type: 'link' },
@@ -181,7 +184,7 @@ const Navbar = () => {
                     {item.label}
                   </Link>
                 ) : (
-                  renderDropdownItems([item], handleNavClick, isActive, activeDropdown, toggleDropdown)
+                  renderDropdownItems([item], handleNavClick, activeDropdownPath, setActiveDropdownPath)
                 )}
               </div>
             ))}
@@ -232,42 +235,7 @@ const Navbar = () => {
                       {item.label}
                     </Link>
                   ) : (
-                    <div className="w-full">
-                      <button
-                        onClick={() => toggleDropdown(item.label)}
-                        className={`w-full px-4 py-3 rounded-lg text-lg font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center ${
-                          activeDropdown === item.label
-                            ? 'bg-indigo-600 text-white shadow'
-                            : 'text-gray-800 hover:bg-indigo-50 hover:text-indigo-700'
-                        }`}
-                      >
-                        <span>{item.label}</span>
-                        <svg
-                          className={`ml-2 inline-block w-5 h-5 transition-transform duration-200 ${
-                            activeDropdown === item.label ? 'rotate-180' : ''
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-                      {activeDropdown === item.label && (
-                        <div className="mt-2 space-y-1 w-full">
-                          {item.items.map((subItem, subIndex) => (
-                            <Link
-                              key={subIndex}
-                              to={subItem.to}
-                              className="block px-4 py-2 text-base text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150 rounded text-center"
-                              onClick={() => handleNavClick(subItem.to)}
-                            >
-                              {subItem.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    renderDropdownItems([item], handleNavClick, activeDropdownPath, setActiveDropdownPath)
                   )}
                 </div>
               ))}
