@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const Doctor = () => {
   const members = [
-    { name: 'Dr. Example', gender: 'Male', designation: 'Medical Consultant', joinedDate: '2025-07-08', image: '/medical.jpg', fatherName: 'Sample Father', address: '123, Example Street, City', email: 'doctor@example.com', mobile: '90000 00000', modalImage: '/medical.jpg' }
+    { name: 'Dr. Sandeep Bharti', gender: 'Male', designation: 'Health Advisor', joinedDate: '2023-04-01' }
   ];
 
   const formatDate = (dateString) => {
@@ -80,7 +80,7 @@ const Doctor = () => {
           ))}
         </div>
         {selectedMember && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50" onClick={e => { if (e.target === e.currentTarget) setSelectedMember(null); }}>
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full relative">
               <button
                 onClick={() => setSelectedMember(null)}
