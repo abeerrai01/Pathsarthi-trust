@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiveDropdownPath, parentPath = [], isMobile = false) {
+function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiveDropdownPath, parentPath = [], isMobile = false, closeDropdownTimerRef) {
   return items.map((item, idx) => {
     const currentPath = [...parentPath, item.label];
     const isOpen = activeDropdownPath.length >= currentPath.length && activeDropdownPath.slice(0, currentPath.length).join('>') === currentPath.join('>');
@@ -11,8 +11,17 @@ function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiv
         <div
           key={item.label + currentPath.join('-')}
           className={`relative group ${isMobile ? 'w-full' : ''}`}
-          onMouseEnter={!isMobile ? () => setActiveDropdownPath(currentPath) : undefined}
-          onMouseLeave={!isMobile ? () => setActiveDropdownPath(parentPath) : undefined}
+          onMouseEnter={!isMobile ? () => {
+            if (closeDropdownTimerRef && closeDropdownTimerRef.current) clearTimeout(closeDropdownTimerRef.current);
+            setActiveDropdownPath(currentPath);
+          } : undefined}
+          onMouseLeave={!isMobile ? () => {
+            if (closeDropdownTimerRef) {
+              closeDropdownTimerRef.current = setTimeout(() => setActiveDropdownPath(parentPath), 150);
+            } else {
+              setActiveDropdownPath(parentPath);
+            }
+          } : undefined}
         >
           <button
             onClick={e => {
@@ -43,13 +52,24 @@ function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiv
           {isOpen && (
             isMobile ? (
               <div className="w-full flex flex-col items-center">
-                {renderDropdownItems(item.items, handleNavClick, activeDropdownPath, setActiveDropdownPath, currentPath, true)}
+                {renderDropdownItems(item.items, handleNavClick, activeDropdownPath, setActiveDropdownPath, currentPath, true, closeDropdownTimerRef)}
               </div>
             ) : (
-              <div className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 ${parentPath.length > 0 ? 'ml-48 -mt-8' : ''}`}
-                // No onMouseLeave here, handled by parent div
+              <div
+                className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 ${parentPath.length > 0 ? 'ml-48 -mt-8' : ''}`}
+                onMouseEnter={() => {
+                  if (closeDropdownTimerRef && closeDropdownTimerRef.current) clearTimeout(closeDropdownTimerRef.current);
+                  setActiveDropdownPath(currentPath);
+                }}
+                onMouseLeave={() => {
+                  if (closeDropdownTimerRef) {
+                    closeDropdownTimerRef.current = setTimeout(() => setActiveDropdownPath(parentPath), 150);
+                  } else {
+                    setActiveDropdownPath(parentPath);
+                  }
+                }}
               >
-                {renderDropdownItems(item.items, handleNavClick, activeDropdownPath, setActiveDropdownPath, currentPath, false)}
+                {renderDropdownItems(item.items, handleNavClick, activeDropdownPath, setActiveDropdownPath, currentPath, false, closeDropdownTimerRef)}
               </div>
             )
           )}
@@ -75,6 +95,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdownPath, setActiveDropdownPath] = useState([]);
+  const closeDropdownTimerRef = useRef();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -199,7 +220,7 @@ const Navbar = () => {
                     {item.label}
                   </Link>
                 ) : (
-                  renderDropdownItems([item], handleNavClick, activeDropdownPath, setActiveDropdownPath)
+                  renderDropdownItems([item], handleNavClick, activeDropdownPath, setActiveDropdownPath, [], false, closeDropdownTimerRef)
                 )}
               </div>
             ))}
