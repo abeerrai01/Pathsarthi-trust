@@ -95,7 +95,7 @@ const Legal = () => {
                   <img
                     src={selectedMember.modalImage ? selectedMember.modalImage : selectedMember.image}
                     alt={selectedMember.name}
-                    className={selectedMember.modalImage ? "w-full max-w-md max-h-72 object-contain border-4 border-indigo-200 shadow mb-4 mx-auto" : "w-full max-w-md h-auto object-contain border-4 border-indigo-200 shadow mb-4 mx-auto"}
+                    className={selectedMember.modalImage || selectedMember.name === 'Advocate Paramveer Singh' ? "w-full max-w-md max-h-72 object-contain border-4 border-indigo-200 shadow mb-4 mx-auto" : "w-full max-w-md h-auto object-contain border-4 border-indigo-200 shadow mb-4 mx-auto"}
                     style={{ borderRadius: '1rem' }}
                   />
                 )}
