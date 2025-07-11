@@ -37,6 +37,8 @@ import VerifyCertificate from './pages/VerifyCertificate';
 import Supporters from './pages/Supporters';
 import TermsInterns from './pages/TermsInterns';
 import Feedback from './pages/Feedback';
+import Legal from './pages/Legal';
+import Doctor from './pages/Doctor';
 
 function MissionPopup() {
   const [show, setShow] = useState(false);
@@ -198,6 +200,8 @@ function App() {
                 <Route path="/sponsor-notebooks" element={<SponsorNotebooks />} />
                 <Route path="/checkout-notebooks" element={<CheckoutNotebooks />} />
                 <Route path="/trust-members" element={<TrustMembers />} />
+                <Route path="/legal" element={<Legal />} />
+                <Route path="/doctor" element={<Doctor />} />
                 <Route path="/social-media" element={<SocialMedia />} />
                 <Route path="/member" element={<Member />} />
                 <Route path="/join-us" element={<JoinUs />} />

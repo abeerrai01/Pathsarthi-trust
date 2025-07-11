@@ -1,6 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
+function renderDropdownItems(items, handleNavClick, isActive, activeDropdown, toggleDropdown, level = 0) {
+  return items.map((item, idx) => {
+    if (item.type === 'dropdown') {
+      return (
+        <div key={item.label + level + idx} className="relative group">
+          <button
+            onClick={() => toggleDropdown(item.label)}
+            className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center ${
+              activeDropdown === item.label
+                ? 'bg-indigo-600 text-white shadow'
+                : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'
+            }`}
+          >
+            {item.label}
+            <svg
+              className={`ml-1 inline-block w-4 h-4 transition-transform duration-200 ${
+                activeDropdown === item.label ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          {activeDropdown === item.label && (
+            <div className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 ${level > 0 ? 'ml-48 -mt-8' : ''}`}>
+              {renderDropdownItems(item.items, handleNavClick, isActive, activeDropdown, toggleDropdown, level + 1)}
+            </div>
+          )}
+        </div>
+      );
+    } else {
+      return (
+        <Link
+          key={item.to + level + idx}
+          to={item.to}
+          className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150"
+          onClick={() => handleNavClick(item.to)}
+        >
+          {item.label}
+        </Link>
+      );
+    }
+  });
+}
+
 const Navbar = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -59,7 +106,15 @@ const Navbar = () => {
       items: [
         { to: '/trust-members', label: 'Board of Trustee' },
         { to: '/member', label: 'Member' },
-        { to: '/supporters', label: 'Supporters' }
+        { to: '/supporters', label: 'Supporters' },
+        {
+          label: 'Consultant',
+          type: 'dropdown',
+          items: [
+            { to: '/legal', label: 'Legal' },
+            { to: '/doctor', label: 'Doctor' }
+          ]
+        }
       ]
     },
     { 
@@ -126,43 +181,7 @@ const Navbar = () => {
                     {item.label}
                   </Link>
                 ) : (
-                  <div className="relative">
-                    <button
-                      onClick={() => toggleDropdown(item.label)}
-                      className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
-                        activeDropdown === item.label
-                          ? 'bg-indigo-600 text-white shadow'
-                          : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'
-                      }`}
-                    >
-                      {item.label}
-                      <svg
-                        className={`ml-1 inline-block w-4 h-4 transition-transform duration-200 ${
-                          activeDropdown === item.label ? 'rotate-180' : ''
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    
-                    {activeDropdown === item.label && (
-                      <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                        {item.items.map((subItem, subIndex) => (
-                          <Link
-                            key={subIndex}
-                            to={subItem.to}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150"
-                            onClick={() => handleNavClick(subItem.to)}
-                          >
-                            {subItem.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  renderDropdownItems([item], handleNavClick, isActive, activeDropdown, toggleDropdown)
                 )}
               </div>
             ))}
