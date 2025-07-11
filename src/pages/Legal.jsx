@@ -81,7 +81,7 @@ const Legal = () => {
           ))}
         </div>
         {selectedMember && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50" onClick={e => { if (e.target === e.currentTarget) setSelectedMember(null); }}>
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full relative">
               <button
                 onClick={() => setSelectedMember(null)}
