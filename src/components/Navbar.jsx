@@ -111,11 +111,11 @@ const Navbar = () => {
         { to: '/member', label: 'Member' },
         { to: '/supporters', label: 'Supporters' },
         {
-          label: 'Consultant',
+          label: 'Advisory Volunteers',
           type: 'dropdown',
           items: [
-            { to: '/legal', label: 'Legal' },
-            { to: '/doctor', label: 'Doctor' }
+            { to: '/legal', label: 'Legal Advisory Volunteers' },
+            { to: '/doctor', label: 'Health Advisory Volunteers' }
           ]
         }
       ]

@@ -30,9 +30,9 @@ const Doctor = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl font-bold mb-6">Doctor Consultant</h1>
+          <h1 className="text-4xl font-bold mb-6">Health Advisory Volunteers</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Meet our doctor consultant who supports Path Sarthi Trust in health and medical matters.
+            Meet our health advisory volunteers who support Path Sarthi Trust in health and medical matters.
           </p>
         </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -121,6 +121,9 @@ const Doctor = () => {
             </div>
           </div>
         )}
+      </div>
+      <div className="mt-12 text-center text-xs text-gray-500 max-w-2xl mx-auto">
+        Disclaimer: All professionals listed under this section are independent experts volunteering their time to provide general guidance for Pathsarthi Trust members. Pathsarthi Trust does not charge any fees, nor guarantee or control the advice given. Any consultation is purely voluntary and should not be considered as official or paid service by the Trust. Always verify with a certified professional for legal or medical decisions.
       </div>
     </div>
   );
