@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 // Import db from the correct config path
 import { db } from "../config/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const RazorpayButton = ({ amount, name = "Anonymous", onSuccess }) => {
+  useEffect(() => {
+    if (!window.Razorpay) {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
   const payNow = () => {
+    if (!window.Razorpay) {
+      alert("Razorpay SDK failed to load. Please try again later.");
+      return;
+    }
+
     const options = {
       key: "rzp_live_lrTbKMU5YpM6UD", // Updated to your live Razorpay key
       amount: amount * 100,
