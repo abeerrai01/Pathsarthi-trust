@@ -31,25 +31,39 @@ const PhotoUploadAdmin = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [previews, setPreviews] = useState([]);
 
-  // Fetch existing headings on mount
+  // Fetch existing headings on mount and after upload
+  const fetchHeadings = async () => {
+    const snap = await getDocs(collection(db, "gallery"));
+    // Prevent duplicate headings
+    const uniqueHeadings = [];
+    const seen = new Set();
+    snap.docs.forEach((doc) => {
+      const heading = doc.data().heading;
+      if (heading && !seen.has(heading)) {
+        uniqueHeadings.push({ id: doc.id, heading });
+        seen.add(heading);
+      }
+    });
+    setHeadings(uniqueHeadings);
+  };
+
   useEffect(() => {
-    const fetchHeadings = async () => {
-      const snap = await getDocs(collection(db, "gallery"));
-      // Prevent duplicate headings
-      const uniqueHeadings = [];
-      const seen = new Set();
-      snap.docs.forEach((doc) => {
-        const heading = doc.data().heading;
-        if (heading && !seen.has(heading)) {
-          uniqueHeadings.push({ id: doc.id, heading });
-          seen.add(heading);
-        }
-      });
-      setHeadings(uniqueHeadings);
-    };
     fetchHeadings();
   }, []);
+
+  // Show image previews
+  useEffect(() => {
+    if (!files.length) {
+      setPreviews([]);
+      return;
+    }
+    const arr = Array.from(files).map(file => URL.createObjectURL(file));
+    setPreviews(arr);
+    // Cleanup
+    return () => arr.forEach(url => URL.revokeObjectURL(url));
+  }, [files]);
 
   const handleUpload = async () => {
     setMessage("");
@@ -76,14 +90,25 @@ const PhotoUploadAdmin = () => {
           };
         })
       );
+      // Prevent duplicate image URLs in this batch
+      const uniqueUploads = uploadResults.filter((img, idx, arr) =>
+        arr.findIndex(i => i.imageUrl === img.imageUrl) === idx
+      );
       if (selectedHeadingId) {
-        // Existing heading: append images
+        // Existing heading: append images (no overwrite)
         const docRef = doc(db, "gallery", selectedHeadingId);
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) throw new Error("Heading not found");
         const oldImages = docSnap.data().images || [];
+        // Prevent duplicate image URLs (old + new)
+        const allImages = [...oldImages];
+        uniqueUploads.forEach(img => {
+          if (!allImages.some(i => i.imageUrl === img.imageUrl)) {
+            allImages.push(img);
+          }
+        });
         await updateDoc(docRef, {
-          images: [...oldImages, ...uploadResults],
+          images: allImages,
         });
       } else {
         // Check for duplicate heading
@@ -98,12 +123,15 @@ const PhotoUploadAdmin = () => {
         await addDoc(collection(db, "gallery"), {
           heading: headingToUse,
           createdAt: serverTimestamp(),
-          images: uploadResults,
+          images: uniqueUploads,
         });
       }
       setMessage("Upload successful!");
       setFiles([]);
       setNewHeading("");
+      setSelectedHeadingId("");
+      setPreviews([]);
+      await fetchHeadings(); // Reload headings
     } catch (err) {
       setMessage("Error: " + (err.message || err));
     }
@@ -150,12 +178,12 @@ const PhotoUploadAdmin = () => {
           onChange={(e) => setFiles(e.target.files)}
           className="w-full"
         />
-        {files.length > 0 && (
-          <ul className="mt-2 text-sm text-gray-700 list-disc list-inside">
-            {Array.from(files).map((file, idx) => (
-              <li key={idx}>{file.name}</li>
+        {previews.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {previews.map((url, idx) => (
+              <img key={idx} src={url} alt="preview" className="h-20 w-20 object-cover rounded border" />
             ))}
-          </ul>
+          </div>
         )}
       </div>
       <button
