@@ -4,6 +4,7 @@ import AdminNavbar from "./AdminNavbar";
 import MultiPhotoUpload from "./MultiPhotoUpload";
 import PhotoUpload from "./PhotoUpload";
 import GalleryManager from "./GalleryManager";
+import PhotoUploadAdmin from '../PhotoUploadAdmin';
 import { onSnapshot, doc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { Line, Bar, Pie } from 'react-chartjs-2';
@@ -325,6 +326,7 @@ const DashboardLayout = () => {
             <Button onClick={() => handleNav("multi-upload")}>🖼️ Multi-Image Upload</Button>
             <Button onClick={() => handleNav("single-upload")}>📷 Single Photo Upload</Button>
             <Button onClick={() => handleNav("gallery-manager")}>🗑️ Manage Gallery</Button>
+            <Button onClick={() => handleNav("gallery-group-upload")}>🖼️ Gallery Group Upload</Button>
             <Button onClick={() => handleNav("team")}>🧑‍🤝‍🧑 Team Members</Button>
             <Button onClick={() => handleNav("mission")}>🎯 Update Mission</Button>
             <Button onClick={() => handleNav("analytics")}>📊 Website Analytics</Button>
@@ -355,6 +357,7 @@ const DashboardLayout = () => {
           {activeSection === "multi-upload" && <MultiPhotoUpload />}
           {activeSection === "single-upload" && <PhotoUpload />}
           {activeSection === "gallery-manager" && <GalleryManager />}
+          {activeSection === "gallery-group-upload" && <PhotoUploadAdmin />}
           {activeSection === "team" && <TeamMembers />}
           {activeSection === "mission" && <UpdateMission />}
           {activeSection === "analytics" && <AnalyticsPanel />}
