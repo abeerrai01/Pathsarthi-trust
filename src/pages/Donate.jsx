@@ -1,18 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import PaymentModal from '../components/PaymentModal';
+import RazorpayButton from '../components/RazorpayButton';
 
 const Donate = () => {
-  const [selectedAmount, setSelectedAmount] = useState('');
+  const [selectedAmount, setSelectedAmount] = useState('500');
   const [customAmount, setCustomAmount] = useState('');
-  const [isMobile, setIsMobile] = useState(false);
-  const [showQR, setShowQR] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-
-  useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    setIsMobile(/android|iphone|ipad|ipod/i.test(userAgent.toLowerCase()));
-  }, []);
+  const [name, setName] = useState('');
+  const [thankYou, setThankYou] = useState(false);
 
   const donationAmounts = [
     { value: '500', label: '₹500' },
@@ -60,22 +54,18 @@ const Donate = () => {
     },
   ];
 
-  const handleDonateSubmit = (e) => {
-    e.preventDefault();
-    const amount = customAmount || selectedAmount;
-    if (isMobile) {
-      setShowPaymentModal(true);
-    } else {
-      setShowQR(true);
-    }
+  const getAmount = () => {
+    if (customAmount) return Number(customAmount);
+    return Number(selectedAmount);
   };
 
-  const upiId = 'pathsarthi2022-1@okaxis';
+  const handleSuccess = () => {
+    setThankYou(true);
+  };
 
   return (
     <div className="py-12">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -87,9 +77,7 @@ const Donate = () => {
             Your generous donation helps us continue our mission of empowering communities and creating lasting positive change.
           </p>
         </motion.div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Donation Form */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -97,118 +85,75 @@ const Donate = () => {
           >
             <div className="bg-white rounded-lg shadow-sm p-8">
               <h2 className="text-2xl font-semibold mb-6">Make a Donation</h2>
-              <form onSubmit={handleDonateSubmit}>
-                <div className="mb-6">
-                  <label className="block text-gray-700 mb-4">Select Amount</label>
-                  <div className="grid grid-cols-2 gap-4">
-                    {donationAmounts.map((amount) => (
-                      <button
-                        key={amount.value}
-                        type="button"
-                        onClick={() => {
-                          setSelectedAmount(amount.value);
-                          setCustomAmount('');
-                        }}
-                        className={`py-3 px-4 rounded-lg border-2 font-medium transition-colors ${
-                          selectedAmount === amount.value
-                            ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
-                            : 'border-gray-200 hover:border-indigo-600 hover:bg-indigo-50'
-                        }`}
-                      >
-                        {amount.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <label className="block text-gray-700 mb-2">Custom Amount</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+              {!thankYou ? (
+                <>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2">Your Name</label>
                     <input
-                      type="number"
-                      value={customAmount}
-                      onChange={(e) => {
-                        setCustomAmount(e.target.value);
-                        setSelectedAmount('');
-                      }}
-                      placeholder="Enter amount"
-                      className="w-full pl-8 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-indigo-600 focus:ring-0"
+                      type="text"
+                      value={name}
+                      onChange={e => setName(e.target.value)}
+                      placeholder="Enter your name"
+                      className="w-full border-2 border-gray-200 rounded-lg p-2"
                     />
                   </div>
-                </div>
-
-                {/* UPI Payment Section */}
-                <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-                  <h3 className="text-lg font-semibold mb-4">Pay via UPI</h3>
-                  {isMobile ? (
-                    <button
-                      type="submit"
-                      className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
-                    >
-                      <span>Pay with Google Pay / UPI</span>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </button>
-                  ) : (
-                    <>
-                      {!showQR ? (
+                  <div className="mb-6">
+                    <label className="block text-gray-700 mb-4">Select Amount</label>
+                    <div className="grid grid-cols-2 gap-4">
+                      {donationAmounts.map((amount) => (
                         <button
-                          type="submit"
-                          className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
+                          key={amount.value}
+                          type="button"
+                          onClick={() => {
+                            setSelectedAmount(amount.value);
+                            setCustomAmount('');
+                          }}
+                          className={`py-3 px-4 rounded-lg border-2 font-medium transition-colors ${
+                            selectedAmount === amount.value
+                              ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
+                              : 'border-gray-200 hover:border-indigo-600 hover:bg-indigo-50'
+                          }`}
                         >
-                          <span>Proceed to Pay</span>
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                          </svg>
+                          {amount.label}
                         </button>
-                      ) : (
-                        <div className="text-center">
-                          <img
-                            src="/Qr-code-3.jpg"
-                            alt="Scan to Donate"
-                            className="w-48 mx-auto mb-4 rounded-lg border"
-                          />
-                          <p className="text-gray-600 text-sm mb-2">
-                            Scan using Google Pay, PhonePe, Paytm, or any UPI app
-                          </p>
-                          <div className="mt-4">
-                            <p className="text-sm font-medium">UPI ID:</p>
-                            <p className="text-blue-600 font-mono">{upiId}</p>
-                            <button
-                              type="button"
-                              className="mt-2 text-sm underline text-green-600"
-                              onClick={() => {
-                                navigator.clipboard.writeText(upiId);
-                                alert('UPI ID copied to clipboard!');
-                              }}
-                            >
-                              Copy UPI ID
-                            </button>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setShowQR(false)}
-                            className="mt-4 text-sm text-gray-600 hover:text-gray-800"
-                          >
-                            ← Back to amount selection
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  )}
+                      ))}
+                    </div>
+                  </div>
+                  <div className="mb-6">
+                    <label className="block text-gray-700 mb-2">Custom Amount</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+                      <input
+                        type="number"
+                        value={customAmount}
+                        onChange={e => {
+                          setCustomAmount(e.target.value);
+                          setSelectedAmount('');
+                        }}
+                        placeholder="Enter amount"
+                        className="w-full pl-8 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-indigo-600 focus:ring-0"
+                      />
+                    </div>
+                  </div>
+                  <RazorpayButton amount={getAmount()} name={name || 'Anonymous'} onSuccess={handleSuccess} />
+                </>
+              ) : (
+                <div className="bg-green-50 p-6 rounded shadow text-center">
+                  <h2 className="text-xl font-semibold text-green-800 mb-4">Thank You, {name || 'Donor'}! 🙏</h2>
+                  <p className="text-gray-700 mb-2">
+                    Your generous donation has been successfully received. We are deeply grateful for your support towards Path Sarthi Trust and our mission to bring positive change in society.
+                  </p>
+                  <p className="text-gray-700 mb-4">
+                    With your contribution, we can reach more children, uplift more families, and create a better future.
+                  </p>
+                  <p className="text-sm text-gray-600">📧 pathsarthi2022@gmail.com</p>
+                  <p className="text-sm text-gray-600">🌐 www.pathsarthi.in</p>
+                  <p className="text-sm text-gray-600">📱 Instagram: @pathsarthi</p>
+                  <p className="text-sm text-gray-600">📞 8958421200</p>
                 </div>
-
-                <p className="text-sm text-gray-500 mt-4 text-center">
-                  All donations are tax-deductible. You will receive a receipt via email.
-                </p>
-              </form>
+              )}
             </div>
-            <PaymentModal open={showPaymentModal} onClose={() => setShowPaymentModal(false)} />
           </motion.div>
-
-          {/* Impact Information */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -233,7 +178,6 @@ const Donate = () => {
                   </motion.div>
                 ))}
               </div>
-
               <div className="mt-8 p-6 bg-indigo-50 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Why Donate to Path Sarthi Trust?</h3>
                 <ul className="space-y-3 text-gray-600">
@@ -257,7 +201,6 @@ const Donate = () => {
                   </li>
                 </ul>
               </div>
-
               <div className="mt-8 text-center">
                 <p className="text-xl text-gray-600 italic">
                   "It's not how much we give, but how much love we put into giving." — Mother Teresa

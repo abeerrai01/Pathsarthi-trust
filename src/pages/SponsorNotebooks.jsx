@@ -1,23 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import PaymentModal from '../components/PaymentModal';
+import RazorpayButton from '../components/RazorpayButton';
 
 const SponsorNotebooks = () => {
   const [quantity, setQuantity] = useState(1);
-  const [isMobile, setIsMobile] = useState(false);
-  const [showQR, setShowQR] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [thankYou, setThankYou] = useState(false);
   const pricePerNotebook = 25;
-
-  useEffect(() => {
-    const checkMobile = () => {
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      setIsMobile(/android|iphone|ipad|ipod/i.test(userAgent.toLowerCase()));
-    };
-    checkMobile();
-  }, []);
 
   const handleQuantityChange = (e) => {
     const value = parseInt(e.target.value);
@@ -36,18 +25,13 @@ const SponsorNotebooks = () => {
     }
   };
 
-  const handleSponsorNow = () => {
-    if (isMobile) {
-      setShowPaymentModal(true);
-    } else {
-      setShowQR(true);
-    }
+  const handleSuccess = () => {
+    setThankYou(true);
   };
 
   return (
     <div className="py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Notebook Sponsorship Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -59,9 +43,7 @@ const SponsorNotebooks = () => {
             Help provide essential learning tools to children in need. Each notebook you sponsor makes a direct impact on a child's education journey.
           </p>
         </motion.div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          {/* Notebook Image */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -74,16 +56,24 @@ const SponsorNotebooks = () => {
               className="w-48 h-48 object-contain border-2 border-gray-300 rounded-lg p-2"
             />
           </motion.div>
-
-          {/* Sponsorship Form */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="bg-white rounded-lg shadow-sm p-8"
           >
-            {!showQR ? (
+            {!thankYou ? (
               <>
+                <div className="mb-4">
+                  <label className="block text-gray-700 mb-2">Your Name</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    placeholder="Enter your name"
+                    className="w-full border-2 border-gray-200 rounded-lg p-2"
+                  />
+                </div>
                 <div className="mb-8">
                   <h2 className="text-2xl font-semibold mb-4">Select Quantity</h2>
                   <div className="flex items-center justify-center space-x-4">
@@ -112,45 +102,29 @@ const SponsorNotebooks = () => {
                     </button>
                   </div>
                 </div>
-
                 <div className="text-center mb-8">
                   <p className="text-gray-600 mb-2">Price per notebook: ₹{pricePerNotebook}</p>
                   <p className="text-2xl font-bold text-indigo-600">Total: ₹{quantity * pricePerNotebook}</p>
                 </div>
-
-                <button
-                  onClick={handleSponsorNow}
-                  className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
-                >
-                  Sponsor Now
-                </button>
-                <PaymentModal open={showPaymentModal} onClose={() => setShowPaymentModal(false)} />
+                <RazorpayButton amount={quantity * pricePerNotebook} name={name || 'Anonymous'} onSuccess={handleSuccess} />
               </>
             ) : (
-              <div className="text-center">
-                <h2 className="text-2xl font-semibold mb-4">Scan to Pay</h2>
-                <img
-                  src="/Qr-code-3.jpg"
-                  alt="Scan to Pay"
-                  className="w-48 mx-auto mb-4 rounded-lg border"
-                />
-                <p className="text-gray-600 text-sm mb-4">
-                  Scan using any UPI app to pay ₹{quantity * pricePerNotebook}
+              <div className="bg-green-50 p-6 rounded shadow text-center">
+                <h2 className="text-xl font-semibold text-green-800 mb-4">Thank You, {name || 'Donor'}! 🙏</h2>
+                <p className="text-gray-700 mb-2">
+                  Your sponsorship has been received. Thank you for helping children get the tools they need to learn and grow!
                 </p>
-                <p className="text-sm font-medium mb-2">UPI ID:</p>
-                <p className="text-blue-600 font-mono mb-4">Path Sarthi2022-1@okaxis</p>
-                <button
-                  onClick={() => setShowQR(false)}
-                  className="text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  ← Back to quantity selection
-                </button>
+                <p className="text-gray-700 mb-4">
+                  Every notebook you sponsor brings a child closer to their dreams.
+                </p>
+                <p className="text-sm text-gray-600">📧 pathsarthi2022@gmail.com</p>
+                <p className="text-sm text-gray-600">🌐 www.pathsarthi.in</p>
+                <p className="text-sm text-gray-600">📱 Instagram: @pathsarthi</p>
+                <p className="text-sm text-gray-600">📞 8958421200</p>
               </div>
             )}
           </motion.div>
         </div>
-
-        {/* Aarav's Story Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
