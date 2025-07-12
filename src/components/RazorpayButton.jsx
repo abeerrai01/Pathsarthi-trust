@@ -50,7 +50,7 @@ const RazorpayButton = ({ amount, name = "Anonymous", onSuccess }) => {
   };
 
   return (
-    <button onClick={payNow} className="bg-green-600 text-white px-5 py-2 rounded-md">
+    <button onClick={payNow} className="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-green-700 transition-all duration-300">
       Pay ₹{amount}
     </button>
   );
