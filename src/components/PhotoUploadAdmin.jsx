@@ -10,20 +10,18 @@ import {
   serverTimestamp,
   query,
   where,
+  Timestamp,
 } from "firebase/firestore";
+import axios from "axios";
 
-// Helper to upload a single image to Cloudinary
+// Helper to upload a single image to Cloudinary using Axios
 async function uploadToCloudinary(file) {
   const url = `https://api.cloudinary.com/v1_1/dgmhz64fs/image/upload`;
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", "admin-uploads");
-  const res = await fetch(url, {
-    method: "POST",
-    body: formData,
-  });
-  if (!res.ok) throw new Error("Cloudinary upload failed");
-  return res.json();
+  const res = await axios.post(url, formData);
+  return res.data;
 }
 
 const PhotoUploadAdmin = () => {
@@ -74,7 +72,7 @@ const PhotoUploadAdmin = () => {
           const result = await uploadToCloudinary(file);
           return {
             imageUrl: result.secure_url,
-            uploadedAt: new Date(), // Will be replaced with serverTimestamp in Firestore
+            uploadedAt: Timestamp.now(),
           };
         })
       );
@@ -85,7 +83,7 @@ const PhotoUploadAdmin = () => {
         if (!docSnap.exists()) throw new Error("Heading not found");
         const oldImages = docSnap.data().images || [];
         await updateDoc(docRef, {
-          images: [...oldImages, ...uploadResults.map(img => ({...img, uploadedAt: serverTimestamp()}))],
+          images: [...oldImages, ...uploadResults],
         });
       } else {
         // Check for duplicate heading
@@ -100,14 +98,14 @@ const PhotoUploadAdmin = () => {
         await addDoc(collection(db, "gallery"), {
           heading: headingToUse,
           createdAt: serverTimestamp(),
-          images: uploadResults.map(img => ({...img, uploadedAt: serverTimestamp()})),
+          images: uploadResults,
         });
       }
       setMessage("Upload successful!");
       setFiles([]);
       setNewHeading("");
     } catch (err) {
-      setMessage("Error: " + err.message);
+      setMessage("Error: " + (err.message || err));
     }
     setLoading(false);
   };
@@ -152,6 +150,13 @@ const PhotoUploadAdmin = () => {
           onChange={(e) => setFiles(e.target.files)}
           className="w-full"
         />
+        {files.length > 0 && (
+          <ul className="mt-2 text-sm text-gray-700 list-disc list-inside">
+            {Array.from(files).map((file, idx) => (
+              <li key={idx}>{file.name}</li>
+            ))}
+          </ul>
+        )}
       </div>
       <button
         onClick={handleUpload}

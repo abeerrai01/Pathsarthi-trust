@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
-import MultiPhotoUpload from "./MultiPhotoUpload";
-import PhotoUpload from "./PhotoUpload";
 import GalleryManager from "./GalleryManager";
 import PhotoUploadAdmin from '../PhotoUploadAdmin';
 import { onSnapshot, doc, collection, getDocs } from 'firebase/firestore';
@@ -289,7 +287,7 @@ const AnalyticsPanel = () => {
 };
 
 const DashboardLayout = () => {
-  const [activeSection, setActiveSection] = useState("multi-upload");
+  const [activeSection, setActiveSection] = useState("gallery-group-upload");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -323,8 +321,6 @@ const DashboardLayout = () => {
             }`}
           >
             <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
-            <Button onClick={() => handleNav("multi-upload")}>🖼️ Multi-Image Upload</Button>
-            <Button onClick={() => handleNav("single-upload")}>📷 Single Photo Upload</Button>
             <Button onClick={() => handleNav("gallery-manager")}>🗑️ Manage Gallery</Button>
             <Button onClick={() => handleNav("gallery-group-upload")}>🖼️ Gallery Group Upload</Button>
             <Button onClick={() => handleNav("team")}>🧑‍🤝‍🧑 Team Members</Button>
@@ -354,8 +350,6 @@ const DashboardLayout = () => {
         </div>
         {/* Main Content */}
         <div className="flex-1 p-4 md:p-8 overflow-auto">
-          {activeSection === "multi-upload" && <MultiPhotoUpload />}
-          {activeSection === "single-upload" && <PhotoUpload />}
           {activeSection === "gallery-manager" && <GalleryManager />}
           {activeSection === "gallery-group-upload" && <PhotoUploadAdmin />}
           {activeSection === "team" && <TeamMembers />}
