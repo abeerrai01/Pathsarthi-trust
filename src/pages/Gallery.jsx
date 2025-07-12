@@ -13,17 +13,18 @@ const Gallery = () => {
       const snapshot = await getDocs(q);
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setPhotos(data);
+      // Debug: log what we get
+      console.log("Gallery data:", data);
     };
-
     fetchPhotos();
   }, []);
 
-  // Group photos by heading
-  const grouped = photos.reduce((acc, photo) => {
-    if (!acc[photo.heading]) acc[photo.heading] = [];
-    acc[photo.heading].push(photo);
-    return acc;
-  }, {});
+  // Group images by heading (flatten all images in each doc)
+  const grouped = {};
+  photos.forEach(doc => {
+    if (!grouped[doc.heading]) grouped[doc.heading] = [];
+    (doc.images || []).forEach(img => grouped[doc.heading].push({ ...img, docId: doc.id }));
+  });
 
   const toggleHeading = (heading) => {
     setExpandedHeadings(prev =>
@@ -66,9 +67,9 @@ const Gallery = () => {
                     {(expandedHeadings.includes(heading)
                       ? grouped[heading]
                       : grouped[heading].slice(0, previewCount)
-                    ).map((photo, index) => (
+                    ).map((img, index) => (
                       <motion.div
-                        key={photo.id}
+                        key={img.imageUrl + index}
                         layout
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -77,7 +78,7 @@ const Gallery = () => {
                         className="bg-white p-2 rounded shadow"
                       >
                         <img
-                          src={photo.imageUrl.replace('/upload/', '/upload/q_auto,f_auto/')}
+                          src={img.imageUrl.replace('/upload/', '/upload/q_auto,f_auto/')}
                           alt={heading}
                           className="w-full h-auto object-contain"
                         />

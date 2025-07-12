@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import GalleryManager from "./GalleryManager";
 import PhotoUploadAdmin from '../PhotoUploadAdmin';
+import EditGalleryHeadings from '../EditGalleryHeadings';
 import { onSnapshot, doc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { Line, Bar, Pie } from 'react-chartjs-2';
@@ -326,6 +327,7 @@ const DashboardLayout = () => {
             <Button onClick={() => handleNav("team")}>🧑‍🤝‍🧑 Team Members</Button>
             <Button onClick={() => handleNav("mission")}>🎯 Update Mission</Button>
             <Button onClick={() => handleNav("analytics")}>📊 Website Analytics</Button>
+            <Button onClick={() => handleNav("edit-gallery-headings")}>✏️ Edit Gallery Headings</Button>
             <Link
               to="/admin/certificates"
               className="block w-full text-left px-4 py-2 rounded transition font-medium bg-green-600 hover:bg-green-700 text-white mt-2"
@@ -355,6 +357,7 @@ const DashboardLayout = () => {
           {activeSection === "team" && <TeamMembers />}
           {activeSection === "mission" && <UpdateMission />}
           {activeSection === "analytics" && <AnalyticsPanel />}
+          {activeSection === "edit-gallery-headings" && <EditGalleryHeadings />}
         </div>
       </div>
     </div>
