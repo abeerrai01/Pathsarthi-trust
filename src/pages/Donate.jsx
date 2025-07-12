@@ -140,7 +140,7 @@ const Donate = () => {
                   <RazorpayButton amount={getAmount()} name={name || 'Anonymous'} onSuccess={handleSuccess} />
                   <button
                     type="button"
-                    className="w-full mt-4 bg-orange-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+                    className="w-full mt-4 bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
                     onClick={() => setShowQRModal(true)}
                   >
                     Pay with QR code / Mobile Number (Faster, No Extra Charges)
