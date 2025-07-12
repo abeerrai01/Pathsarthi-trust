@@ -19,11 +19,17 @@ const Gallery = () => {
     fetchPhotos();
   }, []);
 
-  // Group images by heading (flatten all images in each doc)
+  // Group images by heading (flatten all images in each doc, support old and new format)
   const grouped = {};
   photos.forEach(doc => {
+    let images = [];
+    if (doc.images && doc.images.length) {
+      images = doc.images;
+    } else if (doc.imageUrl) {
+      images = [{ imageUrl: doc.imageUrl }];
+    }
     if (!grouped[doc.heading]) grouped[doc.heading] = [];
-    (doc.images || []).forEach(img => grouped[doc.heading].push({ ...img, docId: doc.id }));
+    images.forEach(img => grouped[doc.heading].push({ ...img, docId: doc.id }));
   });
 
   const toggleHeading = (heading) => {
