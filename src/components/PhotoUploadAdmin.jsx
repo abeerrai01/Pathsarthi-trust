@@ -8,6 +8,8 @@ import {
   doc,
   getDoc,
   serverTimestamp,
+  query,
+  where,
 } from "firebase/firestore";
 
 // Helper to upload a single image to Cloudinary
@@ -26,7 +28,7 @@ async function uploadToCloudinary(file) {
 
 const PhotoUploadAdmin = () => {
   const [headings, setHeadings] = useState([]);
-  const [selectedHeading, setSelectedHeading] = useState("");
+  const [selectedHeadingId, setSelectedHeadingId] = useState("");
   const [newHeading, setNewHeading] = useState("");
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -35,10 +37,18 @@ const PhotoUploadAdmin = () => {
   // Fetch existing headings on mount
   useEffect(() => {
     const fetchHeadings = async () => {
-      const snap = await getDocs(collection(db, "galleryGroups"));
-      setHeadings(
-        snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-      );
+      const snap = await getDocs(collection(db, "gallery"));
+      // Prevent duplicate headings
+      const uniqueHeadings = [];
+      const seen = new Set();
+      snap.docs.forEach((doc) => {
+        const heading = doc.data().heading;
+        if (heading && !seen.has(heading)) {
+          uniqueHeadings.push({ id: doc.id, heading });
+          seen.add(heading);
+        }
+      });
+      setHeadings(uniqueHeadings);
     };
     fetchHeadings();
   }, []);
@@ -49,7 +59,9 @@ const PhotoUploadAdmin = () => {
       setMessage("Please select images to upload.");
       return;
     }
-    let headingToUse = selectedHeading || newHeading.trim();
+    let headingToUse = selectedHeadingId
+      ? headings.find((h) => h.id === selectedHeadingId)?.heading
+      : newHeading.trim();
     if (!headingToUse) {
       setMessage("Please select or enter a heading.");
       return;
@@ -62,25 +74,33 @@ const PhotoUploadAdmin = () => {
           const result = await uploadToCloudinary(file);
           return {
             imageUrl: result.secure_url,
-            uploadedAt: serverTimestamp(),
+            uploadedAt: new Date(), // Will be replaced with serverTimestamp in Firestore
           };
         })
       );
-      if (selectedHeading) {
+      if (selectedHeadingId) {
         // Existing heading: append images
-        const docRef = doc(db, "galleryGroups", selectedHeading);
+        const docRef = doc(db, "gallery", selectedHeadingId);
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) throw new Error("Heading not found");
         const oldImages = docSnap.data().images || [];
         await updateDoc(docRef, {
-          images: [...oldImages, ...uploadResults],
+          images: [...oldImages, ...uploadResults.map(img => ({...img, uploadedAt: serverTimestamp()}))],
         });
       } else {
+        // Check for duplicate heading
+        const q = query(collection(db, "gallery"), where("heading", "==", headingToUse));
+        const qSnap = await getDocs(q);
+        if (!qSnap.empty) {
+          setMessage("A gallery with this heading already exists. Please select it from the dropdown.");
+          setLoading(false);
+          return;
+        }
         // New heading: create doc
-        await addDoc(collection(db, "galleryGroups"), {
+        await addDoc(collection(db, "gallery"), {
           heading: headingToUse,
           createdAt: serverTimestamp(),
-          images: uploadResults,
+          images: uploadResults.map(img => ({...img, uploadedAt: serverTimestamp()})),
         });
       }
       setMessage("Upload successful!");
@@ -99,9 +119,9 @@ const PhotoUploadAdmin = () => {
         <label className="block font-medium mb-1">Select Existing Heading</label>
         <select
           className="w-full border rounded px-3 py-2"
-          value={selectedHeading}
+          value={selectedHeadingId}
           onChange={(e) => {
-            setSelectedHeading(e.target.value);
+            setSelectedHeadingId(e.target.value);
             setNewHeading("");
           }}
         >
@@ -119,7 +139,7 @@ const PhotoUploadAdmin = () => {
           className="w-full border rounded px-3 py-2"
           value={newHeading}
           onChange={(e) => setNewHeading(e.target.value)}
-          disabled={!!selectedHeading}
+          disabled={!!selectedHeadingId}
           placeholder="Enter new heading"
         />
       </div>
