@@ -1,6 +1,6 @@
 import React from "react";
-// Make sure to create src/firebase.js with your Firebase config
-import { db } from "../firebase";
+// Import db from the correct config path
+import { db } from "../config/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const RazorpayButton = ({ amount, name = "Anonymous", onSuccess }) => {
