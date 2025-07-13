@@ -15,11 +15,25 @@ const Contribution = () => {
       image: "/ChildWelfare.jpg",
     },
     {
+      id: 1,
+      title: "Empowering Through Education",
+      name: "",
+      description: "",
+      image: "/Gunjan 2.jpg",
+    },
+    {
       id: 2,
       title: "Healthcare Access",
       name: "Village Health Initiative",
       description: "Our mobile health clinics have provided essential healthcare services to over 500 families in remote villages, significantly improving community health outcomes.",
       image: "/medical.jpg",
+    },
+    {
+      id: 3,
+      title: "Women Empowerment",
+      name: "",
+      description: "",
+      image: "/IMG-20231223-WA0030 - Gunjan Gururani.jpg",
     },
     {
       id: 4,
@@ -139,7 +153,7 @@ const Contribution = () => {
                       Education is the foundation of a better future. Pathsarthi is dedicated to supporting underprivileged students by providing learning resources, mentorship, and financial assistance. Our mission is to ensure that no child is left behind due to lack of opportunity.
                     </div>
                   ) : null}
-                  <h4 className="text-indigo-600 mb-2">{story.name}</h4>
+                  {story.name && <h4 className="text-indigo-600 mb-2">{story.name}</h4>}
                   <p className="text-gray-600">{story.description}</p>
                 </div>
               </motion.div>
