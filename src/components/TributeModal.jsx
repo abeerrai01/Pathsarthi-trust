@@ -2,9 +2,25 @@ import React from 'react';
 
 const TributeModal = ({ open, onClose }) => {
   if (!open) return null;
+  // Handler to close when clicking the overlay
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative border-4 border-accent-200 animate-slide-in">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 animate-fade-in px-2"
+      onClick={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
+      tabIndex={-1}
+    >
+      <div
+        className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl max-h-[90vh] overflow-y-auto relative border-4 border-accent-200 animate-slide-in"
+        onClick={e => e.stopPropagation()}
+        style={{ boxSizing: 'border-box' }}
+      >
         <button
           onClick={onClose}
           className="absolute top-3 right-4 text-accent-600 hover:text-accent-800 text-3xl font-extrabold focus:outline-none"
@@ -37,6 +53,7 @@ const TributeModal = ({ open, onClose }) => {
               <span className="text-accent-500 font-bold">You are seen. You are valued. You are celebrated. 💖</span>
             </span>
           </div>
+          <span className="text-xs text-gray-400 mt-2">Tap/click outside this note to close</span>
         </div>
       </div>
     </div>
