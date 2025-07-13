@@ -269,6 +269,16 @@ const Home = () => {
       {/* Featured Initiatives */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">
+          <div className="mb-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-bold mb-2 text-accent-700">🌸 Women Empowerment – Pathsarthi Trust</h3>
+              <p className="text-gray-700">At Pathsarthi, we believe in empowering women to become self-reliant, confident, and independent. Through skill development, awareness programs, and community support, we aim to uplift women and give them a platform to grow, lead, and inspire change.</p>
+            </div>
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-bold mb-2 text-sky-700">📚 Education Support – Pathsarthi Trust</h3>
+              <p className="text-gray-700">Education is the foundation of a better future. Pathsarthi is dedicated to supporting underprivileged students by providing learning resources, mentorship, and financial assistance. Our mission is to ensure that no child is left behind due to lack of opportunity.</p>
+            </div>
+          </div>
           <h2 className="text-3xl font-bold text-center mb-12">Our Initiatives</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {initiatives.map((initiative, index) => (
