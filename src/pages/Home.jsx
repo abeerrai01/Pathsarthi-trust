@@ -308,6 +308,15 @@ const Home = () => {
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2">{initiative.title}</h3>
+                  {initiative.title === 'Women Empowerment' ? (
+                    <div className="bg-accent-50 rounded p-3 mb-2 text-accent-700 text-sm font-medium">
+                      At Pathsarthi, we believe in empowering women to become self-reliant, confident, and independent. Through skill development, awareness programs, and community support, we aim to uplift women and give them a platform to grow, lead, and inspire change.
+                    </div>
+                  ) : initiative.title === 'Education Support' ? (
+                    <div className="bg-sky-50 rounded p-3 mb-2 text-sky-700 text-sm font-medium">
+                      Education is the foundation of a better future. Pathsarthi is dedicated to supporting underprivileged students by providing learning resources, mentorship, and financial assistance. Our mission is to ensure that no child is left behind due to lack of opportunity.
+                    </div>
+                  ) : null}
                   <p className="text-gray-600">{initiative.description}</p>
                 </div>
               </motion.div>

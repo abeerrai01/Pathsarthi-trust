@@ -154,6 +154,15 @@ const Contribution = () => {
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2">{story.title}</h3>
+                  {story.title === 'Women Empowerment' ? (
+                    <div className="bg-accent-50 rounded p-3 mb-2 text-accent-700 text-sm font-medium">
+                      At Pathsarthi, we believe in empowering women to become self-reliant, confident, and independent. Through skill development, awareness programs, and community support, we aim to uplift women and give them a platform to grow, lead, and inspire change.
+                    </div>
+                  ) : story.title === 'Empowering Through Education' ? (
+                    <div className="bg-sky-50 rounded p-3 mb-2 text-sky-700 text-sm font-medium">
+                      Education is the foundation of a better future. Pathsarthi is dedicated to supporting underprivileged students by providing learning resources, mentorship, and financial assistance. Our mission is to ensure that no child is left behind due to lack of opportunity.
+                    </div>
+                  ) : null}
                   <h4 className="text-indigo-600 mb-2">{story.name}</h4>
                   <p className="text-gray-600">{story.description}</p>
                 </div>
