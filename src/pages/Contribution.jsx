@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import TributeModal from '../components/TributeModal';
 
 const Contribution = () => {
+  const [tributeOpen, setTributeOpen] = React.useState(false);
   const impactStories = [
     {
       id: 5,
@@ -30,7 +32,7 @@ const Contribution = () => {
       title: "Women Empowerment",
       name: "Rural Women's Collective",
       description: "A group of 25 women started their own small businesses through our skill development program, inspiring many others in their community.",
-      image: "/women-empowerment-in-2019.png",
+      image: "/IMG-20231223-WA0030 - Gunjan Gururani.jpg",
     },
     {
       id: 4,
@@ -110,7 +112,8 @@ const Contribution = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white rounded-lg overflow-hidden shadow-sm"
+                className="bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer"
+                onClick={() => story.title === 'Women Empowerment' && setTributeOpen(true)}
               >
                 <div className="h-48 bg-gray-200">
                   <img
@@ -137,6 +140,7 @@ const Contribution = () => {
                 </div>
               </motion.div>
             ))}
+            <TributeModal open={tributeOpen} onClose={() => setTributeOpen(false)} />
           </div>
         </section>
 

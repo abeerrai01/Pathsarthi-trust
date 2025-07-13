@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import VisitorCounter from "../components/VisitorCounter";
 import SupporterCard from '../components/SupporterCard';
+import TributeModal from '../components/TributeModal';
 
 const Home = () => {
   const stats = [
@@ -31,7 +32,7 @@ const Home = () => {
     {
       title: 'Women Empowerment',
       description: 'Supporting women through skill development and entrepreneurship programs.',
-      image: '/women-empowerment-in-2019.png',
+      image: '/IMG-20231223-WA0030 - Gunjan Gururani.jpg',
     },
   ];
 
@@ -130,6 +131,8 @@ const Home = () => {
     }
     return visible;
   };
+
+  const [tributeOpen, setTributeOpen] = useState(false);
 
   return (
     <div className="space-y-16">
@@ -274,7 +277,8 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-white rounded-lg overflow-hidden shadow-sm"
+                className="bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer"
+                onClick={() => initiative.title === 'Women Empowerment' && setTributeOpen(true)}
               >
                 <div className="h-48 bg-gray-200">
                   <img
@@ -290,6 +294,7 @@ const Home = () => {
               </motion.div>
             ))}
           </div>
+          <TributeModal open={tributeOpen} onClose={() => setTributeOpen(false)} />
         </div>
       </section>
 
