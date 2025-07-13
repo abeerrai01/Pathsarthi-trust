@@ -5,6 +5,7 @@ import TributeModal from '../components/TributeModal';
 
 const Contribution = () => {
   const [tributeOpen, setTributeOpen] = React.useState(false);
+  const [tributeType, setTributeType] = React.useState('');
   const impactStories = [
     {
       id: 5,
@@ -18,7 +19,7 @@ const Contribution = () => {
       title: "Empowering Through Education",
       name: "Priya's Story",
       description: "From struggling to access basic education to becoming a community teacher, Priya's journey showcases the transformative power of educational support.",
-      image: "/Background1.jpg",
+      image: "/Gunjan 2.jpg",
     },
     {
       id: 2,
@@ -113,7 +114,15 @@ const Contribution = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer"
-                onClick={() => story.title === 'Women Empowerment' && setTributeOpen(true)}
+                onClick={() => {
+                  if (story.title === 'Women Empowerment') {
+                    setTributeType('');
+                    setTributeOpen(true);
+                  } else if (story.title === 'Empowering Through Education') {
+                    setTributeType('education');
+                    setTributeOpen(true);
+                  }
+                }}
               >
                 <div className="h-48 bg-gray-200">
                   <img
@@ -140,7 +149,7 @@ const Contribution = () => {
                 </div>
               </motion.div>
             ))}
-            <TributeModal open={tributeOpen} onClose={() => setTributeOpen(false)} />
+            <TributeModal open={tributeOpen} onClose={() => setTributeOpen(false)} type={tributeType} />
           </div>
         </section>
 

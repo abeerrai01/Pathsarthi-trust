@@ -22,7 +22,7 @@ const Home = () => {
     {
       title: 'Education Support',
       description: 'Providing quality education and learning resources to underprivileged children.',
-      image: '/Background1.jpg',
+      image: '/Gunjan 2.jpg',
     },
     {
       title: 'Healthcare Access',
@@ -133,6 +133,7 @@ const Home = () => {
   };
 
   const [tributeOpen, setTributeOpen] = useState(false);
+  const [tributeType, setTributeType] = useState('');
 
   return (
     <div className="space-y-16">
@@ -278,7 +279,15 @@ const Home = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
                 className="bg-white rounded-lg overflow-hidden shadow-sm cursor-pointer"
-                onClick={() => initiative.title === 'Women Empowerment' && setTributeOpen(true)}
+                onClick={() => {
+                  if (initiative.title === 'Women Empowerment') {
+                    setTributeType('');
+                    setTributeOpen(true);
+                  } else if (initiative.title === 'Education Support') {
+                    setTributeType('education');
+                    setTributeOpen(true);
+                  }
+                }}
               >
                 <div className="h-48 bg-gray-200">
                   <img
@@ -294,7 +303,7 @@ const Home = () => {
               </motion.div>
             ))}
           </div>
-          <TributeModal open={tributeOpen} onClose={() => setTributeOpen(false)} />
+          <TributeModal open={tributeOpen} onClose={() => setTributeOpen(false)} type={tributeType} />
         </div>
       </section>
 
