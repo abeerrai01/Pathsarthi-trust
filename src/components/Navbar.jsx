@@ -199,9 +199,8 @@ const Navbar = () => {
                 className="h-10 w-auto mr-3 drop-shadow"
                 style={{ background: 'transparent' }}
               />
-              <span className="text-gray-900 font-extrabold text-2xl tracking-tight">Path Sarthi Trust</span>
+              <span className="flex flex-col"><span className="text-gray-900 font-extrabold text-2xl tracking-tight">Path Sarthi Trust</span><span className="block text-xs text-indigo-600 italic font-medium mt-0.5">Hope • Heal • Humanity</span></span>
             </Link>
-            <span className="block text-xs text-indigo-600 italic font-medium ml-14 -mt-1">Hope • Heal • Humanity</span>
           </div>
           
           {/* Desktop nav links */}

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const Doctor = () => {
   const members = [
-    { name: 'Dr. Sandeep Bharti', gender: 'Male', designation: 'Health Advisor', joinedDate: '2023-04-01' }
+    { name: 'Dr. Sandeep Kumar Bharti', gender: 'Male', designation: 'Health Advisor', joinedDate: '2023-04-01' }
   ];
 
   const formatDate = (dateString) => {
