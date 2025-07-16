@@ -109,6 +109,7 @@ const AboutUs = () => {
           className="text-center mb-16"
         >
           <h1 className="text-4xl font-bold mb-6">About Path Sarthi Trust</h1>
+          <span className="block text-sm text-indigo-600 italic font-medium mb-6">Hope • Heal • Humanity</span>
           <div className="bg-white rounded-lg shadow-sm p-8 max-w-3xl mx-auto">
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-2">Registered Office</h2>

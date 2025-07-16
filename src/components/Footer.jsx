@@ -8,6 +8,7 @@ const Footer = () => {
           {/* About Section */}
           <div className="col-span-1">
             <h3 className="text-lg font-semibold mb-4">Path Sarthi Trust</h3>
+            <span className="block text-xs text-indigo-400 italic font-medium mb-2">Hope • Heal • Humanity</span>
             <p className="text-gray-300 text-sm">
               Empowering communities through education, healthcare, and sustainable development.
             </p>

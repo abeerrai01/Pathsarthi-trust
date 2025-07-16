@@ -53,6 +53,7 @@ const Gallery = () => {
             style={{ maxWidth: '200px' }}
           />
         </div>
+        <span className="block text-sm text-indigo-600 italic font-medium text-center mb-4">Hope • Heal • Humanity</span>
         <h1 className="text-4xl font-bold text-center mb-12">📸 Weekly Event Gallery</h1>
 
         {Object.keys(grouped).map((heading, idx) => {

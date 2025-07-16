@@ -158,6 +158,7 @@ const Home = () => {
             alt="Path Sarthi Trust"
             className="h-32 w-auto mb-6"
           />
+          <span className="block text-sm text-indigo-600 italic font-medium mb-2">Hope • Heal • Humanity</span>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 text-center">
             Welcome to Path Sarthi Trust - Empowering Lives Through Action
           </h1>
