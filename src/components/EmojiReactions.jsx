@@ -16,23 +16,25 @@ const EmojiReactions = ({ show, onSelect, onClose, anchorRef, selectedEmoji }) =
     if (window.innerWidth < 640) {
       style = {
         position: 'fixed',
-        left: '50%',
+        left: '50vw',
         top: Math.max(rect.top - 80, 16),
-        transform: 'translate(-50%, 0)',
+        transform: 'translateX(-50%)',
         zIndex: 9999,
         width: 'max-content',
-        maxWidth: '90vw',
+        maxWidth: '96vw',
+        margin: '0 auto',
       };
     }
   } else if (window.innerWidth < 640) {
     style = {
       position: 'fixed',
-      left: '50%',
-      top: 32,
-      transform: 'translate(-50%, 0)',
+      left: '50vw',
+      top: 16,
+      transform: 'translateX(-50%)',
       zIndex: 9999,
       width: 'max-content',
-      maxWidth: '90vw',
+      maxWidth: '96vw',
+      margin: '0 auto',
     };
   }
   return (

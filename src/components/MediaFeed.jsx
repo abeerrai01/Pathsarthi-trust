@@ -133,14 +133,16 @@ const MediaFeed = () => {
                       onPointerLeave={() => handlePressEnd(post, false)}
                       onContextMenu={e => e.preventDefault()}
                     >
-                      <img
-                        src={post.imageUrl}
-                        alt={post.heading}
-                        className="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
-                        loading="lazy"
-                        draggable="false"
-                        style={{ display: 'block' }}
-                      />
+                      <div className="absolute inset-0 w-full h-full">
+                        <img
+                          src={post.imageUrl}
+                          alt={post.heading}
+                          className="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                          draggable="false"
+                          style={{ display: 'block' }}
+                        />
+                      </div>
                       {/* Emoji pop animation */}
                       {popEmoji[post.id] && (
                         <motion.div
