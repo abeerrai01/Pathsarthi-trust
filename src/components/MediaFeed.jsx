@@ -52,6 +52,7 @@ const MediaFeed = () => {
       reactions: newReactions,
       reactedUsers: newReactedUsers,
     });
+    setPosts(prevPosts => prevPosts.map(p => p.id === post.id ? { ...p, reactions: newReactions, reactedUsers: newReactedUsers } : p));
     setPopEmoji(pe => ({ ...pe, [post.id]: '❤️' }));
     setTimeout(() => setPopEmoji(pe => ({ ...pe, [post.id]: null })), 900);
   };
@@ -73,6 +74,7 @@ const MediaFeed = () => {
       reactions: newReactions,
       reactedUsers: newReactedUsers,
     });
+    setPosts(prevPosts => prevPosts.map(p => p.id === post.id ? { ...p, reactions: newReactions, reactedUsers: newReactedUsers } : p));
     setPopEmoji(pe => ({ ...pe, [post.id]: emoji }));
     setTimeout(() => setPopEmoji(pe => ({ ...pe, [post.id]: null })), 900);
   };
@@ -133,16 +135,14 @@ const MediaFeed = () => {
                       onPointerLeave={() => handlePressEnd(post, false)}
                       onContextMenu={e => e.preventDefault()}
                     >
-                      <div className="absolute inset-0 w-full h-full">
-                        <img
-                          src={post.imageUrl}
-                          alt={post.heading}
-                          className="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                          draggable="false"
-                          style={{ display: 'block' }}
-                        />
-                      </div>
+                      <img
+                        src={post.imageUrl}
+                        alt={post.heading}
+                        className="absolute inset-0 w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                        draggable="false"
+                        style={{ display: 'block' }}
+                      />
                       {/* Emoji pop animation */}
                       {popEmoji[post.id] && (
                         <motion.div
