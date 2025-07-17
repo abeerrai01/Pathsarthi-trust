@@ -5,13 +5,35 @@ const EMOJIS = ["❤️", "😍", "😂", "😢", "😮", "💪"];
 
 const EmojiReactions = ({ show, onSelect, onClose, anchorRef, selectedEmoji }) => {
   if (!show) return null;
-  // Position bar above anchorRef if provided
+  // Position bar above anchorRef if provided, else center on mobile
   let style = { position: 'absolute', zIndex: 50 };
   if (anchorRef && anchorRef.current) {
     const rect = anchorRef.current.getBoundingClientRect();
     style.left = rect.left + rect.width / 2;
     style.top = rect.top - 60;
     style.transform = 'translate(-50%, 0)';
+    // On mobile, use fixed and center
+    if (window.innerWidth < 640) {
+      style = {
+        position: 'fixed',
+        left: '50%',
+        top: Math.max(rect.top - 80, 16),
+        transform: 'translate(-50%, 0)',
+        zIndex: 9999,
+        width: 'max-content',
+        maxWidth: '90vw',
+      };
+    }
+  } else if (window.innerWidth < 640) {
+    style = {
+      position: 'fixed',
+      left: '50%',
+      top: 32,
+      transform: 'translate(-50%, 0)',
+      zIndex: 9999,
+      width: 'max-content',
+      maxWidth: '90vw',
+    };
   }
   return (
     <AnimatePresence>

@@ -127,7 +127,7 @@ const MediaFeed = () => {
                   >
                     <div
                       ref={anchorRef}
-                      className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4 relative"
+                      className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4 relative bg-[#fffaf8] dark:bg-[#232323]"
                       onPointerDown={() => handlePressStart(post.id)}
                       onPointerUp={() => handlePressEnd(post, true)}
                       onPointerLeave={() => handlePressEnd(post, false)}
@@ -136,9 +136,10 @@ const MediaFeed = () => {
                       <img
                         src={post.imageUrl}
                         alt={post.heading}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        style={{ background: '#fffaf8' }}
+                        className="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
                         loading="lazy"
+                        draggable="false"
+                        style={{ display: 'block' }}
                       />
                       {/* Emoji pop animation */}
                       {popEmoji[post.id] && (
