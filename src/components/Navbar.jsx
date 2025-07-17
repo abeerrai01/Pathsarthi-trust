@@ -122,6 +122,7 @@ const Navbar = () => {
       type: 'link', 
       to: '/gallery' 
     },
+    { to: '/media', label: 'Media', type: 'link' },
     { 
       label: 'Projects', 
       type: 'dropdown',

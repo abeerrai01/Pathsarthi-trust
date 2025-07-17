@@ -19,6 +19,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import AdminUpload from '../AdminUpload';
 
 ChartJS.register(
   CategoryScale,
@@ -324,6 +325,7 @@ const DashboardLayout = () => {
             <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
             <Button onClick={() => handleNav("gallery-manager")}>🗑️ Manage Gallery</Button>
             <Button onClick={() => handleNav("gallery-group-upload")}>🖼️ Gallery Group Upload</Button>
+            <Button onClick={() => handleNav("media-upload")}>📸 Path Sarthi Media Upload</Button>
             <Button onClick={() => handleNav("team")}>🧑‍🤝‍🧑 Team Members</Button>
             <Button onClick={() => handleNav("mission")}>🎯 Update Mission</Button>
             <Button onClick={() => handleNav("analytics")}>📊 Website Analytics</Button>
@@ -354,6 +356,7 @@ const DashboardLayout = () => {
         <div className="flex-1 p-4 md:p-8 overflow-auto">
           {activeSection === "gallery-manager" && <GalleryManager />}
           {activeSection === "gallery-group-upload" && <PhotoUploadAdmin />}
+          {activeSection === "media-upload" && <AdminUpload />}
           {activeSection === "team" && <TeamMembers />}
           {activeSection === "mission" && <UpdateMission />}
           {activeSection === "analytics" && <AnalyticsPanel />}

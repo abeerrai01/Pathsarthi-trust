@@ -31,6 +31,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 import { lazy, Suspense } from 'react';
 import { logVisit } from './utils/logVisit';
+import MediaFeed from './components/MediaFeed';
+import PhotoPage from './components/PhotoPage';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
 const CertificateList = lazy(() => import('./components/Dashboard/CertificateList'));
 import VerifyCertificate from './pages/VerifyCertificate';
@@ -217,6 +219,8 @@ function App() {
                 <Route path="/internship-form" element={<InternshipForm />} />
                 <Route path="/terms-interns" element={<TermsInterns />} />
                 <Route path="/feedback" element={<Feedback />} />
+                <Route path="/media" element={<MediaFeed />} />
+                <Route path="/media/photo/:id" element={<PhotoPage />} />
                 <Route path="/admin/certificates" element={
                   <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Certificate Generator...</div>}>
                     <CertificateGenerator />
