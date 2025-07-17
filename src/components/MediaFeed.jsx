@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, getCountFromServer } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, getCountFromServer, deleteDoc, getDocs } from 'firebase/firestore';
 import { getFingerprint } from '../utils/fingerprint';
 import { Link } from 'react-router-dom';
 
-const MediaFeed = () => {
+const MediaFeed = ({ isAdmin }) => {
   const [photos, setPhotos] = useState([]);
   const [likeLoading, setLikeLoading] = useState({});
   const [copiedId, setCopiedId] = useState(null);
@@ -53,6 +53,25 @@ const MediaFeed = () => {
     setTimeout(() => setCopiedId(null), 1500);
   };
 
+  const handleDelete = async (photoId) => {
+    const confirm = window.confirm("Are you sure you want to delete this media?");
+    if (!confirm) return;
+    try {
+      // Delete all comments in subcollection
+      const commentsRef = collection(db, 'galleryFeed', photoId, 'comments');
+      const commentsSnap = await getDocs(commentsRef);
+      const deletions = commentsSnap.docs.map(docSnap => deleteDoc(doc(db, 'galleryFeed', photoId, 'comments', docSnap.id)));
+      await Promise.all(deletions);
+      // Delete the photo doc
+      await deleteDoc(doc(db, 'galleryFeed', photoId));
+      setPhotos(prev => prev.filter(photo => photo.id !== photoId));
+      alert('Photo deleted successfully ✅');
+    } catch (err) {
+      console.error('Error deleting photo:', err);
+      alert('Something went wrong ❌');
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto py-10 px-2 space-y-8">
       <h1 className="text-3xl font-bold text-center mb-8">Path Sarthi Media Feed</h1>
@@ -85,6 +104,14 @@ const MediaFeed = () => {
               <span role="img" aria-label="share">🔗</span> {copiedId === photo.id ? 'Copied!' : 'Share'}
             </button>
           </div>
+          {isAdmin && (
+            <button
+              onClick={() => handleDelete(photo.id)}
+              className="bg-red-500 text-white px-3 py-1 rounded mt-2"
+            >
+              Delete
+            </button>
+          )}
         </div>
       ))}
     </div>

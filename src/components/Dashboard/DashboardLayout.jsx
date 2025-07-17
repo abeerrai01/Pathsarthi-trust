@@ -20,6 +20,7 @@ import {
   Legend,
 } from 'chart.js';
 import AdminUpload from '../AdminUpload';
+import MediaFeed from '../MediaFeed';
 
 ChartJS.register(
   CategoryScale,
@@ -356,7 +357,14 @@ const DashboardLayout = () => {
         <div className="flex-1 p-4 md:p-8 overflow-auto">
           {activeSection === "gallery-manager" && <GalleryManager />}
           {activeSection === "gallery-group-upload" && <PhotoUploadAdmin />}
-          {activeSection === "media-upload" && <AdminUpload />}
+          {activeSection === "media-upload" && (
+            <>
+              <AdminUpload />
+              <div className="mt-10">
+                <MediaFeed isAdmin={true} />
+              </div>
+            </>
+          )}
           {activeSection === "team" && <TeamMembers />}
           {activeSection === "mission" && <UpdateMission />}
           {activeSection === "analytics" && <AnalyticsPanel />}
