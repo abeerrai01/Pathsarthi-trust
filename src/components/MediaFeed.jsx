@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, getCountFromServer, deleteDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { getFingerprint } from '../utils/fingerprint';
-import { Heart, MessageCircle, Share2 } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Trash2 } from 'lucide-react';
 import CommentModal from './CommentModal';
 import EmojiReactions from './EmojiReactions';
 import { motion } from 'framer-motion';
@@ -170,6 +170,16 @@ const MediaFeed = ({ isAdmin = false }) => {
                     key={post.id}
                     className="relative group bg-white dark:bg-[#232323] border-4 border-[#ff7300] rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-200 flex flex-col items-center p-4 cursor-pointer"
                   >
+                    {/* Admin Delete Button (top-right) */}
+                    {isAdmin && (
+                      <button
+                        className="absolute top-2 right-2 z-10 bg-red-600 hover:bg-red-700 text-white rounded-full p-2 shadow-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+                        title="Delete Media"
+                        onClick={() => handleDelete(post)}
+                      >
+                        <Trash2 size={20} />
+                      </button>
+                    )}
                     {/* Profile icon and name */}
                     <a href="/trust-members" className="flex items-center gap-2 mb-2 self-start group/profile" style={{ textDecoration: 'none' }}>
                       <img
@@ -243,14 +253,6 @@ const MediaFeed = ({ isAdmin = false }) => {
                         <Share2 size={22} className="transition-colors group-hover:text-green-500" />
                         <span className="text-base">{copiedId === post.id ? 'Copied!' : 'Share'}</span>
                       </button>
-                      {isAdmin && (
-                        <button
-                          className="flex items-center gap-1 px-3 py-1 rounded-full font-medium text-white bg-red-600 hover:bg-red-700 transition ml-2"
-                          onClick={() => handleDelete(post)}
-                        >
-                          Delete
-                        </button>
-                      )}
                     </div>
                     <CommentModal open={showCommentsId === post.id} onClose={() => setShowCommentsId(null)} photoId={post.id} isDark={false} />
                   </div>
