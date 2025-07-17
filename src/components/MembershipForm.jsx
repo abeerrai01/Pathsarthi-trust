@@ -80,10 +80,10 @@ const MembershipForm = () => {
         )}
         {step === 'form' && (
           <form onSubmit={handleFormSubmit} className="space-y-4">
-            <div className="flex gap-2">
-              <input name="firstName" value={form.firstName} onChange={handleChange} required placeholder="First Name*" className="input input-bordered flex-1 px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-              <input name="middleName" value={form.middleName} onChange={handleChange} placeholder="Middle Name" className="input input-bordered flex-1 px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-              <input name="lastName" value={form.lastName} onChange={handleChange} required placeholder="Last Name*" className="input input-bordered flex-1 px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
+            <div className="flex flex-col md:flex-row gap-2">
+              <input name="firstName" value={form.firstName} onChange={handleChange} required placeholder="First Name*" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
+              <input name="middleName" value={form.middleName} onChange={handleChange} placeholder="Middle Name" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
+              <input name="lastName" value={form.lastName} onChange={handleChange} required placeholder="Last Name*" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
             </div>
             <div className="flex gap-2">
               <input name="age" value={form.age} onChange={handleChange} required placeholder="Age*" type="number" min="1" className="input input-bordered flex-1 px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
