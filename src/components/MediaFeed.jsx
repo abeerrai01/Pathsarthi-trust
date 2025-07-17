@@ -74,6 +74,7 @@ const MediaFeed = () => {
       reactions: newReactions,
       reactedUsers: newReactedUsers,
     });
+    // Update local state immediately for instant UI feedback
     setPosts(prevPosts => prevPosts.map(p => p.id === post.id ? { ...p, reactions: newReactions, reactedUsers: newReactedUsers } : p));
     setPopEmoji(pe => ({ ...pe, [post.id]: emoji }));
     setTimeout(() => setPopEmoji(pe => ({ ...pe, [post.id]: null })), 900);
