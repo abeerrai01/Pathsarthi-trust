@@ -17,6 +17,7 @@ const MediaFeed = () => {
   const [showCommentsId, setShowCommentsId] = useState(null);
   const emojiAnchorRefs = useRef({});
   const [commentCounts, setCommentCounts] = useState({});
+  const [localReactions, setLocalReactions] = useState({}); // { [postId]: { reactions, reactedUsers } }
 
   useEffect(() => {
     const q = query(collection(db, 'galleryFeed'), orderBy('timestamp', 'desc'));
@@ -31,6 +32,17 @@ const MediaFeed = () => {
       data.forEach(post => {
         getCountFromServer(collection(db, 'galleryFeed', post.id, 'comments')).then(commentsSnap => {
           setCommentCounts(prev => ({ ...prev, [post.id]: commentsSnap.data().count || 0 }));
+        });
+        // Clear localReactions overlay for this post if Firestore data has changed
+        setLocalReactions(prev => {
+          if (!prev[post.id]) return prev;
+          const firestoreReactions = JSON.stringify(post.reactions || {});
+          const overlayReactions = JSON.stringify(prev[post.id].reactions || {});
+          if (firestoreReactions !== overlayReactions) {
+            const { [post.id]: _, ...rest } = prev;
+            return rest;
+          }
+          return prev;
         });
       });
     });
@@ -77,11 +89,11 @@ const MediaFeed = () => {
       reactions: newReactions,
       reactedUsers: newReactedUsers,
     });
-    // Update local state with new object reference
-    setPosts(prevPosts => prevPosts.map(p => p.id === post.id ? { ...p, reactions: { ...newReactions }, reactedUsers: { ...newReactedUsers } } : p));
+    // Optimistically update localReactions overlay for instant UI feedback
+    setLocalReactions(prev => ({ ...prev, [post.id]: { reactions: { ...newReactions }, reactedUsers: { ...newReactedUsers } } }));
     setPopEmoji(pe => ({ ...pe, [post.id]: emoji }));
     setTimeout(() => setPopEmoji(pe => ({ ...pe, [post.id]: null })), 900);
-    console.log('Updated reactions for post', post.id, newReactions);
+    console.log('Optimistically updated reactions for post', post.id, newReactions);
   };
 
   // Long-press logic
@@ -125,10 +137,13 @@ const MediaFeed = () => {
               <div className="col-span-full text-center text-lg text-gray-400">No media yet.</div>
             ) : (
               posts.map(post => {
-                const { emoji, total } = getDominantEmoji(post.reactions);
+                // Use localReactions overlay if present, else Firestore data
+                const reactionsData = localReactions[post.id]?.reactions || post.reactions;
+                const reactedUsersData = localReactions[post.id]?.reactedUsers || post.reactedUsers;
+                const { emoji, total } = getDominantEmoji(reactionsData);
                 const anchorRef = emojiAnchorRefs.current[post.id] || (emojiAnchorRefs.current[post.id] = React.createRef());
                 const fingerprint = window.localStorage.getItem('fingerprint');
-                const userEmoji = post.reactedUsers && fingerprint && post.reactedUsers[fingerprint];
+                const userEmoji = reactedUsersData && fingerprint && reactedUsersData[fingerprint];
                 return (
                   <div
                     key={post.id}
