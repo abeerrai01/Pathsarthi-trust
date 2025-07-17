@@ -5,6 +5,7 @@ import { getFingerprint } from '../utils/fingerprint';
 import { Link } from 'react-router-dom';
 import EmojiReactions from './EmojiReactions';
 import { motion } from 'framer-motion';
+import useDarkMode from '../hooks/useDarkMode';
 
 const MediaFeed = ({ isAdmin }) => {
   const [photos, setPhotos] = useState([]);
@@ -12,6 +13,7 @@ const MediaFeed = ({ isAdmin }) => {
   const [emojiBarPhotoId, setEmojiBarPhotoId] = useState(null);
   const [popEmoji, setPopEmoji] = useState({}); // { [photoId]: emoji }
   const emojiAnchorRefs = useRef({});
+  const [isDark] = useDarkMode();
 
   useEffect(() => {
     const q = query(collection(db, 'galleryFeed'), orderBy('timestamp', 'desc'));
@@ -98,86 +100,97 @@ const MediaFeed = ({ isAdmin }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-10 px-2 space-y-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Path Sarthi Media Feed</h1>
-      {photos.length === 0 && <div className="text-center text-gray-500">No media yet.</div>}
-      {photos.map(photo => {
-        const { emoji, total } = getDominantEmoji(photo.reactions);
-        const anchorRef = emojiAnchorRefs.current[photo.id] || (emojiAnchorRefs.current[photo.id] = React.createRef());
-        return (
-          <div key={photo.id} className="bg-white rounded-xl shadow p-4 flex flex-col items-center relative" style={{ borderColor: '#fbc9a6' }}>
-            <div
-              ref={anchorRef}
-              className="w-full max-w-md rounded-lg object-cover mb-4 shadow relative overflow-hidden"
-              style={{ maxHeight: 400, background: '#fffafa' }}
-              onPointerDown={() => handlePressStart(photo.id)}
-              onPointerUp={() => handlePressEnd(photo, true)}
-              onPointerLeave={() => handlePressEnd(photo, false)}
-              onContextMenu={e => e.preventDefault()}
-            >
-              <img
-                src={photo.imageUrl}
-                alt={photo.heading}
-                loading="lazy"
-                className="w-full h-full rounded-lg object-cover"
-                style={{ maxHeight: 400 }}
-              />
-              {/* Emoji pop animation */}
-              {popEmoji[photo.id] && (
-                <motion.div
-                  initial={{ scale: 0, y: 40, opacity: 0 }}
-                  animate={{ scale: 1.6, y: -30, opacity: 1 }}
-                  exit={{ scale: 0, y: 0, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                  className="absolute left-1/2 top-1/2 text-5xl pointer-events-none"
-                  style={{ transform: 'translate(-50%, -50%)' }}
+    <div className={`min-h-screen py-8 px-2 ${isDark ? 'bg-[#181818] text-white' : 'bg-[#fffafa] text-gray-900'}`}>
+      <div className="flex justify-center items-center max-w-5xl mx-auto mb-8">
+        <h1 className={`text-3xl font-bold text-center flex-1 ${isDark ? 'text-white' : 'text-[#f47920]'}`}>PathSarthi Media Feed</h1>
+      </div>
+      <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {photos.length === 0 ? (
+          <div className={`col-span-full text-center text-lg ${isDark ? 'text-white' : 'text-gray-500'}`}>No media yet.</div>
+        ) : (
+          photos.map(photo => {
+            const { emoji, total } = getDominantEmoji(photo.reactions);
+            const anchorRef = emojiAnchorRefs.current[photo.id] || (emojiAnchorRefs.current[photo.id] = React.createRef());
+            return (
+              <div key={photo.id} className={`border-4 rounded-2xl shadow-lg p-4 flex flex-col items-center relative group ${isDark ? 'bg-[#232323] border-[#f47920] shadow-orange-900/30' : 'bg-white border-[#f47920] shadow-orange-200/60'}`}
+                style={{ minHeight: 340, boxShadow: isDark ? '0 4px 24px 0 #f4792040' : '0 4px 24px 0 #fcd8b180' }}
+              >
+                {/* Optional faint logo watermark */}
+                <img src="/PathSarthi logo.png" alt="logo watermark" className="absolute bottom-2 right-2 w-10 h-10 opacity-10 pointer-events-none select-none" style={{zIndex:0}} />
+                <div
+                  ref={anchorRef}
+                  className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4 border-2 border-[#00a9b7] relative"
+                  style={{ maxHeight: 400, background: isDark ? '#232323' : '#fffafa' }}
+                  onPointerDown={() => handlePressStart(photo.id)}
+                  onPointerUp={() => handlePressEnd(photo, true)}
+                  onPointerLeave={() => handlePressEnd(photo, false)}
+                  onContextMenu={e => e.preventDefault()}
                 >
-                  {popEmoji[photo.id]}
-                </motion.div>
-              )}
-              {/* Emoji bar */}
-              <EmojiReactions
-                show={emojiBarPhotoId === photo.id}
-                onSelect={e => { handleReaction(photo, e); setEmojiBarPhotoId(null); }}
-                onClose={() => setEmojiBarPhotoId(null)}
-                anchorRef={anchorRef}
-                selectedEmoji={photo.reactedUsers && photo.reactedUsers[photo.id]}
-              />
-            </div>
-            <div className="text-lg font-semibold mb-2 text-center" style={{ color: '#f37735' }}>{photo.heading}</div>
-            <div className="flex gap-6 items-center mb-2">
-              <button
-                className="flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium hover:bg-orange-100"
-                style={{ color: '#f37735' }}
-                onClick={() => handleReaction(photo, '❤️')}
-                onPointerDown={() => handlePressStart(photo.id)}
-                onPointerUp={() => handlePressEnd(photo, true)}
-                onPointerLeave={() => handlePressEnd(photo, false)}
-              >
-                <span role="img" aria-label="like" className="text-xl">{emoji}</span> {total}
-              </button>
-              <Link to={`/media/photo/${photo.id}`} className="flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium hover:bg-accent-100" style={{ color: '#00bcd4' }}>
-                <span role="img" aria-label="comments">💬</span> {photo.commentCount}
-              </Link>
-              <button
-                className="flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium hover:bg-accent-100"
-                style={{ color: '#00bcd4' }}
-                onClick={() => handleShare(photo.id)}
-              >
-                <span role="img" aria-label="share">🔗</span> {copiedId === photo.id ? 'Copied!' : 'Share'}
-              </button>
-            </div>
-            {isAdmin && (
-              <button
-                onClick={() => handleDelete(photo.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded mt-2"
-              >
-                Delete
-              </button>
-            )}
-          </div>
-        );
-      })}
+                  <img
+                    src={photo.imageUrl}
+                    alt={photo.heading}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    style={{ maxHeight: 400, background: isDark ? '#232323' : '#fff' }}
+                  />
+                  {/* Emoji pop animation */}
+                  {popEmoji[photo.id] && (
+                    <motion.div
+                      initial={{ scale: 0, y: 40, opacity: 0 }}
+                      animate={{ scale: 1.6, y: -30, opacity: 1 }}
+                      exit={{ scale: 0, y: 0, opacity: 0 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                      className="absolute left-1/2 top-1/2 text-5xl pointer-events-none"
+                      style={{ transform: 'translate(-50%, -50%)' }}
+                    >
+                      {popEmoji[photo.id]}
+                    </motion.div>
+                  )}
+                  {/* Emoji bar */}
+                  <EmojiReactions
+                    show={emojiBarPhotoId === photo.id}
+                    onSelect={e => { handleReaction(photo, e); setEmojiBarPhotoId(null); }}
+                    onClose={() => setEmojiBarPhotoId(null)}
+                    anchorRef={anchorRef}
+                    selectedEmoji={photo.reactedUsers && photo.reactedUsers[photo.id]}
+                  />
+                </div>
+                <div className={`font-bold text-center text-lg mb-2 ${isDark ? 'text-white' : 'text-[#f47920]'}`}>{photo.heading}</div>
+                <div className="flex gap-8 items-center mt-auto w-full justify-center z-10">
+                  <button
+                    className="flex items-center gap-1 px-3 py-1 rounded-full font-medium hover:bg-orange-100"
+                    style={{ color: '#f37735' }}
+                    onClick={() => handleReaction(photo, '❤️')}
+                    onPointerDown={() => handlePressStart(photo.id)}
+                    onPointerUp={() => handlePressEnd(photo, true)}
+                    onPointerLeave={() => handlePressEnd(photo, false)}
+                  >
+                    <span role="img" aria-label="like" className="text-xl">{emoji}</span> {total}
+                  </button>
+                  <Link to={`/media/photo/${photo.id}`} className="flex items-center gap-1 px-3 py-1 rounded-full font-medium hover:bg-accent-100" style={{ color: '#00bcd4' }}>
+                    <span role="img" aria-label="comments">💬</span> {photo.commentCount}
+                  </Link>
+                  <button
+                    className="flex items-center gap-1 px-3 py-1 rounded-full font-medium hover:bg-accent-100"
+                    style={{ color: '#00bcd4' }}
+                    onClick={() => handleShare(photo.id)}
+                  >
+                    <span role="img" aria-label="share">🔗</span> {copiedId === photo.id ? 'Copied!' : 'Share'}
+                  </button>
+                </div>
+                {isAdmin && (
+                  <button
+                    onClick={() => handleDelete(photo.id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded mt-2"
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 };

@@ -33,6 +33,7 @@ import { lazy, Suspense } from 'react';
 import { logVisit } from './utils/logVisit';
 import MediaFeed from './components/MediaFeed';
 import PhotoPage from './components/PhotoPage';
+import useDarkMode from './hooks/useDarkMode';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
 const CertificateList = lazy(() => import('./components/Dashboard/CertificateList'));
 import VerifyCertificate from './pages/VerifyCertificate';
@@ -181,12 +182,13 @@ function App() {
     setGlobalConfetti(true);
     setTimeout(() => setGlobalConfetti(false), 2500);
   };
+  const [isDark] = useDarkMode();
   return (
     <Router>
       <AuthProvider>
         <GlobalConfetti show={globalConfetti} />
         {/* <MissionPopup /> */}
-        <div className="min-h-screen flex flex-col bg-gray-50">
+        <div className={`min-h-screen flex flex-col ${isDark ? 'dark bg-[#181818]' : 'bg-gray-50'}`}>
           <Navbar />
           <main className="flex-grow pt-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
