@@ -26,14 +26,16 @@ const AdminUpload = () => {
     try {
       // Upload image to Cloudinary
       const imageUrl = await uploadToCloudinary(image);
+      console.log("Cloudinary URL:", imageUrl);
       // Add to Firestore
-      await addDoc(collection(db, 'galleryFeed'), {
+      const docRef = await addDoc(collection(db, 'galleryFeed'), {
         heading,
         imageUrl,
         likes: 0,
         likeUserIds: [],
         timestamp: serverTimestamp(),
       });
+      console.log("Uploaded to Firestore, docRef:", docRef.id);
       setMessage('Upload successful!');
       setHeading('');
       setImage(null);

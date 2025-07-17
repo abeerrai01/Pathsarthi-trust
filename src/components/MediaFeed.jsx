@@ -21,6 +21,7 @@ const MediaFeed = () => {
           commentCount: commentsSnap.data().count || 0,
         };
       }));
+      console.log("Fetched photos:", data);
       setPhotos(data);
     });
     return () => unsub();
