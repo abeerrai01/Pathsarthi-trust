@@ -63,9 +63,10 @@ const MediaFeed = () => {
   const handleReaction = async (post, emoji) => {
     const fingerprint = await getFingerprint();
     const ref = doc(db, 'galleryFeed', post.id);
-    const prevEmoji = post.reactedUsers?.[fingerprint];
-    let newReactions = { ...post.reactions };
-    let newReactedUsers = { ...post.reactedUsers };
+    // Deep clone reactions and reactedUsers
+    let newReactions = { ...(post.reactions || {}) };
+    let newReactedUsers = { ...(post.reactedUsers || {}) };
+    const prevEmoji = newReactedUsers[fingerprint];
     if (prevEmoji) {
       newReactions[prevEmoji] = (newReactions[prevEmoji] || 1) - 1;
       if (newReactions[prevEmoji] <= 0) delete newReactions[prevEmoji];
@@ -76,10 +77,11 @@ const MediaFeed = () => {
       reactions: newReactions,
       reactedUsers: newReactedUsers,
     });
-    // Update local state immediately for instant UI feedback
-    setPosts(prevPosts => prevPosts.map(p => p.id === post.id ? { ...p, reactions: newReactions, reactedUsers: newReactedUsers } : p));
+    // Update local state with new object reference
+    setPosts(prevPosts => prevPosts.map(p => p.id === post.id ? { ...p, reactions: { ...newReactions }, reactedUsers: { ...newReactedUsers } } : p));
     setPopEmoji(pe => ({ ...pe, [post.id]: emoji }));
     setTimeout(() => setPopEmoji(pe => ({ ...pe, [post.id]: null })), 900);
+    console.log('Updated reactions for post', post.id, newReactions);
   };
 
   // Long-press logic
