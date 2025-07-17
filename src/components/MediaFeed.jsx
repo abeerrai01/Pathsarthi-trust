@@ -138,7 +138,7 @@ const MediaFeed = () => {
                       <img
                         src={post.imageUrl}
                         alt={post.heading}
-                        className="absolute inset-0 w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+                        className="absolute inset-0 w-full h-full object-contain rounded-xl transition-transform duration-300 group-hover:scale-105 bg-white"
                         loading="lazy"
                         draggable="false"
                         style={{ display: 'block' }}

@@ -5,25 +5,7 @@ const EMOJIS = ["❤️", "😍", "😂", "😢", "😮", "💪"];
 
 const EmojiReactions = ({ show, onSelect, onClose, anchorRef, selectedEmoji }) => {
   if (!show) return null;
-  // Position bar above anchorRef if provided, else center on mobile
-  let style = { position: 'absolute', zIndex: 50 };
-  if (window.innerWidth < 640) {
-    style = {
-      position: 'fixed',
-      left: 0,
-      right: 0,
-      margin: '0 auto',
-      top: 16,
-      zIndex: 9999,
-      width: 'max-content',
-      maxWidth: '96vw',
-    };
-  } else if (anchorRef && anchorRef.current) {
-    const rect = anchorRef.current.getBoundingClientRect();
-    style.left = rect.left + rect.width / 2;
-    style.top = rect.top - 60;
-    style.transform = 'translate(-50%, 0)';
-  }
+  // Render the emoji bar inside the card, above the reaction row
   return (
     <AnimatePresence>
       <motion.div
@@ -31,8 +13,8 @@ const EmojiReactions = ({ show, onSelect, onClose, anchorRef, selectedEmoji }) =
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
-        style={style}
-        className="flex gap-3 bg-white shadow-lg rounded-full px-4 py-2 border border-orange-200"
+        className="flex gap-3 bg-white shadow-lg rounded-full px-4 py-2 border border-orange-200 mb-2 mx-auto"
+        style={{ position: 'relative', zIndex: 10, width: 'max-content', maxWidth: '96vw' }}
         onMouseLeave={onClose}
       >
         {EMOJIS.map((emoji) => (
