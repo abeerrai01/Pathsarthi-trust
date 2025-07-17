@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { doc, getDoc, updateDoc, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { getFingerprint } from '../utils/fingerprint';
+import EmojiReactions from './EmojiReactions';
+import { motion } from 'framer-motion';
 
 const COMMENT_LIMIT_MS = 30000; // 30 seconds between comments per device per photo
 
@@ -10,11 +12,14 @@ const PhotoPage = () => {
   const { id } = useParams();
   const [photo, setPhoto] = useState(null);
   const [comments, setComments] = useState([]);
-  const [likeLoading, setLikeLoading] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [commentLoading, setCommentLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [copied, setCopied] = useState(false);
+  const [emojiBar, setEmojiBar] = useState(false);
+  const [popEmoji, setPopEmoji] = useState(null);
+  const emojiAnchorRef = useRef();
+  const longPressTimeout = useRef();
 
   useEffect(() => {
     const ref = doc(db, 'galleryFeed', id);
@@ -28,25 +33,47 @@ const PhotoPage = () => {
     return () => unsub();
   }, [id]);
 
-  const handleLike = async () => {
+  // Emoji reaction logic
+  const handleReaction = async (emoji) => {
     if (!photo) return;
-    setLikeLoading(true);
-    try {
-      const fingerprint = await getFingerprint();
-      if (photo.likeUserIds && photo.likeUserIds.includes(fingerprint)) {
-        setLikeLoading(false);
-        return;
-      }
-      const ref = doc(db, 'galleryFeed', photo.id);
-      await updateDoc(ref, {
-        likes: (photo.likes || 0) + 1,
-        likeUserIds: [...(photo.likeUserIds || []), fingerprint],
-      });
-      setPhoto(p => ({ ...p, likes: (p.likes || 0) + 1, likeUserIds: [...(p.likeUserIds || []), fingerprint] }));
-    } catch (err) {
-      setMessage('Failed to like photo.');
+    const fingerprint = await getFingerprint();
+    const ref = doc(db, 'galleryFeed', photo.id);
+    // Remove previous reaction if any
+    const prevEmoji = photo.reactedUsers?.[fingerprint];
+    let newReactions = { ...photo.reactions };
+    let newReactedUsers = { ...photo.reactedUsers };
+    if (prevEmoji) {
+      newReactions[prevEmoji] = (newReactions[prevEmoji] || 1) - 1;
+      if (newReactions[prevEmoji] <= 0) delete newReactions[prevEmoji];
     }
-    setLikeLoading(false);
+    newReactions[emoji] = (newReactions[emoji] || 0) + 1;
+    newReactedUsers[fingerprint] = emoji;
+    await updateDoc(ref, {
+      reactions: newReactions,
+      reactedUsers: newReactedUsers,
+    });
+    setPhoto(p => ({ ...p, reactions: newReactions, reactedUsers: newReactedUsers }));
+    setPopEmoji(emoji);
+    setTimeout(() => setPopEmoji(null), 900);
+  };
+
+  // Long-press logic
+  const handlePressStart = () => {
+    longPressTimeout.current = setTimeout(() => setEmojiBar(true), 400);
+  };
+  const handlePressEnd = (isTap = false) => {
+    clearTimeout(longPressTimeout.current);
+    if (isTap) handleReaction('❤️');
+  };
+
+  // Dominant emoji and total count
+  const getDominantEmoji = (reactions = {}) => {
+    let max = 0, emoji = '❤️', total = 0;
+    Object.entries(reactions).forEach(([k, v]) => {
+      total += v;
+      if (v > max) { max = v; emoji = k; }
+    });
+    return { emoji, total };
   };
 
   const handleShare = () => {
@@ -85,31 +112,69 @@ const PhotoPage = () => {
   };
 
   if (!photo) return <div className="text-center py-20 text-gray-500">Loading...</div>;
+  const { emoji, total } = getDominantEmoji(photo.reactions);
+  const fingerprint = getFingerprint();
+  const userEmoji = photo.reactedUsers && photo.reactedUsers[fingerprint];
 
   return (
     <div className="max-w-xl mx-auto py-10 px-2">
       <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
-        <img
-          src={photo.imageUrl}
-          alt={photo.heading}
-          loading="lazy"
-          className="w-full max-w-md rounded-lg object-cover mb-4 shadow"
-          style={{ maxHeight: 400 }}
-        />
-        <div className="text-xl font-semibold mb-2 text-center">{photo.heading}</div>
+        <div
+          ref={emojiAnchorRef}
+          className="w-full max-w-md rounded-lg object-cover mb-4 shadow relative overflow-hidden"
+          style={{ maxHeight: 400, background: '#fffafa' }}
+          onPointerDown={handlePressStart}
+          onPointerUp={() => handlePressEnd(true)}
+          onPointerLeave={() => handlePressEnd(false)}
+          onContextMenu={e => e.preventDefault()}
+        >
+          <img
+            src={photo.imageUrl}
+            alt={photo.heading}
+            loading="lazy"
+            className="w-full h-full rounded-lg object-cover"
+            style={{ maxHeight: 400 }}
+          />
+          {/* Emoji pop animation */}
+          {popEmoji && (
+            <motion.div
+              initial={{ scale: 0, y: 40, opacity: 0 }}
+              animate={{ scale: 1.6, y: -30, opacity: 1 }}
+              exit={{ scale: 0, y: 0, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+              className="absolute left-1/2 top-1/2 text-5xl pointer-events-none"
+              style={{ transform: 'translate(-50%, -50%)' }}
+            >
+              {popEmoji}
+            </motion.div>
+          )}
+          {/* Emoji bar */}
+          <EmojiReactions
+            show={emojiBar}
+            onSelect={e => { handleReaction(e); setEmojiBar(false); }}
+            onClose={() => setEmojiBar(false)}
+            anchorRef={emojiAnchorRef}
+            selectedEmoji={userEmoji}
+          />
+        </div>
+        <div className="text-xl font-semibold mb-2 text-center" style={{ color: '#f37735' }}>{photo.heading}</div>
         <div className="flex gap-6 items-center mb-4">
           <button
-            className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${likeLoading ? 'opacity-60' : 'hover:bg-indigo-50'}`}
-            onClick={handleLike}
-            disabled={likeLoading || (photo.likeUserIds && photo.likeUserIds.includes(getFingerprint()))}
+            className="flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium hover:bg-orange-100"
+            style={{ color: '#f37735' }}
+            onClick={() => handleReaction('❤️')}
+            onPointerDown={handlePressStart}
+            onPointerUp={() => handlePressEnd(true)}
+            onPointerLeave={() => handlePressEnd(false)}
           >
-            <span role="img" aria-label="like">👍</span> {photo.likes || 0}
+            <span role="img" aria-label="like" className="text-xl">{emoji}</span> {total}
           </button>
           <span className="flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium">
             <span role="img" aria-label="comments">💬</span> {comments.length}
           </span>
           <button
-            className="flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium hover:bg-indigo-50"
+            className="flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium hover:bg-accent-100"
+            style={{ color: '#00bcd4' }}
             onClick={handleShare}
           >
             <span role="img" aria-label="share">🔗</span> {copied ? 'Copied!' : 'Share'}

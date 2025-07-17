@@ -25,14 +25,15 @@ const AdminUpload = () => {
     setUploading(true);
     try {
       // Upload image to Cloudinary
-      const imageUrl = await uploadToCloudinary(image);
-      console.log("Cloudinary URL:", imageUrl);
-      // Add to Firestore
+      const { imageUrl, publicId } = await uploadToCloudinary(image);
+      console.log("Cloudinary URL:", imageUrl, "publicId:", publicId);
+      // Add to Firestore with emoji reactions model
       const docRef = await addDoc(collection(db, 'galleryFeed'), {
         heading,
         imageUrl,
-        likes: 0,
-        likeUserIds: [],
+        publicId,
+        reactions: {},
+        reactedUsers: {},
         timestamp: serverTimestamp(),
       });
       console.log("Uploaded to Firestore, docRef:", docRef.id);

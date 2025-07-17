@@ -13,5 +13,5 @@ export async function uploadToCloudinary(file) {
     throw new Error('Cloudinary upload failed');
   }
   const data = await response.json();
-  return data.secure_url;
+  return { imageUrl: data.secure_url, publicId: data.public_id };
 } 
