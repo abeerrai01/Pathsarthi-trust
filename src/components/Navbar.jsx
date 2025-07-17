@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import useDarkMode from '../hooks/useDarkMode';
 
 function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiveDropdownPath, parentPath = [], isMobile = false, closeDropdownTimerRef) {
   return items.map((item, idx) => {
@@ -96,6 +97,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdownPath, setActiveDropdownPath] = useState([]);
   const closeDropdownTimerRef = useRef();
+  const [isDark, toggleDarkMode] = useDarkMode();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -183,10 +185,8 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-300 top-0 left-0 ${
-        isScrolled ? 'bg-white shadow-lg' : 'bg-white'
-      }`}
-      style={{ borderBottom: '1px solid #e5e7eb' }}
+      className={`fixed w-full z-50 transition-all duration-300 top-0 left-0 ${isScrolled ? 'bg-white shadow-lg' : isDark ? 'bg-[#232323]' : 'bg-white'}`}
+      style={{ borderBottom: isDark ? '1px solid #333' : '1px solid #e5e7eb' }}
       aria-label="Main navigation"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -200,7 +200,7 @@ const Navbar = () => {
                 className="h-10 w-auto mr-3 drop-shadow"
                 style={{ background: 'transparent' }}
               />
-              <span className="flex flex-col"><span className="text-gray-900 font-extrabold text-2xl tracking-tight">Path Sarthi Trust</span><span className="block text-xs text-indigo-600 italic font-medium mt-0.5">Hope • Heal • Humanity</span></span>
+              <span className="flex flex-col"><span className={`text-2xl font-extrabold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Path Sarthi Trust</span><span className={`block text-xs italic font-medium mt-0.5 ${isDark ? 'text-orange-200' : 'text-indigo-600'}`}>Hope • Heal • Humanity</span></span>
             </Link>
           </div>
           
@@ -225,6 +225,15 @@ const Navbar = () => {
                 )}
               </div>
             ))}
+            {/* Dark mode toggle button */}
+            <button
+              onClick={toggleDarkMode}
+              className={`ml-4 px-3 py-2 rounded-lg border-2 font-semibold transition flex items-center ${isDark ? 'bg-[#232323] text-white border-[#00a9b7] hover:bg-[#1a1a1a]' : 'bg-white text-[#00a9b7] border-[#fcd8b1] hover:bg-orange-50'}`}
+              aria-label="Toggle dark mode"
+              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDark ? <span role="img" aria-label="moon" className="text-xl">🌙</span> : <span role="img" aria-label="sun" className="text-xl">☀️</span>}
+            </button>
           </div>
 
           {/* Hamburger for mobile */}

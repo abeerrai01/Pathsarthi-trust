@@ -61,10 +61,12 @@ const MediaCard = ({ photo, isDark }) => {
 
   return (
     <div
-      className={`border-4 rounded-2xl shadow-md p-4 flex flex-col items-center ${isDark ? 'bg-[#232323] border-[#fcd8b1]' : 'bg-white border-[#fcd8b1]'} group`}
-      style={{ minHeight: 340 }}
+      className={`border-4 rounded-2xl shadow-lg p-4 flex flex-col items-center relative group ${isDark ? 'bg-[#232323] border-[#f47920] shadow-orange-900/30' : 'bg-white border-[#f47920] shadow-orange-200/60'}`}
+      style={{ minHeight: 340, boxShadow: isDark ? '0 4px 24px 0 #f4792040' : '0 4px 24px 0 #fcd8b180' }}
     >
-      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4 border-2 border-[#fcd8b1]">
+      {/* Optional faint logo watermark */}
+      <img src="/PathSarthi logo.png" alt="logo watermark" className="absolute bottom-2 right-2 w-10 h-10 opacity-10 pointer-events-none select-none" style={{zIndex:0}} />
+      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4 border-2 border-[#00a9b7] relative">
         <img
           src={photo.imageUrl}
           alt={photo.heading}
@@ -85,7 +87,7 @@ const MediaCard = ({ photo, isDark }) => {
         )}
       </div>
       <div className={`font-bold text-center text-lg mb-2 ${isDark ? 'text-white' : 'text-[#f47920]'}`}>{photo.heading}</div>
-      <div className="flex gap-8 items-center mt-auto w-full justify-center">
+      <div className="flex gap-8 items-center mt-auto w-full justify-center z-10">
         <button
           ref={likeBtnRef}
           className={`flex items-center gap-1 px-3 py-1 rounded-full font-medium ${iconBase} ${iconHover}`}
