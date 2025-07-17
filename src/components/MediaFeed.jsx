@@ -127,6 +127,16 @@ const MediaFeed = () => {
                     key={post.id}
                     className="relative group bg-white dark:bg-[#232323] border-4 border-[#ff7300] rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-200 flex flex-col items-center p-4 cursor-pointer"
                   >
+                    {/* Profile icon and name */}
+                    <a href="/trust-members" className="flex items-center gap-2 mb-2 self-start group/profile" style={{ textDecoration: 'none' }}>
+                      <img
+                        src="/Chairman.jpg"
+                        alt="Chairman Ravi Prakash Rai"
+                        className="w-8 h-8 rounded-full border-2 border-[#ff7300] object-cover shadow group-hover/profile:scale-105 transition-transform"
+                        style={{ background: '#fff' }}
+                      />
+                      <span className="text-sm font-semibold text-[#ff7300] hover:underline group-hover/profile:text-orange-600 transition-colors">Chairman - Ravi Prakash Rai</span>
+                    </a>
                     <div
                       ref={anchorRef}
                       className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4 relative bg-[#fffaf8] dark:bg-[#232323]"
