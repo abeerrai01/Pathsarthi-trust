@@ -6,6 +6,7 @@ import { Heart, MessageCircle, Share2 } from 'lucide-react';
 import CommentModal from './CommentModal';
 import EmojiReactions from './EmojiReactions';
 import { motion } from 'framer-motion';
+import SkeletonCard from './SkeletonCard';
 
 const MediaFeed = () => {
   const [posts, setPosts] = useState([]);
@@ -19,18 +20,19 @@ const MediaFeed = () => {
 
   useEffect(() => {
     const q = query(collection(db, 'galleryFeed'), orderBy('timestamp', 'desc'));
-    const unsub = onSnapshot(q, async (snapshot) => {
-      const data = await Promise.all(snapshot.docs.map(async (docSnap) => {
-        // Get comment count for each post
-        const commentsSnap = await getCountFromServer(collection(db, 'galleryFeed', docSnap.id, 'comments'));
-        setCommentCounts(prev => ({ ...prev, [docSnap.id]: commentsSnap.data().count || 0 }));
-        return {
-          id: docSnap.id,
-          ...docSnap.data(),
-        };
+    const unsub = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(docSnap => ({
+        id: docSnap.id,
+        ...docSnap.data(),
       }));
       setPosts(data);
       setLoading(false);
+      // Fetch comment counts in the background
+      data.forEach(post => {
+        getCountFromServer(collection(db, 'galleryFeed', post.id, 'comments')).then(commentsSnap => {
+          setCommentCounts(prev => ({ ...prev, [post.id]: commentsSnap.data().count || 0 }));
+        });
+      });
     });
     return () => unsub();
   }, []);
@@ -112,7 +114,9 @@ const MediaFeed = () => {
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-8 text-[#ff7300] dark:text-orange-300">PathSarthi Media Gallery</h1>
         {loading ? (
-          <div className="text-center text-lg py-20 text-gray-400">Loading...</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.length === 0 ? (
