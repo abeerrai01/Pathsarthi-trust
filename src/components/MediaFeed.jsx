@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, getCountFromServer } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, getCountFromServer, deleteDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { getFingerprint } from '../utils/fingerprint';
 import { Heart, MessageCircle, Share2 } from 'lucide-react';
@@ -7,8 +7,9 @@ import CommentModal from './CommentModal';
 import EmojiReactions from './EmojiReactions';
 import { motion } from 'framer-motion';
 import SkeletonCard from './SkeletonCard';
+import { deleteFromCloudinary } from '../utils/cloudinary';
 
-const MediaFeed = () => {
+const MediaFeed = ({ isAdmin = false }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState(null);
@@ -123,6 +124,26 @@ const MediaFeed = () => {
     setTimeout(() => setCopiedId(null), 1500);
   };
 
+  // Admin delete logic
+  const handleDelete = async (post) => {
+    if (!window.confirm('Are you sure you want to delete this media? This cannot be undone.')) return;
+    try {
+      await deleteDoc(doc(db, 'galleryFeed', post.id));
+      if (post.publicId) {
+        try {
+          await deleteFromCloudinary(post.publicId);
+        } catch (err) {
+          // For now, just log; in production, handle via server
+          console.warn('Cloudinary delete error (expected on client):', err.message);
+        }
+      }
+      setPosts(prev => prev.filter(p => p.id !== post.id));
+      alert('Deleted successfully ✅');
+    } catch (err) {
+      alert('Delete failed: ' + err.message);
+    }
+  };
+
   return (
     <div className="min-h-screen py-8 px-2 bg-[#fffaf8] dark:bg-[#181818]">
       <div className="max-w-5xl mx-auto">
@@ -222,6 +243,14 @@ const MediaFeed = () => {
                         <Share2 size={22} className="transition-colors group-hover:text-green-500" />
                         <span className="text-base">{copiedId === post.id ? 'Copied!' : 'Share'}</span>
                       </button>
+                      {isAdmin && (
+                        <button
+                          className="flex items-center gap-1 px-3 py-1 rounded-full font-medium text-white bg-red-600 hover:bg-red-700 transition ml-2"
+                          onClick={() => handleDelete(post)}
+                        >
+                          Delete
+                        </button>
+                      )}
                     </div>
                     <CommentModal open={showCommentsId === post.id} onClose={() => setShowCommentsId(null)} photoId={post.id} isDark={false} />
                   </div>
