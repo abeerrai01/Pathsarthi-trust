@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function PaymentButtons({ amount = 200 }) {
+export default function PaymentButtons({ amount = 200, name = 'Anonymous', onRazorpay, onShowQR }) {
   const upiID = "8958421200@okbizaxis";
   const upiLink = `upi://pay?pa=${upiID}&pn=Pathsarthi%20Trust&am=${amount}&cu=INR&tn=Support%20Pathsarthi`;
 
@@ -9,29 +9,29 @@ export default function PaymentButtons({ amount = 200 }) {
   };
 
   const handleRazorpay = () => {
-    // Replace with your Razorpay handler
-    console.log("Redirecting to Razorpay...");
+    if (onRazorpay) return onRazorpay();
+    // fallback
+    alert('Razorpay payment not implemented.');
   };
 
   const handleQRCode = () => {
-    // Navigate to QR code page OR open modal with QR
-    window.open("/donate/qr", "_blank");
+    if (onShowQR) return onShowQR();
+    // fallback
+    alert('QR code payment not implemented.');
   };
 
   return (
-    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "20px" }}>
+    <div className="flex gap-3 flex-wrap mt-4">
       {/* 🟢 Google Pay Button */}
-      <button onClick={handleGooglePay} style={{ padding: "10px 20px", background: "#0f9d58", color: "#fff", border: "none", borderRadius: "5px" }}>
+      <button onClick={handleGooglePay} className="px-5 py-2 rounded bg-green-600 hover:bg-green-700 text-white font-semibold shadow">
         Pay with Google Pay
       </button>
-
       {/* 🟠 Razorpay Button */}
-      <button onClick={handleRazorpay} style={{ padding: "10px 20px", background: "#f37254", color: "#fff", border: "none", borderRadius: "5px" }}>
+      <button onClick={handleRazorpay} className="px-5 py-2 rounded bg-orange-500 hover:bg-orange-600 text-white font-semibold shadow">
         Pay with Razorpay
       </button>
-
       {/* 🔵 QR Code Button */}
-      <button onClick={handleQRCode} style={{ padding: "10px 20px", background: "#4285f4", color: "#fff", border: "none", borderRadius: "5px" }}>
+      <button onClick={handleQRCode} className="px-5 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow">
         Scan QR Code
       </button>
     </div>

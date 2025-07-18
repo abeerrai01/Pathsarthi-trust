@@ -109,8 +109,15 @@ const SponsorNotebooks = () => {
                   <p className="text-gray-600 mb-2">Price per notebook: ₹{pricePerNotebook}</p>
                   <p className="text-2xl font-bold text-indigo-600">Total: ₹{quantity * pricePerNotebook}</p>
                 </div>
-                <RazorpayButton amount={quantity * pricePerNotebook} name={name || 'Anonymous'} onSuccess={handleSuccess} />
-                <PaymentButtons amount={quantity * pricePerNotebook} />
+                <PaymentButtons
+                  amount={quantity * pricePerNotebook}
+                  name={name || 'Anonymous'}
+                  onRazorpay={() => {
+                    document.querySelector('#hidden-razorpay-btn')?.click();
+                  }}
+                  onShowQR={() => setShowQRModal(true)}
+                />
+                <button id="hidden-razorpay-btn" style={{display:'none'}} onClick={() => {}}></button>
                 <PaymentModal open={showQRModal} onClose={() => setShowQRModal(false)}>
                   <div className="flex flex-col items-center">
                     <img src="/Qr-code-3.jpg" alt="QR Code" className="h-48 w-48 object-contain rounded mb-4" />

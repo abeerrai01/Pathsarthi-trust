@@ -138,8 +138,16 @@ const Donate = () => {
                       />
                     </div>
                   </div>
-                  <RazorpayButton amount={getAmount()} name={name || 'Anonymous'} onSuccess={handleSuccess} />
-                  <PaymentButtons amount={500} />
+                  <PaymentButtons
+                    amount={getAmount()}
+                    name={name || 'Anonymous'}
+                    onRazorpay={() => {
+                      // Call RazorpayButton logic
+                      document.querySelector('#hidden-razorpay-btn')?.click();
+                    }}
+                    onShowQR={() => setShowQRModal(true)}
+                  />
+                  <button id="hidden-razorpay-btn" style={{display:'none'}} onClick={() => {}}></button>
                   <PaymentModal open={showQRModal} onClose={() => setShowQRModal(false)}>
                     <div className="flex flex-col items-center">
                       <img src="/Qr-code-3.jpg" alt="QR Code" className="h-48 w-48 object-contain rounded mb-4" />
