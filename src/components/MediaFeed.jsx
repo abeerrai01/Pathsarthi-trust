@@ -228,7 +228,7 @@ const MediaFeed = ({ isAdmin = false }) => {
                         selectedEmoji={userEmoji}
                       />
                     </div>
-                    <div className="font-bold text-center text-lg mb-2 text-[#ff7300] dark:text-orange-200 w-full truncate">{post.heading}</div>
+                    <div className="font-bold text-center text-lg mb-2 text-[#ff7300] dark:text-orange-200 w-full" style={{wordBreak: 'break-word', maxHeight: '4.5em', overflowY: 'auto', lineHeight: '1.3'}}>{post.heading}</div>
                     <div className="flex gap-8 items-center mt-auto w-full justify-center">
                       <button
                         className="flex items-center gap-1 px-3 py-1 rounded-full font-medium text-[#ff7300] hover:bg-orange-50 dark:hover:bg-orange-900/30 transition"
