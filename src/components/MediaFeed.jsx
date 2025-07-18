@@ -180,16 +180,16 @@ const MediaFeed = ({ isAdmin = false }) => {
                         <Trash2 size={20} />
                       </button>
                     )}
-                    {/* Profile icon and name */}
-                    <a href="/trust-members" className="flex items-center gap-2 mb-2 self-start group/profile" style={{ textDecoration: 'none' }}>
+                    {/* Team logo and name */}
+                    <div className="flex items-center gap-2 mb-2 self-start group/profile" style={{ textDecoration: 'none' }}>
                       <img
-                        src="/Chairman.jpg"
-                        alt="Chairman Ravi Prakash Rai"
+                        src="/Logo-2.png"
+                        alt="Team Path Sarthi Trust Logo"
                         className="w-8 h-8 rounded-full border-2 border-[#ff7300] object-cover shadow group-hover/profile:scale-105 transition-transform"
                         style={{ background: '#fff' }}
                       />
-                      <span className="text-sm font-semibold text-[#ff7300] hover:underline group-hover/profile:text-orange-600 transition-colors">Chairman - Ravi Prakash Rai</span>
-                    </a>
+                      <span className="text-sm font-semibold text-[#ff7300] hover:underline group-hover/profile:text-orange-600 transition-colors">Team Path Sarthi Trust</span>
+                    </div>
                     <div
                       ref={anchorRef}
                       className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4 relative bg-[#fffaf8] dark:bg-[#232323]"
