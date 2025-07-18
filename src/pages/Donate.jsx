@@ -138,16 +138,24 @@ const Donate = () => {
                       />
                     </div>
                   </div>
-                  <PaymentButtons
-                    amount={getAmount()}
-                    name={name || 'Anonymous'}
-                    onRazorpay={() => {
-                      // Call RazorpayButton logic
-                      document.querySelector('#hidden-razorpay-btn')?.click();
+                  <RazorpayButton amount={getAmount()} name={name || 'Anonymous'} onSuccess={handleSuccess} />
+                  <button
+                    onClick={() => {
+                      const upiID = '8958421200@okbizaxis';
+                      const upiLink = `upi://pay?pa=${upiID}&pn=Pathsarthi%20Trust&am=${getAmount()}&cu=INR&tn=Support%20Pathsarthi`;
+                      window.open(upiLink, '_blank');
                     }}
-                    onShowQR={() => setShowQRModal(true)}
-                  />
-                  <button id="hidden-razorpay-btn" style={{display:'none'}} onClick={() => {}}></button>
+                    className="w-full mt-4 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-green-700 transition-all duration-300 flex flex-col items-center"
+                  >
+                    <span>Pay with Google Pay (UPI)</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="w-full mt-4 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                    onClick={() => setShowQRModal(true)}
+                  >
+                    Pay with QR code / Mobile Number (Faster, No Extra Charges)
+                  </button>
                   <PaymentModal open={showQRModal} onClose={() => setShowQRModal(false)}>
                     <div className="flex flex-col items-center">
                       <img src="/Qr-code-3.jpg" alt="QR Code" className="h-48 w-48 object-contain rounded mb-4" />
