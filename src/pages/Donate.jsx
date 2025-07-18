@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import RazorpayButton from '../components/RazorpayButton';
 import PaymentModal from '../components/PaymentModal';
+import PaymentButtons from '../components/PaymentButtons';
 
 const Donate = () => {
   const [selectedAmount, setSelectedAmount] = useState('500');
@@ -138,13 +139,7 @@ const Donate = () => {
                     </div>
                   </div>
                   <RazorpayButton amount={getAmount()} name={name || 'Anonymous'} onSuccess={handleSuccess} />
-                  <button
-                    type="button"
-                    className="w-full mt-4 bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
-                    onClick={() => setShowQRModal(true)}
-                  >
-                    Pay with QR code / Mobile Number (Faster, No Extra Charges)
-                  </button>
+                  <PaymentButtons amount={500} />
                   <PaymentModal open={showQRModal} onClose={() => setShowQRModal(false)}>
                     <div className="flex flex-col items-center">
                       <img src="/Qr-code-3.jpg" alt="QR Code" className="h-48 w-48 object-contain rounded mb-4" />
