@@ -139,7 +139,6 @@ const Donate = () => {
                       />
                     </div>
                   </div>
-                  <RazorpayButton amount={getAmount()} name={name || 'Anonymous'} onSuccess={handleSuccess} />
                   <GooglePayManualFlow amount={getAmount()} />
                   <button
                     type="button"

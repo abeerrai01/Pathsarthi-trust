@@ -110,7 +110,6 @@ const SponsorNotebooks = () => {
                   <p className="text-gray-600 mb-2">Price per notebook: ₹{pricePerNotebook}</p>
                   <p className="text-2xl font-bold text-indigo-600">Total: ₹{quantity * pricePerNotebook}</p>
                 </div>
-                <RazorpayButton amount={quantity * pricePerNotebook} name={name || 'Anonymous'} onSuccess={handleSuccess} />
                 <GooglePayManualFlow amount={quantity * pricePerNotebook} />
                 <button
                   type="button"

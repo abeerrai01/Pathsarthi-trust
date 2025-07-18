@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { auth, db } from '../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import RazorpayButton from './RazorpayButton';
+// Remove import RazorpayButton from './RazorpayButton';
 
 const RAZORPAY_KEY = process.env.REACT_APP_RAZORPAY_KEY_ID;
 
@@ -107,26 +107,25 @@ const MembershipForm = () => {
         {step === 'payment' && (
           <div className="flex flex-col items-center gap-6">
             <div className="text-center text-lg font-semibold text-green-700">Please pay the membership fee to complete your application.</div>
-            <RazorpayButton
-              amount={500}
-              name={form.firstName + ' ' + form.lastName}
-              onSuccess={async (payerName, paymentId) => {
-                setPaymentId(paymentId);
-                showToast('✅ Payment Successful!');
-                setStep('done');
-                setLoading(true);
-                try {
-                  await addDoc(collection(db, 'memberships'), {
-                    ...form,
-                    paymentId,
-                    timestamp: serverTimestamp(),
-                  });
-                } catch (err) {
-                  showToast('Failed to save membership: ' + err.message, 'error');
-                }
-                setLoading(false);
-              }}
-            />
+            {/* Optionally, add GooglePayManualFlow or payment instructions here */}
+            <p className="text-center text-sm text-gray-700">
+              Payment Instructions:
+              <br />
+              - You can pay via Google Pay or UPI.
+              <br />
+              - For Google Pay, scan the QR code or enter the UPI ID.
+              <br />
+              - For UPI, you can use any UPI app (like BHIM, PhonePe, Google Pay, etc.) and enter the UPI ID: <span className="font-mono text-blue-700">your_upi_id@bank</span>
+              <br />
+              - The amount to pay is ₹500.
+              <br />
+              - Please ensure you enter the correct UPI ID and amount.
+              <br />
+              - Once payment is successful, please click the "Complete Payment" button below.
+            </p>
+            <button className="w-full bg-[#ff7300] text-white font-semibold py-2 rounded-lg hover:bg-orange-600 transition" onClick={() => {
+              showToast('Payment instructions are displayed above.', 'info');
+            }}>Complete Payment</button>
           </div>
         )}
         {step === 'done' && (
