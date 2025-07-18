@@ -21,6 +21,8 @@ const MediaFeed = ({ isAdmin = false }) => {
   const [localReactions, setLocalReactions] = useState({}); // { [postId]: { reactions, reactedUsers } }
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState('');
+  const [shareId, setShareId] = useState(null);
+  const [shareCopied, setShareCopied] = useState(false);
 
   useEffect(() => {
     const q = query(collection(db, 'galleryFeed'), orderBy('timestamp', 'desc'));
@@ -120,10 +122,26 @@ const MediaFeed = ({ isAdmin = false }) => {
   };
 
   const handleShare = (postId) => {
-    const url = `${window.location.origin}/media/photo/${postId}`;
+    setShareId(postId);
+    setShareCopied(false);
+  };
+  const handleShareClose = () => {
+    setShareId(null);
+    setShareCopied(false);
+  };
+  const handleCopyLink = (url) => {
     navigator.clipboard.writeText(url);
-    setCopiedId(postId);
-    setTimeout(() => setCopiedId(null), 1500);
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 1500);
+  };
+  const handleWhatsApp = (url) => {
+    window.open(`https://wa.me/?text=${encodeURIComponent(url)}`,'_blank');
+  };
+  const handleInstagram = (url) => {
+    window.open(`https://www.instagram.com/?url=${encodeURIComponent(url)}`,'_blank');
+  };
+  const handleX = (url) => {
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`,'_blank');
   };
 
   // Admin delete logic
@@ -295,7 +313,7 @@ const MediaFeed = ({ isAdmin = false }) => {
                         onClick={() => handleShare(post.id)}
                       >
                         <Share2 size={22} className="transition-colors group-hover:text-green-500" />
-                        <span className="text-base">{copiedId === post.id ? 'Copied!' : 'Share'}</span>
+                        <span className="text-base">Share</span>
                       </button>
                     </div>
                     <CommentModal open={showCommentsId === post.id} onClose={() => setShowCommentsId(null)} photoId={post.id} isDark={false} />
@@ -306,6 +324,29 @@ const MediaFeed = ({ isAdmin = false }) => {
           </div>
         )}
       </div>
+      {/* Share Modal */}
+      {shareId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={handleShareClose}>
+          <div className="bg-white dark:bg-[#232323] rounded-2xl shadow-lg p-6 max-w-xs w-full relative" onClick={e => e.stopPropagation()}>
+            <button className="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-2xl font-bold" onClick={handleShareClose}>×</button>
+            <h3 className="text-lg font-bold mb-4 text-center text-[#ff7300]">Share Media</h3>
+            <div className="flex flex-col gap-3">
+              <button onClick={() => handleCopyLink(`${window.location.origin}/media/photo/${shareId}`)} className="flex items-center gap-2 px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 font-medium">
+                <span>🔗</span> Copy Link {shareCopied && <span className="text-green-600 ml-2">Copied!</span>}
+              </button>
+              <button onClick={() => handleWhatsApp(`${window.location.origin}/media/photo/${shareId}`)} className="flex items-center gap-2 px-4 py-2 rounded bg-green-100 hover:bg-green-200 dark:bg-green-900/60 font-medium">
+                <span role="img" aria-label="WhatsApp">🟢</span> WhatsApp
+              </button>
+              <button onClick={() => handleInstagram(`${window.location.origin}/media/photo/${shareId}`)} className="flex items-center gap-2 px-4 py-2 rounded bg-pink-100 hover:bg-pink-200 dark:bg-pink-900/60 font-medium">
+                <span role="img" aria-label="Instagram">📸</span> Instagram
+              </button>
+              <button onClick={() => handleX(`${window.location.origin}/media/photo/${shareId}`)} className="flex items-center gap-2 px-4 py-2 rounded bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/60 font-medium">
+                <span role="img" aria-label="X">❌</span> X (Twitter)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
