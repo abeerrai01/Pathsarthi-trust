@@ -108,7 +108,7 @@ const MembershipForm = () => {
           <div className="flex flex-col items-center gap-6">
             <div className="text-center text-lg font-semibold text-green-700">Please pay the membership fee to complete your application.</div>
             <RazorpayButton
-              amount={1}
+              amount={500}
               name={form.firstName + ' ' + form.lastName}
               onSuccess={async (payerName, paymentId) => {
                 setPaymentId(paymentId);

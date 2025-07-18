@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, getCountFromServer, deleteDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { getFingerprint } from '../utils/fingerprint';
-import { Heart, MessageCircle, Share2, Trash2 } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Trash2, Pencil } from 'lucide-react';
 import CommentModal from './CommentModal';
 import EmojiReactions from './EmojiReactions';
 import { motion } from 'framer-motion';
@@ -19,6 +19,8 @@ const MediaFeed = ({ isAdmin = false }) => {
   const emojiAnchorRefs = useRef({});
   const [commentCounts, setCommentCounts] = useState({});
   const [localReactions, setLocalReactions] = useState({}); // { [postId]: { reactions, reactedUsers } }
+  const [editingId, setEditingId] = useState(null);
+  const [editValue, setEditValue] = useState('');
 
   useEffect(() => {
     const q = query(collection(db, 'galleryFeed'), orderBy('timestamp', 'desc'));
@@ -144,6 +146,25 @@ const MediaFeed = ({ isAdmin = false }) => {
     }
   };
 
+  // Edit heading logic
+  const handleEditClick = (post) => {
+    setEditingId(post.id);
+    setEditValue(post.heading);
+  };
+  const handleEditSave = async (post) => {
+    try {
+      await updateDoc(doc(db, 'galleryFeed', post.id), { heading: editValue });
+      setPosts(prev => prev.map(p => p.id === post.id ? { ...p, heading: editValue } : p));
+      setEditingId(null);
+    } catch (err) {
+      alert('Failed to update heading: ' + err.message);
+    }
+  };
+  const handleEditCancel = () => {
+    setEditingId(null);
+    setEditValue('');
+  };
+
   return (
     <div className="min-h-screen py-8 px-2 bg-[#fffaf8] dark:bg-[#181818]">
       <div className="max-w-5xl mx-auto">
@@ -228,7 +249,30 @@ const MediaFeed = ({ isAdmin = false }) => {
                         selectedEmoji={userEmoji}
                       />
                     </div>
-                    <div className="font-bold text-center text-lg mb-2 text-[#ff7300] dark:text-orange-200 w-full" style={{wordBreak: 'break-word', maxHeight: '4.5em', overflowY: 'auto', lineHeight: '1.3'}}>{post.heading}</div>
+                    {/* Heading with edit option for admin */}
+                    <div className="w-full mb-2 flex items-center gap-2">
+                      {editingId === post.id ? (
+                        <>
+                          <input
+                            className="flex-1 border border-orange-400 rounded px-2 py-1 text-lg font-bold text-[#ff7300] dark:text-orange-200 bg-white dark:bg-[#232323]"
+                            value={editValue}
+                            onChange={e => setEditValue(e.target.value)}
+                            autoFocus
+                          />
+                          <button className="text-green-600 font-bold px-2" title="Save" onClick={() => handleEditSave(post)}>Save</button>
+                          <button className="text-gray-500 px-2" title="Cancel" onClick={handleEditCancel}>Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          <div className="font-bold text-center text-lg text-[#ff7300] dark:text-orange-200 flex-1" style={{wordBreak: 'break-word', maxHeight: '4.5em', overflowY: 'auto', lineHeight: '1.3'}}>{post.heading}</div>
+                          {isAdmin && (
+                            <button className="ml-1 text-orange-500 hover:text-orange-700" title="Edit Heading" onClick={() => handleEditClick(post)}>
+                              <Pencil size={18} />
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
                     <div className="flex gap-8 items-center mt-auto w-full justify-center">
                       <button
                         className="flex items-center gap-1 px-3 py-1 rounded-full font-medium text-[#ff7300] hover:bg-orange-50 dark:hover:bg-orange-900/30 transition"
