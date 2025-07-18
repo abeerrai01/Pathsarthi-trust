@@ -112,8 +112,7 @@ const SponsorNotebooks = () => {
                 <RazorpayButton amount={quantity * pricePerNotebook} name={name || 'Anonymous'} onSuccess={handleSuccess} />
                 <button
                   onClick={() => {
-                    const upiID = '8958421200@okbizaxis';
-                    const upiLink = `upi://pay?pa=${upiID}&pn=Pathsarthi%20Trust&am=${quantity * pricePerNotebook}&cu=INR&tn=Support%20Pathsarthi`;
+                    const upiLink = `https://upi.link/pay-pathsarthi?am=${quantity * pricePerNotebook}&cu=INR&tn=Support%20Pathsarthi`;
                     window.open(upiLink, '_blank');
                   }}
                   className="w-full mt-4 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-green-700 transition-all duration-300 flex flex-col items-center"
