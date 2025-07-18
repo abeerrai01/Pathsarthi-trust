@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import RazorpayButton from '../components/RazorpayButton';
 import PaymentModal from '../components/PaymentModal';
 import PaymentButtons from '../components/PaymentButtons';
+import GooglePayManualFlow from '../components/GooglePayManualFlow';
 
 const Donate = () => {
   const [selectedAmount, setSelectedAmount] = useState('500');
@@ -139,15 +140,7 @@ const Donate = () => {
                     </div>
                   </div>
                   <RazorpayButton amount={getAmount()} name={name || 'Anonymous'} onSuccess={handleSuccess} />
-                  <button
-                    onClick={() => {
-                      const upiLink = `https://upi.link/pay-pathsarthi?am=${getAmount()}&cu=INR&tn=Support%20Pathsarthi`;
-                      window.open(upiLink, '_blank');
-                    }}
-                    className="w-full mt-4 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-green-700 transition-all duration-300 flex flex-col items-center"
-                  >
-                    <span>Pay with Google Pay (UPI)</span>
-                  </button>
+                  <GooglePayManualFlow amount={getAmount()} />
                   <button
                     type="button"
                     className="w-full mt-4 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
