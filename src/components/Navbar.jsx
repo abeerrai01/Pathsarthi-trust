@@ -176,6 +176,11 @@ const Navbar = () => {
       type: 'link'
     },
     { 
+      to: '/blog',
+      label: 'Blog',
+      type: 'link'
+    },
+    { 
       label: 'Others', 
       type: 'dropdown',
       items: [
