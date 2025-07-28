@@ -34,13 +34,51 @@ const BlogArticle = () => {
     );
   }
 
+  // Special formatting for 'Stray Animals' article
+  let content = article.content;
+  if (article.id === 'stray-dog') {
+    const [firstLine, ...rest] = article.content.split('\n');
+    // Split paragraphs for better styling
+    const paragraphs = rest.join('\n').split(/\n{2,}/).filter(Boolean);
+    content = (
+      <>
+        <div className="font-bold text-xl md:text-2xl text-center mb-4 text-orange-600 drop-shadow-sm">{firstLine}</div>
+        <div className="space-y-6">
+          {paragraphs.map((para, idx) => {
+            // Highlight quotes or important lines
+            if (para.includes('Dali, the rescue dog')) {
+              return (
+                <div key={idx} className="bg-orange-50 border-l-4 border-orange-300 px-4 py-2 italic text-orange-800 rounded-md shadow-sm">
+                  {para}
+                </div>
+              );
+            }
+            if (para.includes('Just as Dali making efforts')) {
+              return (
+                <div key={idx} className="bg-blue-50 border-l-4 border-blue-300 px-4 py-2 font-semibold text-blue-800 rounded-md shadow-sm">
+                  {para}
+                </div>
+              );
+            }
+            // Default paragraph style
+            return (
+              <p key={idx} className="text-lg md:text-xl text-gray-800 leading-relaxed font-cute drop-shadow-sm">
+                {para}
+              </p>
+            );
+          })}
+        </div>
+      </>
+    );
+  }
+
   return (
     <div className="max-w-2xl mx-auto py-16 px-4">
       <div className="bg-gradient-to-br from-blue-50 via-orange-50 to-white rounded-3xl shadow-2xl p-10 border-4 border-orange-200 relative">
         <h1 className="text-3xl md:text-4xl font-extrabold mb-2 font-cute text-center bg-gradient-to-r from-blue-500 to-orange-400 bg-clip-text text-transparent drop-shadow-lg">{article.title}</h1>
         <p className="text-lg text-blue-700 mb-6 font-cute text-center">by {article.author}</p>
         <div className="text-lg md:text-xl text-gray-700 leading-relaxed font-cute text-center md:text-left whitespace-pre-line">
-          {article.content}
+          {content}
         </div>
         <Link to="/blog" className="absolute top-4 left-4 text-orange-500 hover:text-blue-700 font-cute text-sm underline">&larr; Back</Link>
       </div>
