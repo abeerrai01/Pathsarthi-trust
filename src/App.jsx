@@ -35,6 +35,7 @@ import MediaFeed from './components/MediaFeed';
 import PhotoPage from './components/PhotoPage';
 import useDarkMode from './hooks/useDarkMode';
 import MembershipForm from './components/MembershipForm';
+import AdSenseScript from './components/AdSenseScript';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
 const CertificateList = lazy(() => import('./components/Dashboard/CertificateList'));
 import VerifyCertificate from './pages/VerifyCertificate';
@@ -186,6 +187,7 @@ function App() {
   const [isDark] = useDarkMode();
   return (
     <Router>
+      <AdSenseScript />
       <AuthProvider>
         <GlobalConfetti show={globalConfetti} />
         {/* <MissionPopup /> */}
