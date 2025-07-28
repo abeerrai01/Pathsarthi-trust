@@ -18,12 +18,6 @@ At such times, even the smallest step counts. There comes Dali, the rescue dog w
 Just as Dali making efforts to help the stray animals, you can do it too and even the smallest effort counts. The people at Path Sarthi Trust are here to acknowledge you and make up more aware. As those helpless souls have the right to breathe the same air as you and they need not be starved to death and grieve the endless loss. 
 Just because they can’t speak their pains out doesn’t mean they need not be helped.`,
   },
-  {
-    id: 'childhood-memories',
-    title: 'Childhood Memories',
-    author: 'Amit Kumar',
-    content: `Childhood is a treasure trove of memories, laughter, and learning. The innocence and curiosity of those days shape who we become. Cherish your childhood, and never lose the wonder that makes life magical.`,
-  },
   // Add more articles as needed
 ];
 
@@ -42,13 +36,13 @@ const BlogArticle = () => {
 
   return (
     <div className="max-w-2xl mx-auto py-16 px-4">
-      <div className="bg-white rounded-3xl shadow-2xl p-10 border-2 border-green-200 relative">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-green-800 mb-2 font-cute text-center">{article.title}</h1>
-        <p className="text-lg text-green-600 mb-6 font-cute text-center">by {article.author}</p>
+      <div className="bg-gradient-to-br from-blue-50 via-orange-50 to-white rounded-3xl shadow-2xl p-10 border-4 border-orange-200 relative">
+        <h1 className="text-3xl md:text-4xl font-extrabold mb-2 font-cute text-center bg-gradient-to-r from-blue-500 to-orange-400 bg-clip-text text-transparent drop-shadow-lg">{article.title}</h1>
+        <p className="text-lg text-blue-700 mb-6 font-cute text-center">by {article.author}</p>
         <div className="text-lg md:text-xl text-gray-700 leading-relaxed font-cute text-center md:text-left whitespace-pre-line">
           {article.content}
         </div>
-        <Link to="/blog" className="absolute top-4 left-4 text-green-500 hover:text-green-700 font-cute text-sm underline">&larr; Back</Link>
+        <Link to="/blog" className="absolute top-4 left-4 text-orange-500 hover:text-blue-700 font-cute text-sm underline">&larr; Back</Link>
       </div>
     </div>
   );
