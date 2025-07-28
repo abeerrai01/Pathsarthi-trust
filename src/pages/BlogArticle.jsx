@@ -1,10 +1,16 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import { FacebookShareButton, WhatsappShareButton, TwitterShareButton, FacebookIcon, WhatsappIcon, TwitterIcon } from 'react-share';
 
-// Mock data for blog articles (should match Blog.jsx)
+const FALLBACK_IMAGE = "https://pathsarthi.in/default-blog-image.jpg";
+const ORG_NAME = "Pathsarthi Trust";
+const BASE_URL = "https://pathsarthi.in";
+
 const articles = [
   {
     id: 'stray-dog',
+    slug: 'stray-animals',
     title: 'Stray Animals',
     author: 'Supriya Baranwal',
     content: `The Strays Need To Feel At Home Too
@@ -17,35 +23,61 @@ There are laws for this but they do not seem to be adequate in finding the balan
 At such times, even the smallest step counts. There comes Dali, the rescue dog who paints and raise funds for the stray dogs by selling those paintings. She is a two-year-old Labrador and is India’s first  known K9 artist  went viral for her abstract paintings, which help raise money for injured strays. 
 Just as Dali making efforts to help the stray animals, you can do it too and even the smallest effort counts. The people at Path Sarthi Trust are here to acknowledge you and make up more aware. As those helpless souls have the right to breathe the same air as you and they need not be starved to death and grieve the endless loss. 
 Just because they can’t speak their pains out doesn’t mean they need not be helped.`,
+    image: '',
+    published: '2024-06-01',
   },
   // Add more articles as needed
 ];
 
-const BlogArticle = () => {
-  const { id } = useParams();
-  const article = articles.find(a => a.id === id);
+export default function BlogPost() {
+  const { id, slug } = useParams();
+  // Support both id and slug for now
+  const article = articles.find(a => a.slug === slug || a.id === id);
 
-  if (!article) {
-    return (
-      <div className="max-w-2xl mx-auto py-16 px-4 text-center">
-        <h2 className="text-2xl font-bold text-red-600 mb-4 font-cute">Article Not Found</h2>
-        <Link to="/blog" className="text-green-700 underline font-cute">Back to Blog</Link>
-      </div>
-    );
-  }
+  if (!article) return <div>Not found</div>;
+
+  const {
+    title,
+    author,
+    content,
+    image,
+    published = "2024-06-01",
+  } = article;
+
+  const description = content.slice(0, 150).replace(/\n/g, " ");
+  const url = `${BASE_URL}/blog/${article.slug}`;
+  const img = image || FALLBACK_IMAGE;
+
+  // JSON-LD structured data
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": title,
+    "author": { "@type": "Person", "name": author },
+    "datePublished": published,
+    "image": img,
+    "url": url,
+    "publisher": {
+      "@type": "Organization",
+      "name": ORG_NAME,
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pathsarthi.in/PathSarthi%20logo.png"
+      }
+    },
+    "description": description
+  };
 
   // Special formatting for 'Stray Animals' article
-  let content = article.content;
-  if (article.id === 'stray-dog') {
-    const [firstLine, ...rest] = article.content.split('\n');
-    // Split paragraphs for better styling
+  let formattedContent = content;
+  if (article.slug === 'stray-animals') {
+    const [firstLine, ...rest] = content.split('\n');
     const paragraphs = rest.join('\n').split(/\n{2,}/).filter(Boolean);
-    content = (
+    formattedContent = (
       <>
         <div className="font-bold text-xl md:text-2xl text-center mb-4 text-orange-600 drop-shadow-sm">{firstLine}</div>
         <div className="space-y-6">
           {paragraphs.map((para, idx) => {
-            // Highlight quotes or important lines
             if (para.includes('Dali, the rescue dog')) {
               return (
                 <div key={idx} className="bg-orange-50 border-l-4 border-orange-300 px-4 py-2 italic text-orange-800 rounded-md shadow-sm">
@@ -60,7 +92,6 @@ const BlogArticle = () => {
                 </div>
               );
             }
-            // Default paragraph style
             return (
               <p key={idx} className="text-lg md:text-xl text-gray-800 leading-relaxed font-cute drop-shadow-sm">
                 {para}
@@ -73,17 +104,48 @@ const BlogArticle = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-16 px-4">
+    <article className="max-w-2xl mx-auto py-16 px-4" itemScope itemType="https://schema.org/BlogPosting">
+      <Helmet>
+        <title>{title} | {ORG_NAME}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={url} />
+        {/* Open Graph */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={img} />
+        <meta property="og:url" content={url} />
+        <meta property="og:site_name" content={ORG_NAME} />
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={img} />
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
       <div className="bg-gradient-to-br from-blue-50 via-orange-50 to-white rounded-3xl shadow-2xl p-10 border-4 border-orange-200 relative">
-        <h1 className="text-3xl md:text-4xl font-extrabold mb-2 font-cute text-center bg-gradient-to-r from-blue-500 to-orange-400 bg-clip-text text-transparent drop-shadow-lg">{article.title}</h1>
-        <p className="text-lg text-blue-700 mb-6 font-cute text-center">by {article.author}</p>
-        <div className="text-lg md:text-xl text-gray-700 leading-relaxed font-cute text-center md:text-left whitespace-pre-line">
-          {content}
+        <header>
+          <h1 className="text-3xl md:text-4xl font-extrabold mb-2 font-cute text-center bg-gradient-to-r from-blue-500 to-orange-400 bg-clip-text text-transparent drop-shadow-lg" itemProp="headline">{title}</h1>
+          <p className="text-lg text-blue-700 mb-6 font-cute text-center" itemProp="author">by {author}</p>
+          <img src={img} alt={title} className="mx-auto mb-6 rounded-xl max-h-72 object-cover" itemProp="image" />
+        </header>
+        <section className="text-lg md:text-xl text-gray-700 leading-relaxed font-cute text-center md:text-left whitespace-pre-line" itemProp="articleBody">
+          {formattedContent}
+        </section>
+        <div className="flex gap-2 mt-6 justify-center">
+          <FacebookShareButton url={url} quote={title}>
+            <FacebookIcon size={32} round />
+          </FacebookShareButton>
+          <WhatsappShareButton url={url} title={title}>
+            <WhatsappIcon size={32} round />
+          </WhatsappShareButton>
+          <TwitterShareButton url={url} title={title}>
+            <TwitterIcon size={32} round />
+          </TwitterShareButton>
         </div>
         <Link to="/blog" className="absolute top-4 left-4 text-orange-500 hover:text-blue-700 font-cute text-sm underline">&larr; Back</Link>
       </div>
-    </div>
+    </article>
   );
-};
-
-export default BlogArticle; 
+} 

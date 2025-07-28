@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 const articles = [
   {
     id: 'stray-dog',
+    slug: 'stray-animals',
     title: 'Stray Animals',
     author: 'Supriya Baranwal',
     excerpt: 'The Strays Need To Feel At Home Too. Often in the constant fight between the stray animals and the human population the later seems to be more humane to take care of first, knowing their voices are heard, but what about those who can’t voice their grief? ...',
+    image: '',
   },
   // Add more articles as needed
 ];
@@ -19,8 +21,8 @@ const Blog = () => {
       <div className="space-y-6">
         {articles.map(article => (
           <Link
-            to={`/blog/${article.id}`}
-            key={article.id}
+            to={`/blog/${article.slug}`}
+            key={article.slug}
             className="block bg-gradient-to-br from-blue-50 via-orange-50 to-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-200 p-6 border-l-4 border-orange-300 group"
           >
             <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-orange-400 bg-clip-text text-transparent group-hover:from-blue-600 group-hover:to-orange-500 font-cute mb-1">{article.title}</h2>

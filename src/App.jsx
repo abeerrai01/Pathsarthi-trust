@@ -45,7 +45,7 @@ import Feedback from './pages/Feedback';
 import Legal from './pages/Legal';
 import Doctor from './pages/Doctor';
 import Blog from './pages/Blog';
-import BlogArticle from './pages/BlogArticle';
+import BlogPost from './pages/BlogArticle';
 
 function MissionPopup() {
   const [show, setShow] = useState(false);
@@ -229,7 +229,7 @@ function App() {
                 <Route path="/media" element={<MediaFeed />} />
                 <Route path="/media/photo/:id" element={<PhotoPage />} />
                 <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:id" element={<BlogArticle />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/admin/certificates" element={
                   <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Certificate Generator...</div>}>
                     <CertificateGenerator />
