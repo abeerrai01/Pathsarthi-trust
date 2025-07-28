@@ -23,7 +23,7 @@ There are laws for this but they do not seem to be adequate in finding the balan
 At such times, even the smallest step counts. There comes Dali, the rescue dog who paints and raise funds for the stray dogs by selling those paintings. She is a two-year-old Labrador and is India’s first  known K9 artist  went viral for her abstract paintings, which help raise money for injured strays. 
 Just as Dali making efforts to help the stray animals, you can do it too and even the smallest effort counts. The people at Path Sarthi Trust are here to acknowledge you and make up more aware. As those helpless souls have the right to breathe the same air as you and they need not be starved to death and grieve the endless loss. 
 Just because they can’t speak their pains out doesn’t mean they need not be helped.`,
-    image: '',
+    image: '/dog_feeding.png',
     published: '2024-06-01',
   },
   // Add more articles as needed
