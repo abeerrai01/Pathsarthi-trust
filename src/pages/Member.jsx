@@ -32,7 +32,7 @@ const members = [
   { name: 'Sachin Mittal', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/sachin mittal.jpg' },
   { name: 'Anil Kumar Gupta', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Anil.jpg' },
   { name: 'Ayush Kumar Singh', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Ayush.jpg' },
-  { name: 'Seema Singh', gender: 'Female', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Seema.jpg' },
+  { name: 'Seema Singh', gender: 'Female', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Seema Singh.jpg' },
 ];
 
 const sortedMembers = members.slice().sort((a, b) => a.name.localeCompare(b.name));
