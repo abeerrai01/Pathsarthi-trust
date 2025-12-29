@@ -12,7 +12,7 @@ const articles = [
     id: 'path-sarthi-trust',
     slug: 'path-sarthi-trust-walking-together',
     title: 'Path Sarthi Trust: Walking Together Towards a Better Society',
-    author: 'Shreyansh Rai, BAllb 2nd year Student',
+    author: 'Shreyansh Rai, BA-LLB 2nd year Student',
     content: `In today's fast-moving world, many people still struggle for basic needs like education, health, safety, and awareness. Children miss school, women face challenges every day, and many families do not get proper medical care. Path Sarthi Trust is an NGO that works with a strong belief no one should be left behind. Path Sarthi Trust acts as a true "Sarthi" (guide) for those who need support the most.
 
 Helping Children Build a Bright Future
@@ -231,7 +231,7 @@ export default function BlogPost() {
         <header>
           <h1 className="text-3xl md:text-4xl font-extrabold mb-2 font-cute text-center bg-gradient-to-r from-blue-500 to-orange-400 bg-clip-text text-transparent drop-shadow-lg" itemProp="headline">{title}</h1>
           <p className="text-lg text-blue-700 mb-6 font-cute text-center" itemProp="author">by {author}</p>
-          <img src={img} alt={title} className="mx-auto mb-6 rounded-xl max-h-72 object-cover" itemProp="image" />
+          {image && <img src={img} alt={title} className="mx-auto mb-6 rounded-xl max-h-72 object-cover" itemProp="image" />}
         </header>
         <section className="text-lg md:text-xl text-gray-700 leading-relaxed font-cute text-center md:text-left whitespace-pre-line" itemProp="articleBody">
           {formattedContent}
