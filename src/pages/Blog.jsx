@@ -7,7 +7,7 @@ const articles = [
     id: "path-sarthi-trust",
     slug: "path-sarthi-trust-walking-together",
     title: "Path Sarthi Trust: Walking Together Towards a Better Society",
-    author: "Shreyansh Rai, BAllb 2nd year Student",
+    author: "Shreyansh Rai, BA-LLB 2nd year Student",
     excerpt:
       "In today's fast-moving world, many people still struggle for basic needs like education, health, safety, and awareness. Path Sarthi Trust is an NGO that works with a strong belief no one should be left behind. Path Sarthi Trust acts as a true 'Sarthi' (guide) for those who need support the most...",
     image: "",
