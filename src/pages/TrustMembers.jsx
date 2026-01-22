@@ -10,6 +10,7 @@ const TrustMembers = () => {
     { name: 'Rupesh Kumar Chauhan', gender: 'Male', designation: 'Vice-President', joinedDate: '2022-06-27' },
     { name: 'Sanjay Sharma', gender: 'Male', designation: 'District President', joinedDate: '2024-10-01' },
     { name: 'Srinivas Rai', gender: 'Male', designation: 'State President', district: 'Manali', state: 'Himachal Pradesh', joinedDate: '2024-06-01', image: '/Srinavas.jpg' },
+    { name: 'Rajeev Bishnoi', gender: 'Male', designation: 'State Coordinator', joinedDate: '2025-01-22', image: '/Rajeev.jpg' },
     { name: 'Satya Prakash Rai', gender: 'Male', designation: 'Member', joinedDate: '2022-07-14' },
     { name: 'Mridul Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
     { name: 'Priyansh Manas Rai', gender: 'Male', designation: 'Co-Secretary', joinedDate: '2022-07-14' },
