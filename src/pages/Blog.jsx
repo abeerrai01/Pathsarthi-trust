@@ -21,7 +21,15 @@ const articles = [
       "The Strays Need To Feel At Home Too. Often in the constant fight between the stray animals and the human population the later seems to be more humane to take care of first, knowing their voices are heard, but what about those who can't voice their grief? ...",
     image: "",
   },
-  // Add more articles as needed
+  {
+    id: "feminism-ngos",
+    slug: "feminism-and-the-expanding-role-of-ngos",
+    title: "FROM IDEOLOGY TO IMPLEMENTATION: FEMINISM AND THE EXPANDING ROLE OF NGOs",
+    author: "Swati Saurabh, BA.LLB- 4th Year",
+    excerpt:
+      "Feminism, at its core, is the belief in social, political, and economic equality of the sexes. In this journey, non-governmental organizations (NGOs) have emerged as powerful catalysts, transforming feminist ideals into real-world action...",
+    image: "",
+  },
 ];
 
 const Blog = () => {

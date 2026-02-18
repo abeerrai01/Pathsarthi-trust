@@ -103,7 +103,51 @@ Just because they can't speak their pains out doesn't mean they need not be help
     image: '/dog_feeding.png',
     published: '2024-06-01',
   },
-  // Add more articles as needed
+  {
+    id: 'feminism-ngos',
+    slug: 'feminism-and-the-expanding-role-of-ngos',
+    title: 'FROM IDEOLOGY TO IMPLEMENTATION: FEMINISM AND THE EXPANDING ROLE OF NGOs',
+    author: 'Swati Saurabh, BA.LLB- 4th Year',
+    content: `Feminism, at its core, is the belief in social, political, and economic equality of the sexes. Over the decades, it has evolved from a movement demanding basic civil right to a broader struggle addressing structural inequalities, cultural norms, and intersectional identities. In this journey, non-governmental organizations (NGOs) have emerged as powerful catalysts, transforming feminist ideals into real-world action.
+
+UNDERSTANDING FEMINISM IN THE MODERN CONTEXT
+
+Modern feminism is no longer limited to advocating voting rights or workplace inclusion. It now encompasses issues such as: Gender based violence, access to education and healthcare, economic empowerment, political participation, reproductive rights, digital and cyber safety. This expanded scope requires sustained grassroot engagement, policy advocacy, and community-driven solutions- roles that NGOs are uniquely positioned to perform.
+
+NGOs AS AGENTS OF SOCIAL CHANGE
+
+NGOs function as a bridge between marginalized communities and institutional frameworks. Unlike state machinery, they often work directly at the grassroot level, identifying problems that remain invisible in policy corridors. Their flexibility allows them to respond quickly to emerging challenges faced by women and gender minorities.
+Through awareness campaigns, legal aid, vocational training, and shelter homes, NGOs translate feminist ideology into practical empowerment. They do not merely highlight injustice; they create pathways out of it.
+
+LEGAL AWARENESS AND ADVOCACY
+
+One of the most significant contributions of the NGOs to feminism is in the domain of legal empowerment. Many women are unaware of their rights related to domestic violence, sexual harassment, property and inheritance, marriage and divorce. NGOs conduct legal literacy workshops, provide counseling, and facilitate access to justice. They also engage in public interest litigation and policy advocacy, ensuring that feminist perspectives are reflected in legislative reforms.
+
+EDUCATIONAL AND ECONOMIC INDEPENDENCE
+
+Education remains the foundation of feminist progress. NGOs work to reduce female dropout rates, promote girl-child education, provide scholarships and mentorship, offer skill development programs. Economic independence strengthens women’s bargaining power within families and societies. Microfinance initiatives, self-help groups, and entrepreneurship programs led by NGOs enable women to move from dependency to decision-making roles.
+
+ADDRESSING VIOLENCE AND TRAUMA
+
+Gender-based violence remains one of the most pressing challenges to feminist goals. NGOs operate crisis helplines, shelter homes, and trauma recovery programs for survivors of abuse and trafficking. By combining psychological support with legal assistance, they adopt a holistic approach to justice and rehabilitation. These interventions redefine feminism not just as resistance, but as recovery and resilience.
+
+DIGITAL FEMINISM AND NEW FRONTIERS
+
+With the rise of social media and digital platforms, NGOs are now embracing digital feminism- using technology to amplify women’s voices. Online campaigns challenge stereotypes, expose abuse, and mobilize support across borders. NGOs also work on cyber safety, teaching women how to navigate digital spaces securely. This technological engagement has expanded feminism from physical protest to virtual advocacy, making it more inclusive and far-reaching. Despite their contributions, NGOs face numerous obstacles such as: Limited funding, political resistance, social backlash, cultural stigma. In many regions, feminist NGOs are branded as disruptive or “anti-traditional.” This highlights the need for stronger institutional support and societal acceptance of gender justice as a collective responsibility rather than a confrontational ideology.
+
+However, the expanding role of NGOs in feminist implementation is not without challenges. Critics argue that some NGOs risk becoming dependent on external funding, which may dilute their commitment to grassroots concerns. Others point out that excessive reliance on NGOs can allow the state to evade its responsibility toward women’s welfare. Furthermore, the diversity of feminist perspectives sometimes leads to fragmented approaches, making coordination difficult. These limitations highlight the need for accountability, transparency, and sustained collaboration between NGOs, governments, and communities. Despite these challenges, the impact of NGOs in advancing feminist goals remains undeniable. They have transformed feminism from a largely intellectual discourse into a lived social practice. By engaging directly with women at the local level, NGOs ensure that feminist ideology does not remain confined to academic debates or urban activism but reaches rural and marginalized populations. Their work illustrates how theory and practice can complement each other in the pursuit of social justice.
+
+CONCLUSION
+
+Feminism provides the vision of equality; NGOs provide the vehicle to achieve it. Together, they represent a dynamic partnership between ideology and implementation. As societies grapple with changing gender roles and emerging inequalities, NGOs will continue to play an indispensable role in shaping an inclusive feminist future.
+True feminism is not merely about protest—it is about participation, policy, protection, and progress. NGOs ensure that this progress reaches the last woman standing at the margins, transforming feminism from a theory into lived reality.
+
+Path Sarthi Trust works with the commitment to uphold dignity, compassion, and equality for all vulnerable lives. Guided by feminist principles of justice and inclusion, the Trust recognizes that silence does not negate suffering and that the inability to articulate pain must never become a reason for neglect. Every being has an equal right to survival, care, and humane treatment. Through awareness, advocacy, and community engagement, Path Sarthi Trust strives to challenge indifference, address systemic neglect, and affirm that protection and empathy are not privileges, but fundamental rights.
+    
+    THANK YOU`,
+    image: '',
+    published: '2026-02-18',
+  },
 ];
 
 export default function BlogPost() {
@@ -194,6 +238,34 @@ export default function BlogPost() {
           })}
         </div>
       </>
+    );
+  } else if (article.slug === 'feminism-and-the-expanding-role-of-ngos') {
+    const paragraphs = content.split(/\n{2,}/).filter(Boolean);
+    formattedContent = (
+      <div className="space-y-6">
+        {paragraphs.map((para, idx) => {
+          const isHeader = /^[A-Z\s]+$/.test(para.trim()) && para.trim().length >= 10;
+          if (isHeader) {
+            return (
+              <h2 key={idx} className="text-xl md:text-2xl font-bold text-orange-600 mt-8 mb-4 border-b-2 border-orange-100 pb-2">
+                {para}
+              </h2>
+            );
+          }
+          if (para.includes('THANK YOU')) {
+            return (
+              <p key={idx} className="text-center font-bold text-blue-700 text-2xl mt-8">
+                {para}
+              </p>
+            );
+          }
+          return (
+            <p key={idx} className="text-lg md:text-xl text-gray-800 leading-relaxed font-cute">
+              {para}
+            </p>
+          );
+        })}
+      </div>
     );
   }
 
