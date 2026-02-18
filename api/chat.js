@@ -8,18 +8,23 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Helper to map Gemini parts to OpenAI messages
-  const mapGeminiToOpenAI = (contents) => {
-    return contents.map(item => ({
-      role: item.role === 'model' ? 'assistant' : 'user',
-      content: item.parts[0].text
-    }));
-  };
-
-  // Helper to strip <think> tags from AI responses
-  const cleanAIResponse = (text) => {
+  // Helper to strip <think> tags but preserve [NAVIGATE] commands
+  const processAIResponse = (text) => {
     if (!text) return "";
-    return text.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+    
+    // 1. Extract any [NAVIGATE] tag from the entire text (including thinking blocks)
+    const navMatch = text.match(/\[NAVIGATE:\s*([^\]]+)\]/i);
+    const navCommand = navMatch ? navMatch[0] : null;
+    
+    // 2. Remove the thinking blocks
+    let cleaned = text.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+    
+    // 3. Ensure the [NAVIGATE] command is in the final output if it was found anywhere
+    if (navCommand && !cleaned.includes(navCommand)) {
+      cleaned = `${navCommand}\n\n${cleaned}`;
+    }
+    
+    return cleaned;
   };
 
   try {
@@ -37,9 +42,9 @@ export default async function handler(req, res) {
 
         if (response.ok) {
           const data = await response.json();
-          // Clean thinking blocks from Gemini as well (if any)
+          // Clean/process Gemini response
           if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-            data.candidates[0].content.parts[0].text = cleanAIResponse(data.candidates[0].content.parts[0].text);
+            data.candidates[0].content.parts[0].text = processAIResponse(data.candidates[0].content.parts[0].text);
           }
           return res.status(200).json(data);
         }
@@ -57,15 +62,19 @@ export default async function handler(req, res) {
         apiKey: hfToken,
       });
 
-      const messages = mapGeminiToOpenAI(req.body.contents);
+      const messages = req.body.contents.map(item => ({
+        role: item.role === 'model' ? 'assistant' : 'user',
+        content: item.parts[0].text
+      }));
 
       const chatCompletion = await openai.chat.completions.create({
-        model: "deepseek-ai/DeepSeek-R1:together",
+        model: "deepseek-ai/DeepSeek-V3", // Switched to V3 for much lower latency
         messages: messages,
+        max_tokens: 1000
       });
 
-      // Clean thinking blocks from DeepSeek-R1
-      const aiText = cleanAIResponse(chatCompletion.choices[0].message.content);
+      // Process response to handle navigate tags and thinking blocks
+      const aiText = processAIResponse(chatCompletion.choices[0].message.content);
 
       // Transform OpenAI response back to Gemini format for frontend compatibility
       return res.status(200).json({

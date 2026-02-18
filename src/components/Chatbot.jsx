@@ -155,12 +155,12 @@ const Chatbot = () => {
       if (data.candidates && data.candidates[0].content.parts[0].text) {
         const aiResponse = data.candidates[0].content.parts[0].text;
         
-        const navMatch = aiResponse.match(/\[NAVIGATE:\s*([^\]]+)\]/);
+        const navMatch = aiResponse.match(/\[NAVIGATE:\s*([^\]]+)\]/i); // Case-insensitive match
         if (navMatch) {
-          setTimeout(() => navigate(navMatch[1].trim()), 1500);
+          setTimeout(() => navigate(navMatch[1].trim()), 1200); // Snappier navigation
         }
 
-        const cleanMessage = aiResponse.replace(/\[NAVIGATE:[^\]]+\]/g, '').trim();
+        const cleanMessage = aiResponse.replace(/\[NAVIGATE:[^\]]+\]/gi, '').trim(); // Global case-insensitive replace
         setMessages(prev => [...prev, { role: 'assistant', content: cleanMessage }]);
       } else {
         throw new Error('Invalid response structure');
