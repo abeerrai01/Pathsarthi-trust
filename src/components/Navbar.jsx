@@ -30,12 +30,11 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { to: '/', label: 'Home', type: 'link' },
-    { to: '/gallery', label: 'Gallery', type: 'link' },
-    { to: '/media', label: 'Media', type: 'link' },
+    { to: '/', label: 'Home' },
+    { to: '/gallery', label: 'Gallery' },
+    { to: '/media', label: 'Media' },
     { 
       label: 'Projects', 
-      type: 'dropdown',
       items: [
         { to: '/contest', label: 'Contest' },
         { to: '/mission', label: 'Mission' },
@@ -44,7 +43,6 @@ const Navbar = () => {
     },
     { 
       label: 'Fuel a Dream', 
-      type: 'dropdown',
       items: [
         { to: '/donate', label: 'Donate' },
         { to: '/sponsor-notebooks', label: 'Sponsor Us' }
@@ -52,14 +50,12 @@ const Navbar = () => {
     },
     { 
       label: 'Pillars',
-      type: 'dropdown',
       items: [
         { to: '/trust-members', label: 'Board of Trustee' },
         { to: '/member', label: 'Member' },
         { to: '/supporters', label: 'Supporters' },
         {
           label: 'Advisory Volunteers',
-          type: 'dropdown',
           items: [
             { to: '/legal', label: 'Legal Advisory Volunteers' },
             { to: '/doctor', label: 'Health Advisory Volunteers' }
@@ -69,7 +65,6 @@ const Navbar = () => {
     },
     { 
       label: 'Who are we', 
-      type: 'dropdown',
       items: [
         { to: '/about', label: 'About Us' },
         { to: '/social-media', label: 'Social Media' },
@@ -78,11 +73,10 @@ const Navbar = () => {
         { to: '/membership', label: 'Membership' },
       ]
     },
-    { to: '/internship', label: 'Internship', type: 'link' },
-    { to: '/blog', label: 'Blog', type: 'link' },
+    { to: '/internship', label: 'Internship' },
+    { to: '/blog', label: 'Blog' },
     { 
       label: 'Others', 
-      type: 'dropdown',
       items: [
         { to: '/login', label: 'Login' }
       ]
@@ -92,11 +86,12 @@ const Navbar = () => {
   const renderNavItems = (items, depth = 0) => {
     return items.map((item, index) => {
       const isExpanded = expandedItems[item.label];
-      const hasSubItems = item.type === 'dropdown' && item.items;
+      const hasSubItems = item.items && item.items.length > 0;
+      const isLink = item.to;
 
       return (
         <div key={item.label + index} className="w-full">
-          {item.type === 'link' ? (
+          {isLink ? (
             <Link
               to={item.to}
               className={`block w-full text-left px-6 py-4 text-xl font-semibold border-b border-gray-100 transition-colors ${
