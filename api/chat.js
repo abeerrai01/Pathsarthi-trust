@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: {
@@ -18,9 +18,15 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
+    
+    if (!response.ok) {
+      console.error('Google API Error:', data);
+      return res.status(response.status).json(data);
+    }
+
     res.status(200).json(data);
   } catch (error) {
-    console.error('Chat API Error:', error);
-    res.status(500).json({ error: "Something went wrong" });
+    console.error('Chat API Implementation Error:', error);
+    res.status(500).json({ error: "Something went wrong", details: error.message });
   }
 }

@@ -73,15 +73,26 @@ const Chatbot = () => {
       });
 
       const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error?.message || 'API Error');
+      }
+
       if (data.candidates && data.candidates[0].content.parts[0].text) {
         const aiResponse = data.candidates[0].content.parts[0].text;
         setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
       } else {
-        throw new Error('Invalid response from AI');
+        throw new Error('Invalid response structure');
       }
     } catch (error) {
       console.error('Chat error:', error);
-      setMessages(prev => [...prev, { role: 'assistant', content: 'I apologize, but I am having trouble connecting. Please try again in a moment.' }]);
+      let errorMessage = 'I apologize, but I am having trouble connecting. Please try again in a moment.';
+      
+      if (error.message.includes('API_KEY_INVALID')) {
+        errorMessage = 'I am currently undergoing maintenance (API Key Issue). Please contact the administrator.';
+      }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: errorMessage }]);
     } finally {
       setIsLoading(false);
     }
