@@ -85,6 +85,30 @@ const Chatbot = () => {
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
+  // Handle Virtual Viewport for mobile keyboard
+  const [viewportHeight, setViewportHeight] = useState('100%');
+  
+  useEffect(() => {
+    if (!window.visualViewport) return;
+
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setViewportHeight(`${window.visualViewport.height}px`);
+      } else {
+        setViewportHeight('100%');
+      }
+    };
+
+    window.visualViewport.addEventListener('resize', handleResize);
+    window.visualViewport.addEventListener('scroll', handleResize);
+    handleResize();
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', handleResize);
+      window.visualViewport?.removeEventListener('scroll', handleResize);
+    };
+  }, []);
+
   // Body scroll lock on mobile when open
   useEffect(() => {
     if (isOpen && window.innerWidth < 640) {
@@ -163,7 +187,10 @@ const Chatbot = () => {
   ];
 
   return (
-    <div className={`fixed z-[9999] transition-all duration-300 ${isOpen ? 'inset-0 sm:inset-auto sm:bottom-6 sm:right-6' : 'bottom-6 right-6'}`}>
+    <div 
+      className={`fixed z-[9999] transition-all duration-300 ${isOpen ? 'inset-0 sm:inset-auto sm:bottom-6 sm:right-6' : 'bottom-6 right-6'}`}
+      style={{ height: isOpen && window.innerWidth < 640 ? viewportHeight : 'auto' }}
+    >
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -173,17 +200,17 @@ const Chatbot = () => {
             className="w-full h-full sm:w-[420px] sm:h-[600px] sm:max-h-[85vh] bg-white sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-indigo-100"
           >
             {/* Header */}
-            <div className="bg-indigo-600 p-4 sm:p-5 pt-[max(1rem,env(safe-area-inset-top))] text-white flex justify-between items-center relative overflow-hidden flex-shrink-0">
+            <div className="bg-indigo-600 p-3 sm:p-5 pt-[max(0.75rem,env(safe-area-inset-top))] text-white flex justify-between items-center relative overflow-hidden flex-shrink-0">
               <div className="absolute bottom-0 left-0 w-full h-1 bg-yellow-400"></div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full overflow-hidden p-0.5 shadow-lg border-2 border-indigo-400">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white rounded-full overflow-hidden p-0.5 shadow-lg border-2 border-indigo-400">
                   <img src="/f5ab5a0d-8eef-436f-ac82-8a0957d11c57.jpg" alt="Sarthi" className="w-full h-full object-cover rounded-full" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base sm:text-lg tracking-wide uppercase">SARTHI</h3>
-                  <div className="flex items-center gap-1.5 font-medium">
-                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]"></span>
-                    <p className="text-[8px] sm:text-[10px] text-indigo-100 uppercase tracking-widest">Active Intelligence</p>
+                  <h3 className="font-bold text-sm sm:text-lg tracking-wide uppercase">SARTHI</h3>
+                  <div className="flex items-center gap-1 font-medium">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    <p className="text-[7px] sm:text-[10px] text-indigo-100 uppercase tracking-widest">Active Intelligence</p>
                   </div>
                 </div>
               </div>
@@ -193,10 +220,10 @@ const Chatbot = () => {
                   e.stopPropagation();
                   setIsOpen(false);
                 }} 
-                className="hover:bg-white/10 p-2 rounded-full transition-colors text-white/80 hover:text-white z-50 focus:outline-none"
+                className="hover:bg-white/10 p-1.5 sm:p-2 rounded-full transition-colors text-white/80 hover:text-white z-50 focus:outline-none"
                 aria-label="Close Chat"
               >
-                <svg className="w-8 h-8 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
 
@@ -232,8 +259,8 @@ const Chatbot = () => {
             </div>
 
             {/* Input */}
-            <div className="p-4 sm:p-5 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white border-t border-gray-100 flex-shrink-0">
-              <div className="flex gap-2 sm:gap-3">
+            <div className="p-3 sm:p-5 bg-white border-t border-gray-100 flex-shrink-0">
+              <div className="flex gap-2 sm:gap-3 items-center">
                 <input
                   type="text" value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -245,11 +272,13 @@ const Chatbot = () => {
                   type="button"
                   onClick={() => handleSend()}
                   disabled={isLoading || !input.trim()}
-                  className="bg-indigo-600 text-white p-3 sm:p-3.5 rounded-2xl hover:bg-indigo-700 transition-all disabled:opacity-50 shadow-lg shadow-indigo-100 active:scale-95 flex-shrink-0"
+                  className="bg-indigo-600 text-white w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-2xl hover:bg-indigo-700 transition-all disabled:opacity-50 shadow-lg shadow-indigo-100 active:scale-95 flex-shrink-0"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                 </button>
               </div>
+              {/* Bottom spacing for home indicator on mobile */}
+              <div className="h-[env(safe-area-inset-bottom)] sm:hidden"></div>
             </div>
           </motion.div>
         )}
