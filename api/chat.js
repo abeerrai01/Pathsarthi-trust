@@ -16,6 +16,12 @@ export default async function handler(req, res) {
     }));
   };
 
+  // Helper to strip <think> tags from AI responses
+  const cleanAIResponse = (text) => {
+    if (!text) return "";
+    return text.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+  };
+
   try {
     // 1. ATTEMPT GEMINI FIRST
     if (geminiApiKey) {
@@ -31,6 +37,10 @@ export default async function handler(req, res) {
 
         if (response.ok) {
           const data = await response.json();
+          // Clean thinking blocks from Gemini as well (if any)
+          if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+            data.candidates[0].content.parts[0].text = cleanAIResponse(data.candidates[0].content.parts[0].text);
+          }
           return res.status(200).json(data);
         }
         
@@ -54,7 +64,8 @@ export default async function handler(req, res) {
         messages: messages,
       });
 
-      const aiText = chatCompletion.choices[0].message.content;
+      // Clean thinking blocks from DeepSeek-R1
+      const aiText = cleanAIResponse(chatCompletion.choices[0].message.content);
 
       // Transform OpenAI response back to Gemini format for frontend compatibility
       return res.status(200).json({
