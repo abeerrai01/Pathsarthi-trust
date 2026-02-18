@@ -88,16 +88,10 @@ const Chatbot = () => {
   // Body scroll lock on mobile when open
   useEffect(() => {
     if (isOpen && window.innerWidth < 640) {
-      const originalOverflow = document.body.style.overflow;
-      const originalPaddingRight = document.body.style.paddingRight;
-      
+      const originalStyle = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = 'hidden';
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-      
       return () => {
-        document.body.style.overflow = originalOverflow;
-        document.body.style.paddingRight = originalPaddingRight;
+        document.body.style.overflow = originalStyle;
       };
     }
   }, [isOpen]);
@@ -169,17 +163,17 @@ const Chatbot = () => {
   ];
 
   return (
-    <div className={`fixed z-[9999] transition-all duration-300 ${isOpen ? 'bottom-0 right-0 sm:bottom-6 sm:right-6' : 'bottom-6 right-6'}`}>
+    <div className={`fixed z-[9999] transition-all duration-300 ${isOpen ? 'inset-0 sm:inset-auto sm:bottom-6 sm:right-6' : 'bottom-6 right-6'}`}>
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="w-screen h-screen sm:w-[420px] sm:h-[600px] sm:max-h-[85vh] bg-white sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-indigo-100"
+            className="w-full h-full sm:w-[420px] sm:h-[600px] sm:max-h-[85vh] bg-white sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-indigo-100"
           >
             {/* Header */}
-            <div className="bg-indigo-600 p-4 sm:p-5 text-white flex justify-between items-center relative overflow-hidden">
+            <div className="bg-indigo-600 p-4 sm:p-5 pt-[max(1rem,env(safe-area-inset-top))] text-white flex justify-between items-center relative overflow-hidden flex-shrink-0">
               <div className="absolute bottom-0 left-0 w-full h-1 bg-yellow-400"></div>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full overflow-hidden p-0.5 shadow-lg border-2 border-indigo-400">
@@ -194,11 +188,15 @@ const Chatbot = () => {
                 </div>
               </div>
               <button 
-                onClick={() => setIsOpen(false)} 
-                className="hover:bg-white/10 p-2 rounded-full transition-colors text-white/80 hover:text-white"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(false);
+                }} 
+                className="hover:bg-white/10 p-2 rounded-full transition-colors text-white/80 hover:text-white z-50 focus:outline-none"
                 aria-label="Close Chat"
               >
-                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                <svg className="w-8 h-8 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
 
@@ -234,7 +232,7 @@ const Chatbot = () => {
             </div>
 
             {/* Input */}
-            <div className="p-4 sm:p-5 bg-white border-t border-gray-100 safe-bottom">
+            <div className="p-4 sm:p-5 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white border-t border-gray-100 flex-shrink-0">
               <div className="flex gap-2 sm:gap-3">
                 <input
                   type="text" value={input}
@@ -244,6 +242,7 @@ const Chatbot = () => {
                   className="flex-1 bg-gray-50 rounded-2xl px-4 sm:px-5 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all border border-gray-100 min-w-0"
                 />
                 <button
+                  type="button"
                   onClick={() => handleSend()}
                   disabled={isLoading || !input.trim()}
                   className="bg-indigo-600 text-white p-3 sm:p-3.5 rounded-2xl hover:bg-indigo-700 transition-all disabled:opacity-50 shadow-lg shadow-indigo-100 active:scale-95 flex-shrink-0"
