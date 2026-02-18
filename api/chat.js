@@ -1,13 +1,22 @@
 export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
 
+  if (!apiKey) {
+    console.error('SERVER ERROR: GEMINI_API_KEY is not defined in environment variables.');
+    return res.status(500).json({ 
+      error: { 
+        message: "Server configuration error: API Key is missing. Please check Vercel environment variables." 
+      } 
+    });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: {
