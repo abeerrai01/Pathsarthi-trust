@@ -1,60 +1,93 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, useLocation } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import { WEBSITE_CONTEXT } from '../data/websiteContext';
 
-const SARTHI_SYSTEM_PROMPT = `
-You are Sarthi, the official AI assistant for Path Sarthi Trust. 
-Your goal is to help visitors understand the trust's mission, projects, and how they can contribute.
+const SARTHI_SYSTEM_PROMPT = (pageContent) => `
+You are Sarthi, the official Super AI assistant for Path Sarthi Trust. 
+You have COMPLETE autonomy and intelligence to guide users through our mission.
 
-Key Information about Path Sarthi Trust:
-- Based in: Moradabad, Uttar Pradesh, India.
-- Established: 2022.
-- Motto: 'Hope • Heal • Humanity'.
-- Main Mission: To enhance the quality of life in education and health through collaboration with individuals and communities.
-- Impact: 1000+ lives impacted, 70+ active donors, 52+ volunteers.
-- Core Initiatives:
-  1. Education that Empowers: Notebooks, school bags, and enrollment support for children in slums/villages.
-  2. Health with Dignity: Medical aid drives, corrective surgeries, and mobility aids (wheelchairs, crutches).
-  3. Caring for the Forgotten: monthly ration kits and meals for seniors.
-  4. Empowering Communities: Skill-building and awareness campaigns.
-- Registry: Registered with Niti Aayog Darpan (ID: UP/2022/0317438), Registration No. 68/2022 (Indian Trust Act 1882).
-- Key Campaign: 'एक किताब, एक भविष्य' (One Book, One Future) - providing books to children in slums.
-- Board Members: Shri Ravi Prakash Rai (President), Shri Rupesh Kumar Chauhan (VP), Shri Om Prakash Rai (Treasurer), Shri Arun Kumar Singh (Secretary), Shri Satya Prakash Rai (Financial Advisor), Shri Priyansh Rai (Vice Secretary), Shri Abeer Rai (Board Member).
+### YOUR SUPER-POWERS:
+1. **Multilingual Presence**: You can speak fluently in Hindi, English, and other Indian languages.
+2. **Real-time Page Reading**: You "see" exactly what the user is reading right now.
+3. **Autonomous Navigation**: You can teleport the user to any page using [NAVIGATE: /path].
+4. **Deep Knowledge**: You know every board member, every campaign, and every blog detail.
 
-Your Tone:
-- Helpful, polite, and compassionate.
-- Energetic about social change.
-- Concise but informative.
-- Use 'Namaste' as a greeting occasionally.
+### YOUR PERSONALITY:
+- Name: Sarthi (Sarthi means "Charioteer" or "Guide").
+- Tone: Compassionate, wise, proactive, and energetic.
+- Style: Use bullet points and bold text to make your answers easy to read.
 
-Instructions:
-- If asked about donations, guide them to the 'Donate' page.
-- If asked about joining, mention the 'Join Us' or 'Internship' pages.
-- Always identify as Sarthi.
-- If you don't know an answer, politely ask them to use the 'Contact Us' information in the footer.
+### YOUR MISSION:
+- If a user is on /donate, be extra encouraging.
+- If they ask about blogs, give them a beautiful summary with the author's name.
+- ALWAYS look at the CURRENT PAGE CONTENT before answering.
+
+### CURRENT PAGE CONTENT (What you see right now):
+"""
+${pageContent || "The user is on a transition or loading screen."}
+"""
+
+### WEBSITE KNOWLEDGE:
+- Trust Info: ${JSON.stringify(WEBSITE_CONTEXT.trustInfo)}
+- Available Pages: ${JSON.stringify(WEBSITE_CONTEXT.pages)}
+- Blog Database: ${JSON.stringify(WEBSITE_CONTEXT.blogs)}
+
+### NAVIGATION ACTIONS:
+To move the user, add [NAVIGATE: /path] to your message.
 `;
 
 const Chatbot = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Namaste! I am Sarthi. How can I help you today with Path Sarthi Trust?' }
-  ]);
+  const [pageText, setPageText] = useState("");
+  const [messages, setMessages] = useState(() => {
+    // Persistence: Try to load from sessionStorage
+    const saved = sessionStorage.getItem('sarthi_chat_history');
+    return saved ? JSON.parse(saved) : [
+      { role: 'assistant', content: 'Namaste! I am Sarthi, your digital guide to Path Sarthi Trust. I can answer your questions, summarize our blogs, or even take you to the right page. How can I assist you today?' }
+    ];
+  });
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showChips, setShowChips] = useState(true);
   const scrollRef = useRef(null);
 
+  // Persistence: Save messages whenever they change
   useEffect(() => {
+    sessionStorage.setItem('sarthi_chat_history', JSON.stringify(messages));
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  // Real-time Page Reading
+  useEffect(() => {
+    const updatePageText = () => {
+      const mainContent = document.querySelector('main');
+      if (mainContent) {
+        const clone = mainContent.cloneNode(true);
+        const chatbotElement = clone.querySelector('.fixed.bottom-6.right-6');
+        if (chatbotElement) chatbotElement.remove();
+        const cleanText = clone.innerText.replace(/\s+/g, ' ').trim();
+        setPageText(cleanText.substring(0, 5000));
+      }
+    };
+    const timer = setTimeout(updatePageText, 1000);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
 
-    const userMessage = { role: 'user', content: input };
+  const handleSend = async (customInput = null) => {
+    const textToSend = customInput || input;
+    if (!textToSend.trim() || isLoading) return;
+
+    const userMessage = { role: 'user', content: textToSend };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
+    setShowChips(false);
 
     try {
       const response = await fetch('/api/chat', {
@@ -62,12 +95,12 @@ const Chatbot = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [
-            { role: 'user', parts: [{ text: SARTHI_SYSTEM_PROMPT }] },
+            { role: 'user', parts: [{ text: SARTHI_SYSTEM_PROMPT(pageText) }] },
             ...messages.map(m => ({
               role: m.role === 'assistant' ? 'model' : 'user',
               parts: [{ text: m.content }]
             })),
-            { role: 'user', parts: [{ text: input }] }
+            { role: 'user', parts: [{ text: textToSend }] }
           ]
         })
       });
@@ -80,13 +113,20 @@ const Chatbot = () => {
 
       if (data.candidates && data.candidates[0].content.parts[0].text) {
         const aiResponse = data.candidates[0].content.parts[0].text;
-        setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+        
+        const navMatch = aiResponse.match(/\[NAVIGATE:\s*([^\]]+)\]/);
+        if (navMatch) {
+          setTimeout(() => navigate(navMatch[1].trim()), 1500);
+        }
+
+        const cleanMessage = aiResponse.replace(/\[NAVIGATE:[^\]]+\]/g, '').trim();
+        setMessages(prev => [...prev, { role: 'assistant', content: cleanMessage }]);
       } else {
         throw new Error('Invalid response structure');
       }
     } catch (error) {
       console.error('Chat error:', error);
-      let errorMessage = 'I apologize, but I am having trouble connecting. Please try again in a moment.';
+      let errorMessage = 'I apologize, but I am having trouble connecting. Please try again in 1 minute.';
       
       if (error.message.includes('API_KEY_INVALID')) {
         errorMessage = 'I am currently undergoing maintenance (API Key Issue). Please contact the administrator.';
@@ -98,6 +138,13 @@ const Chatbot = () => {
     }
   };
 
+  const actionChips = [
+    { label: "💰 Donate Now", query: "How can I donate and help?" },
+    { label: "📚 Our Blogs", query: "Summarize the latest blogs for me" },
+    { label: "👥 Meet Board", query: "Who are the board members of the trust?" },
+    { label: "🌟 Our Mission", query: "What is the mission of Path Sarthi?" }
+  ];
+
   return (
     <div className="fixed bottom-6 right-6 z-[9999]">
       <AnimatePresence>
@@ -106,126 +153,100 @@ const Chatbot = () => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="mb-4 w-[350px] sm:w-[400px] h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-indigo-100"
+            className="mb-4 w-[350px] sm:w-[420px] h-[600px] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-indigo-100"
           >
             {/* Header */}
-            <div className="bg-indigo-600 p-4 text-white flex justify-between items-center shadow-md relative overflow-hidden">
-              {/* Gold/Yellow accent bar at bottom of header */}
+            <div className="bg-indigo-600 p-5 text-white flex justify-between items-center relative overflow-hidden">
               <div className="absolute bottom-0 left-0 w-full h-1 bg-yellow-400"></div>
-              
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white rounded-full overflow-hidden flex items-center justify-center p-0.5 shadow-inner">
-                  <img 
-                    src="/f5ab5a0d-8eef-436f-ac82-8a0957d11c57.jpg" 
-                    alt="Sarthi Icon" 
-                    className="w-full h-full object-cover rounded-full"
-                  />
+                <div className="w-12 h-12 bg-white rounded-full overflow-hidden p-0.5 shadow-lg border-2 border-indigo-400">
+                  <img src="/f5ab5a0d-8eef-436f-ac82-8a0957d11c57.jpg" alt="Sarthi" className="w-full h-full object-cover rounded-full" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white tracking-wide">SARTHI</h3>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                    <p className="text-[10px] text-indigo-100 uppercase font-semibold">Online</p>
+                  <h3 className="font-bold text-lg tracking-wide uppercase">SARTHI</h3>
+                  <div className="flex items-center gap-1.5 font-medium">
+                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]"></span>
+                    <p className="text-[10px] text-indigo-100 uppercase tracking-widest">Active Intelligence</p>
                   </div>
                 </div>
               </div>
-              <button 
-                onClick={() => setIsOpen(false)}
-                className="hover:bg-white/10 p-1.5 rounded-full transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+              <button onClick={() => setIsOpen(false)} className="hover:bg-white/10 p-2 rounded-full transition-colors text-white/80 hover:text-white">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
 
             {/* Messages */}
-            <div 
-              ref={scrollRef}
-              className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50"
-              style={{ backgroundImage: 'radial-gradient(circle at center, #f8fafc 0%, #f1f5f9 100%)' }}
-            >
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 scroll-smooth">
               {messages.map((m, i) => (
-                <div 
-                  key={i} 
-                  className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
-                    m.role === 'user' 
-                      ? 'bg-indigo-600 text-white rounded-tr-none' 
-                      : 'bg-white text-gray-800 border border-indigo-100 rounded-tl-none'
+                <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2`}>
+                  <div className={`max-w-[90%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${
+                    m.role === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white text-gray-800 border border-indigo-50 rounded-tl-none prose prose-sm'
                   }`}>
-                    {m.content}
+                    {m.role === 'assistant' ? <ReactMarkdown>{m.content}</ReactMarkdown> : m.content}
                   </div>
                 </div>
               ))}
               {isLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-white p-3 rounded-2xl text-sm shadow-sm border border-indigo-50 flex gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></span>
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                <div className="flex justify-start px-2">
+                  <div className="flex gap-2 p-3 bg-white rounded-2xl border border-indigo-50 shadow-sm">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></span>
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
                   </div>
+                </div>
+              )}
+              {showChips && !isLoading && (
+                <div className="grid grid-cols-2 gap-2 mt-4">
+                  {actionChips.map((chip, idx) => (
+                    <button key={idx} onClick={() => handleSend(chip.query)} className="text-left p-3 text-xs font-semibold bg-white hover:bg-indigo-50 border border-indigo-100 rounded-xl transition-all hover:border-indigo-300 text-gray-700 shadow-sm">
+                      {chip.label}
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
 
             {/* Input */}
-            <div className="p-4 bg-white border-t border-gray-100">
-              <div className="flex gap-2">
+            <div className="p-5 bg-white border-t border-gray-100">
+              <div className="flex gap-3">
                 <input
-                  type="text"
-                  value={input}
+                  type="text" value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Ask Sarthi anything..."
-                  className="flex-1 bg-gray-50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all border border-gray-100"
+                  className="flex-1 bg-gray-50 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all border border-gray-100"
                 />
                 <button
-                  onClick={handleSend}
+                  onClick={() => handleSend()}
                   disabled={isLoading || !input.trim()}
-                  className="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 transition-all disabled:opacity-50 shadow-lg shadow-indigo-100 active:scale-95"
+                  className="bg-indigo-600 text-white p-3.5 rounded-2xl hover:bg-indigo-700 transition-all disabled:opacity-50 shadow-lg shadow-indigo-100 active:scale-95"
                 >
-                  <svg className="w-5 h-5 translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                  </svg>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                 </button>
               </div>
-              <p className="text-[10px] text-gray-400 text-center mt-3 font-medium">
-                Sarthi is an AI assistant. Please verify important details.
-              </p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Toggle Button */}
       <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-indigo-600 text-white w-16 h-16 rounded-full shadow-xl flex items-center justify-center hover:bg-indigo-700 transition-all shadow-indigo-200 border-4 border-white overflow-hidden group"
+        className="bg-indigo-600 text-white w-20 h-20 rounded-full shadow-2xl flex items-center justify-center hover:bg-indigo-700 transition-all border-4 border-white overflow-hidden group shadow-indigo-200"
       >
-        {isOpen ? (
-           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        ) : (
-          <div className="relative w-full h-full flex flex-col items-center justify-center">
-            <img 
-              src="/f5ab5a0d-8eef-436f-ac82-8a0957d11c57.jpg" 
-              alt="Sarthi" 
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            />
-            <div className="absolute inset-x-0 bottom-0 bg-indigo-600/60 backdrop-blur-[2px] py-0.5">
-              <p className="text-[7px] font-bold text-white uppercase tracking-tighter text-center">SARTHI</p>
+        {isOpen ? <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg> : 
+          <div className="relative w-full h-full">
+            <img src="/f5ab5a0d-8eef-436f-ac82-8a0957d11c57.jpg" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Sarthi" />
+            <div className="absolute inset-0 bg-indigo-800/20 group-hover:bg-transparent transition-colors"></div>
+            <div className="absolute inset-x-0 bottom-0 bg-indigo-600/80 backdrop-blur-[4px] py-1">
+              <p className="text-[10px] font-black tracking-widest text-white text-center">SARTHI</p>
             </div>
-            <span className="absolute top-1 right-1 flex h-3.5 w-3.5">
+            <span className="absolute top-2 right-2 flex h-4 w-4">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-yellow-500 border-2 border-white"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-yellow-500 border-2 border-white"></span>
             </span>
           </div>
-        )}
+        }
       </motion.button>
     </div>
   );
