@@ -114,8 +114,12 @@ const Chatbot = () => {
               <div className="absolute bottom-0 left-0 w-full h-1 bg-yellow-400"></div>
               
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center font-bold text-xl text-indigo-600 shadow-inner">
-                  S
+                <div className="w-10 h-10 bg-white rounded-full overflow-hidden flex items-center justify-center p-0.5 shadow-inner">
+                  <img 
+                    src="/f5ab5a0d-8eef-436f-ac82-8a0957d11c57.jpg" 
+                    alt="Sarthi Icon" 
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
                 <div>
                   <h3 className="font-bold text-white tracking-wide">SARTHI</h3>
@@ -141,21 +145,6 @@ const Chatbot = () => {
               className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50"
               style={{ backgroundImage: 'radial-gradient(circle at center, #f8fafc 0%, #f1f5f9 100%)' }}
             >
-              {/* Mascot Animation */}
-              <div className="flex justify-center mb-2 overflow-hidden rounded-xl">
-                <div className="scale-75 origin-top">
-                  <iframe 
-                    src="https://assets.pinterest.com/ext/embed.html?id=703756188059993" 
-                    height="295" 
-                    width="345" 
-                    frameBorder="0" 
-                    scrolling="no"
-                    title="Sarthi Mascot"
-                    className="rounded-xl shadow-inner bg-white"
-                  ></iframe>
-                </div>
-              </div>
-
               {messages.map((m, i) => (
                 <div 
                   key={i} 
@@ -222,12 +211,16 @@ const Chatbot = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         ) : (
-          <div className="relative flex flex-col items-center">
-             <svg className="w-8 h-8 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </svg>
-            <span className="text-[8px] font-bold mt-0.5 uppercase tracking-tighter">SARTHI</span>
-            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+          <div className="relative w-full h-full flex flex-col items-center justify-center">
+            <img 
+              src="/f5ab5a0d-8eef-436f-ac82-8a0957d11c57.jpg" 
+              alt="Sarthi" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-indigo-600/60 backdrop-blur-[2px] py-0.5">
+              <p className="text-[7px] font-bold text-white uppercase tracking-tighter text-center">SARTHI</p>
+            </div>
+            <span className="absolute top-1 right-1 flex h-3.5 w-3.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-yellow-500 border-2 border-white"></span>
             </span>
