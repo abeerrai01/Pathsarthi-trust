@@ -36,6 +36,7 @@ import PhotoPage from './components/PhotoPage';
 import MembershipForm from './components/MembershipForm';
 import AdSenseScript from './components/AdSenseScript';
 import SplashScreen from './components/SplashScreen';
+import Chatbot from './components/Chatbot';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
 const CertificateList = lazy(() => import('./components/Dashboard/CertificateList'));
 import VerifyCertificate from './pages/VerifyCertificate';
@@ -261,6 +262,7 @@ function App() {
           </main>
           <Footer />
         </motion.div>
+        <Chatbot />
         <Analytics />
         <SpeedInsights />
       </AuthProvider>
