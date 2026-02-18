@@ -3,6 +3,7 @@ import { OpenAI } from "openai";
 export default async function handler(req, res) {
   const geminiApiKey = process.env.GEMINI_API_KEY;
   const hfToken = process.env.HF_TOKEN;
+  const openRouterKey = process.env.OPENROUTER_API_KEY;
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -27,8 +28,13 @@ export default async function handler(req, res) {
     return cleaned;
   };
 
+  const messages = req.body.contents.map(item => ({
+    role: item.role === 'model' ? 'assistant' : 'user',
+    content: item.parts[0].text
+  }));
+
   try {
-    // 1. ATTEMPT GEMINI FIRST
+    // 1. ATTEMPT GEMINI FIRST (Direct)
     if (geminiApiKey) {
       try {
         const response = await fetch(
@@ -42,56 +48,71 @@ export default async function handler(req, res) {
 
         if (response.ok) {
           const data = await response.json();
-          // Clean/process Gemini response
           if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
             data.candidates[0].content.parts[0].text = processAIResponse(data.candidates[0].content.parts[0].text);
           }
           return res.status(200).json(data);
         }
-        
-        console.warn('Gemini API returned error, attempting fallback...');
-      } catch (geminiError) {
-        console.warn('Gemini Fetch Error, attempting fallback:', geminiError.message);
+        console.warn('Gemini Direct API failed, trying Hugging Face...');
+      } catch (e) {
+        console.warn('Gemini Direct Error:', e.message);
       }
     }
 
     // 2. FALLBACK TO DEEPSEEK VIA HUGGING FACE
     if (hfToken) {
-      const openai = new OpenAI({
-        baseURL: "https://router.huggingface.co/v1",
-        apiKey: hfToken,
-      });
+      try {
+        const hfOpenai = new OpenAI({
+          baseURL: "https://router.huggingface.co/v1",
+          apiKey: hfToken,
+        });
 
-      const messages = req.body.contents.map(item => ({
-        role: item.role === 'model' ? 'assistant' : 'user',
-        content: item.parts[0].text
-      }));
+        const chatCompletion = await hfOpenai.chat.completions.create({
+          model: "deepseek-ai/DeepSeek-V3",
+          messages: messages,
+          max_tokens: 1000
+        });
 
-      const chatCompletion = await openai.chat.completions.create({
-        model: "deepseek-ai/DeepSeek-V3", // Switched to V3 for much lower latency
-        messages: messages,
-        max_tokens: 1000
-      });
-
-      // Process response to handle navigate tags and thinking blocks
-      const aiText = processAIResponse(chatCompletion.choices[0].message.content);
-
-      // Transform OpenAI response back to Gemini format for frontend compatibility
-      return res.status(200).json({
-        candidates: [
-          {
-            content: {
-              parts: [{ text: aiText }]
-            }
-          }
-        ]
-      });
+        const aiText = processAIResponse(chatCompletion.choices[0].message.content);
+        return res.status(200).json({
+          candidates: [{ content: { parts: [{ text: aiText }] } }]
+        });
+      } catch (e) {
+        console.warn('Hugging Face Fallback failed, trying OpenRouter...', e.message);
+      }
     }
 
-    // 3. ERROR IF BOTH FAIL
+    // 3. FALLBACK TO OPENROUTER
+    if (openRouterKey) {
+      try {
+        const orOpenai = new OpenAI({
+          baseURL: "https://openrouter.ai/api/v1",
+          apiKey: openRouterKey,
+          defaultHeaders: {
+            "HTTP-Referer": "https://pathsarthi.org",
+            "X-Title": "Path Sarthi Trust",
+          }
+        });
+
+        const chatCompletion = await orOpenai.chat.completions.create({
+          model: "google/gemini-2.0-flash-001", // Using Gemini via OpenRouter as 3rd tier
+          messages: messages,
+          max_tokens: 1000
+        });
+
+        const aiText = processAIResponse(chatCompletion.choices[0].message.content);
+        return res.status(200).json({
+          candidates: [{ content: { parts: [{ text: aiText }] } }]
+        });
+      } catch (e) {
+        console.warn('OpenRouter Fallback failed:', e.message);
+      }
+    }
+
+    // 4. FINAL ERROR IF ALL FAIL
     return res.status(500).json({ 
-      error: "All AI services failed or are not configured properly.",
-      details: "Check GEMINI_API_KEY and HF_TOKEN environment variables."
+      error: "All AI services failed.",
+      details: "Please verify GEMINI_API_KEY, HF_TOKEN, and OPENROUTER_API_KEY."
     });
 
   } catch (error) {
