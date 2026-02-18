@@ -36,6 +36,7 @@ import PhotoPage from './components/PhotoPage';
 import useDarkMode from './hooks/useDarkMode';
 import MembershipForm from './components/MembershipForm';
 import AdSenseScript from './components/AdSenseScript';
+import SplashScreen from './components/SplashScreen';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
 const CertificateList = lazy(() => import('./components/Dashboard/CertificateList'));
 import VerifyCertificate from './pages/VerifyCertificate';
@@ -178,6 +179,8 @@ function GlobalConfetti({ show, onClose }) {
 }
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     logVisit(window.location.pathname);
   }, []);
@@ -190,10 +193,20 @@ function App() {
   return (
     <Router>
       <AdSenseScript />
+      <AnimatePresence mode="wait">
+        {loading && (
+          <SplashScreen key="splash" finishLoading={() => setLoading(false)} />
+        )}
+      </AnimatePresence>
       <AuthProvider>
         <GlobalConfetti show={globalConfetti} />
         {/* <MissionPopup /> */}
-        <div className={`min-h-screen flex flex-col ${isDark ? 'dark bg-[#181818]' : 'bg-gray-50'}`}>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: loading ? 0 : 1 }}
+          transition={{ duration: 0.5 }}
+          className={`min-h-screen flex flex-col ${isDark ? 'dark bg-[#181818]' : 'bg-gray-50'}`}
+        >
           <Navbar />
           <main className="flex-grow pt-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -249,7 +262,7 @@ function App() {
             </div>
           </main>
           <Footer />
-        </div>
+        </motion.div>
         <Analytics />
         <SpeedInsights />
       </AuthProvider>
