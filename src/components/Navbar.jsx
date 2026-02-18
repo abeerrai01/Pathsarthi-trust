@@ -153,25 +153,25 @@ const Navbar = () => {
         }`}
         style={{ borderBottom: '1px solid #e5e7eb' }}
       >
-        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative">
-          {/* Left spacer to help center the middle content */}
-          <div className="flex-1 hidden md:block"></div>
+        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+          {/* Left spacer to balance the right menu button and keep brand centered */}
+          <div className="flex-1"></div>
 
           {/* Centered Logo and Title */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0 flex-shrink-0 z-10">
+          <div className="flex-shrink-0 flex flex-col items-center">
             <Link to="/" className="flex flex-col items-center group">
               <div className="flex items-center">
                 <img
                   src="/PathSarthi logo.png"
                   alt="PathSarthi Trust Logo"
-                  className="h-12 w-auto mr-3 md:h-14 transition-transform duration-300 group-hover:scale-105"
+                  className="h-10 w-auto mr-2 md:h-14 md:mr-3 transition-transform duration-300 group-hover:scale-105"
                   style={{ background: 'transparent' }}
                 />
-                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900 whitespace-nowrap">
+                <h1 className="text-xl xs:text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900 whitespace-nowrap">
                   Path Sarthi Trust
                 </h1>
               </div>
-              <p className="text-xs md:text-sm italic font-medium mt-0.5 text-indigo-600 tracking-wider">
+              <p className="text-[10px] xs:text-xs md:text-sm italic font-medium mt-0.5 text-indigo-600 tracking-wider">
                 Hope • Heal • Humanity
               </p>
             </Link>
@@ -181,21 +181,21 @@ const Navbar = () => {
           <div className="flex-1 flex justify-end">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-3 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="p-2 xs:p-3 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
               aria-label="Toggle menu"
             >
-              <div className="w-8 h-6 flex flex-col justify-between items-end overflow-hidden">
+              <div className="w-6 h-5 xs:w-8 xs:h-6 flex flex-col justify-between items-end overflow-hidden">
                 <motion.span
-                  animate={isMenuOpen ? { rotate: 45, y: 10, width: '100%' } : { rotate: 0, y: 0, width: '100%' }}
-                  className="w-8 h-1 bg-gray-900 rounded-full origin-right"
+                  animate={isMenuOpen ? { rotate: 45, y: 8, width: '100%' } : { rotate: 0, y: 0, width: '100%' }}
+                  className="w-full h-0.5 xs:h-1 bg-gray-900 rounded-full origin-right"
                 />
                 <motion.span
                   animate={isMenuOpen ? { opacity: 0, x: 20 } : { opacity: 1, x: 0, width: '75%' }}
-                  className="w-6 h-1 bg-gray-900 rounded-full"
+                  className="w-3/4 h-0.5 xs:h-1 bg-gray-900 rounded-full"
                 />
                 <motion.span
-                  animate={isMenuOpen ? { rotate: -45, y: -10, width: '100%' } : { rotate: 0, y: 0, width: '100%' }}
-                  className="w-8 h-1 bg-gray-900 rounded-full origin-right"
+                  animate={isMenuOpen ? { rotate: -45, y: -8, width: '100%' } : { rotate: 0, y: 0, width: '100%' }}
+                  className="w-full h-0.5 xs:h-1 bg-gray-900 rounded-full origin-right"
                 />
               </div>
             </button>
