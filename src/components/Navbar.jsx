@@ -1,103 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import useDarkMode from '../hooks/useDarkMode';
-
-function renderDropdownItems(items, handleNavClick, activeDropdownPath, setActiveDropdownPath, parentPath = [], isMobile = false, closeDropdownTimerRef) {
-  return items.map((item, idx) => {
-    const currentPath = [...parentPath, item.label];
-    const isOpen = activeDropdownPath.length >= currentPath.length && activeDropdownPath.slice(0, currentPath.length).join('>') === currentPath.join('>');
-    const isNested = parentPath.length > 0;
-    if (item.type === 'dropdown') {
-      return (
-        <div
-          key={item.label + currentPath.join('-')}
-          className={`relative group ${isMobile ? 'w-full' : ''}`}
-          onMouseEnter={!isMobile ? () => {
-            if (closeDropdownTimerRef && closeDropdownTimerRef.current) clearTimeout(closeDropdownTimerRef.current);
-            setActiveDropdownPath(currentPath);
-          } : undefined}
-          onMouseLeave={!isMobile ? () => {
-            if (closeDropdownTimerRef) {
-              closeDropdownTimerRef.current = setTimeout(() => setActiveDropdownPath(parentPath), 150);
-            } else {
-              setActiveDropdownPath(parentPath);
-            }
-          } : undefined}
-        >
-          <button
-            onClick={e => {
-              e.stopPropagation();
-              if (isMobile) {
-                if (isOpen) {
-                  setActiveDropdownPath(parentPath);
-                } else {
-                  setActiveDropdownPath(currentPath);
-                }
-              }
-            }}
-            className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center ${isOpen ? 'bg-indigo-600 text-white shadow' : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'} ${isNested || isMobile ? 'justify-center w-full text-center' : ''}`}
-            style={(isNested || isMobile) ? { justifyContent: 'center', width: '100%', textAlign: 'center' } : {}}
-            type="button"
-            tabIndex={0}
-          >
-            {item.label}
-            <svg
-              className={`ml-1 inline-block w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          {isOpen && (
-            isMobile ? (
-              <div className="w-full flex flex-col items-center">
-                {renderDropdownItems(item.items, handleNavClick, activeDropdownPath, setActiveDropdownPath, currentPath, true, closeDropdownTimerRef)}
-              </div>
-            ) : (
-              <div
-                className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 ${parentPath.length > 0 ? 'ml-48 -mt-8' : ''}`}
-                onMouseEnter={() => {
-                  if (closeDropdownTimerRef && closeDropdownTimerRef.current) clearTimeout(closeDropdownTimerRef.current);
-                  setActiveDropdownPath(currentPath);
-                }}
-                onMouseLeave={() => {
-                  if (closeDropdownTimerRef) {
-                    closeDropdownTimerRef.current = setTimeout(() => setActiveDropdownPath(parentPath), 150);
-                  } else {
-                    setActiveDropdownPath(parentPath);
-                  }
-                }}
-              >
-                {renderDropdownItems(item.items, handleNavClick, activeDropdownPath, setActiveDropdownPath, currentPath, false, closeDropdownTimerRef)}
-              </div>
-            )
-          )}
-        </div>
-      );
-    } else {
-      return (
-        <Link
-          key={item.to + currentPath.join('-')}
-          to={item.to}
-          className={`block px-4 py-2 text-sm transition-colors duration-150 ${isMobile ? 'text-center w-full text-gray-800 hover:bg-indigo-50 hover:text-indigo-700' : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'}`}
-          onClick={() => handleNavClick(item.to)}
-        >
-          {item.label}
-        </Link>
-      );
-    }
-  });
-}
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const location = useLocation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeDropdownPath, setActiveDropdownPath] = useState([]);
-  const closeDropdownTimerRef = useRef();
-  const [isDark, toggleDarkMode] = useDarkMode();
+  const [expandedItems, setExpandedItems] = useState({});
 
   useEffect(() => {
     const handleScroll = () => {
@@ -107,23 +16,22 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = (path) => {
-    setIsMobileMenuOpen(false);
-    setActiveDropdownPath([]);
-    if (location.pathname !== path) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
+  useEffect(() => {
+    // Close menu on route change
+    setIsMenuOpen(false);
+    setExpandedItems({});
+  }, [location.pathname]);
 
-  const isActive = (path) => location.pathname === path;
+  const toggleExpand = (label) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [label]: !prev[label]
+    }));
+  };
 
   const navItems = [
     { to: '/', label: 'Home', type: 'link' },
-    { 
-      label: 'Gallery', 
-      type: 'link', 
-      to: '/gallery' 
-    },
+    { to: '/gallery', label: 'Gallery', type: 'link' },
     { to: '/media', label: 'Media', type: 'link' },
     { 
       label: 'Projects', 
@@ -170,16 +78,8 @@ const Navbar = () => {
         { to: '/membership', label: 'Membership' },
       ]
     },
-    { 
-      to: '/internship',
-      label: 'Internship',
-      type: 'link'
-    },
-    { 
-      to: '/blog',
-      label: 'Blog',
-      type: 'link'
-    },
+    { to: '/internship', label: 'Internship', type: 'link' },
+    { to: '/blog', label: 'Blog', type: 'link' },
     { 
       label: 'Others', 
       type: 'dropdown',
@@ -189,115 +89,156 @@ const Navbar = () => {
     }
   ];
 
+  const renderNavItems = (items, depth = 0) => {
+    return items.map((item, index) => {
+      const isExpanded = expandedItems[item.label];
+      const hasSubItems = item.type === 'dropdown' && item.items;
+
+      return (
+        <div key={item.label + index} className="w-full">
+          {item.type === 'link' ? (
+            <Link
+              to={item.to}
+              className={`block w-full text-left px-6 py-4 text-xl font-semibold border-b border-gray-100 transition-colors ${
+                location.pathname === item.to ? 'text-indigo-600 bg-indigo-50' : 'text-gray-800 hover:bg-gray-50'
+              }`}
+              style={{ paddingLeft: `${1.5 + depth * 1.5}rem` }}
+            >
+              {item.label}
+            </Link>
+          ) : (
+            <div className="w-full">
+              <button
+                onClick={() => toggleExpand(item.label)}
+                className={`flex items-center justify-between w-full text-left px-6 py-4 text-xl font-semibold border-b border-gray-100 transition-colors ${
+                  isExpanded ? 'text-indigo-600 bg-gray-50' : 'text-gray-800 hover:bg-gray-50'
+                }`}
+                style={{ paddingLeft: `${1.5 + depth * 1.5}rem` }}
+              >
+                <span>{item.label}</span>
+                <svg
+                  className={`w-6 h-6 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <AnimatePresence>
+                {isExpanded && hasSubItems && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="overflow-hidden bg-gray-50/50"
+                  >
+                    {renderNavItems(item.items, depth + 1)}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+        </div>
+      );
+    });
+  };
+
   return (
-    <nav
-      className={`fixed w-full z-50 transition-all duration-300 top-0 left-0 ${isScrolled ? 'bg-white shadow-lg' : isDark ? 'bg-[#232323]' : 'bg-white'}`}
-      style={{ borderBottom: isDark ? '1px solid #333' : '1px solid #e5e7eb' }}
-      aria-label="Main navigation"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 w-full">
-          {/* Logo and site name */}
-          <div className="flex items-center flex-shrink-0 mr-4">
-            <Link to="/" className="flex items-center" onClick={() => handleNavClick('/')} aria-label="Go to home page">
-              <img
-                src="/PathSarthi logo.png"
-                alt="PathSarthi Trust Logo"
-                className="h-10 w-auto mr-3 drop-shadow"
-                style={{ background: 'transparent' }}
-              />
-              <span className="flex flex-col"><span className={`text-2xl font-extrabold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Path Sarthi Trust</span><span className={`block text-xs italic font-medium mt-0.5 ${isDark ? 'text-orange-200' : 'text-indigo-600'}`}>Hope • Heal • Humanity</span></span>
+    <>
+      <nav
+        className={`fixed w-full z-[100] transition-all duration-300 top-0 left-0 bg-white ${
+          isScrolled ? 'shadow-md h-20' : 'h-24'
+        }`}
+        style={{ borderBottom: '1px solid #e5e7eb' }}
+      >
+        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative">
+          {/* Left spacer to help center the middle content */}
+          <div className="flex-1 hidden md:block"></div>
+
+          {/* Centered Logo and Title */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0 flex-shrink-0 z-10">
+            <Link to="/" className="flex flex-col items-center group">
+              <div className="flex items-center">
+                <img
+                  src="/PathSarthi logo.png"
+                  alt="PathSarthi Trust Logo"
+                  className="h-12 w-auto mr-3 md:h-14 transition-transform duration-300 group-hover:scale-105"
+                  style={{ background: 'transparent' }}
+                />
+                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900 whitespace-nowrap">
+                  Path Sarthi Trust
+                </h1>
+              </div>
+              <p className="text-xs md:text-sm italic font-medium mt-0.5 text-indigo-600 tracking-wider">
+                Hope • Heal • Humanity
+              </p>
             </Link>
           </div>
-          
-          {/* Desktop nav links */}
-          <div className="hidden md:flex gap-2 items-center flex-grow justify-end">
-            {navItems.map((item, index) => (
-              <div key={index} className="relative">
-                {item.type === 'link' ? (
-                  <Link
-                    to={item.to}
-                    className={`px-4 py-2 rounded-lg text-base font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
-                      isActive(item.to)
-                        ? 'bg-indigo-600 text-white shadow'
-                        : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'
-                    }`}
-                    onClick={() => handleNavClick(item.to)}
-                  >
-                    {item.label}
-                  </Link>
-                ) : (
-                  renderDropdownItems([item], handleNavClick, activeDropdownPath, setActiveDropdownPath, [], false, closeDropdownTimerRef)
-                )}
+
+          {/* Burger Menu Button on Right */}
+          <div className="flex-1 flex justify-end">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-3 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label="Toggle menu"
+            >
+              <div className="w-8 h-6 flex flex-col justify-between items-end overflow-hidden">
+                <motion.span
+                  animate={isMenuOpen ? { rotate: 45, y: 10, width: '100%' } : { rotate: 0, y: 0, width: '100%' }}
+                  className="w-8 h-1 bg-gray-900 rounded-full origin-right"
+                />
+                <motion.span
+                  animate={isMenuOpen ? { opacity: 0, x: 20 } : { opacity: 1, x: 0, width: '75%' }}
+                  className="w-6 h-1 bg-gray-900 rounded-full"
+                />
+                <motion.span
+                  animate={isMenuOpen ? { rotate: -45, y: -10, width: '100%' } : { rotate: 0, y: 0, width: '100%' }}
+                  className="w-8 h-1 bg-gray-900 rounded-full origin-right"
+                />
               </div>
-            ))}
-            {/* Dark mode toggle button */}
-            <button
-              onClick={toggleDarkMode}
-              className={`ml-4 px-3 py-2 rounded-lg border-2 font-semibold transition flex items-center ${isDark ? 'bg-[#232323] text-white border-[#00a9b7] hover:bg-[#1a1a1a]' : 'bg-white text-[#00a9b7] border-[#fcd8b1] hover:bg-orange-50'}`}
-              aria-label="Toggle dark mode"
-              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {isDark ? <span role="img" aria-label="moon" className="text-xl">🌙</span> : <span role="img" aria-label="sun" className="text-xl">☀️</span>}
-            </button>
-          </div>
-
-          {/* Hamburger for mobile */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsMobileMenuOpen(true)}
-              type="button"
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-indigo-700 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              aria-label="Open main menu"
-            >
-              <svg className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
             </button>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile menu overlay */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex md:hidden">
-          <div className="relative w-4/5 max-w-xs bg-white h-full shadow-xl flex flex-col overflow-y-auto max-h-screen">
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="absolute top-4 right-4 p-2 rounded-full text-gray-700 hover:bg-gray-200 focus:outline-none"
-              aria-label="Close menu"
+      {/* Fullscreen Overlay Menu */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMenuOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[110] md:hidden"
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-full max-w-sm bg-white z-[120] shadow-2xl flex flex-col overflow-y-auto"
             >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <div className="flex flex-col gap-2 mt-20 px-6 items-center text-center">
-              {navItems.map((item, index) => (
-                <div key={index} className="w-full">
-                  {item.type === 'link' ? (
-                    <Link
-                      to={item.to}
-                      className={`block px-4 py-3 rounded-lg text-lg font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full text-center mx-auto ${
-                        isActive(item.to)
-                          ? 'bg-indigo-600 text-white shadow'
-                          : 'text-gray-800 hover:bg-indigo-50 hover:text-indigo-700'
-                      }`}
-                      onClick={() => handleNavClick(item.to)}
-                    >
-                      {item.label}
-                    </Link>
-                  ) : (
-                    renderDropdownItems([item], handleNavClick, activeDropdownPath, setActiveDropdownPath, [], true)
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* Click outside to close */}
-          <div className="flex-1" onClick={() => setIsMobileMenuOpen(false)}></div>
-        </div>
-      )}
-    </nav>
+              <div className="p-4 flex justify-end items-center h-24 border-b border-gray-100">
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-3 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex-1 flex flex-col pb-12">
+                {renderNavItems(navItems)}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

@@ -33,7 +33,6 @@ import { lazy, Suspense } from 'react';
 import { logVisit } from './utils/logVisit';
 import MediaFeed from './components/MediaFeed';
 import PhotoPage from './components/PhotoPage';
-import useDarkMode from './hooks/useDarkMode';
 import MembershipForm from './components/MembershipForm';
 import AdSenseScript from './components/AdSenseScript';
 import SplashScreen from './components/SplashScreen';
@@ -189,7 +188,6 @@ function App() {
     setGlobalConfetti(true);
     setTimeout(() => setGlobalConfetti(false), 2500);
   };
-  const [isDark] = useDarkMode();
   return (
     <Router>
       <AdSenseScript />
@@ -205,7 +203,7 @@ function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: loading ? 0 : 1 }}
           transition={{ duration: 0.5 }}
-          className={`min-h-screen flex flex-col ${isDark ? 'dark bg-[#181818]' : 'bg-gray-50'}`}
+          className="min-h-screen flex flex-col bg-gray-50 text-gray-900"
         >
           <Navbar />
           <main className="flex-grow pt-16">
