@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { db } from '../config/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { 
   Building2, 
   CheckCircle2, 
@@ -28,12 +30,25 @@ const CSRSection = () => {
     setFormData(prev => ({...prev, [name]: value}));
   };
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real scenario, this would send an email or save to DB.
-    alert('Thank you for your interest! Our team will contact you shortly.');
-    setIsFormOpen(false);
-    setFormData({companyName: '', budget: '', contactPerson: '', contactInfo: ''});
+    setIsSubmitting(true);
+    try {
+      await addDoc(collection(db, 'csr_partnerships'), {
+        ...formData,
+        createdAt: serverTimestamp()
+      });
+      alert('Thank you for your interest! Our team will contact you shortly.');
+      setIsFormOpen(false);
+      setFormData({companyName: '', budget: '', contactPerson: '', contactInfo: ''});
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      alert('There was an error submitting your request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -318,10 +333,11 @@ const CSRSection = () => {
                 
                 <button 
                   type="submit"
-                  className="w-full mt-4 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-lg transition-colors shadow-lg shadow-indigo-600/30"
+                  disabled={isSubmitting}
+                  className="w-full mt-4 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-lg transition-colors shadow-lg shadow-indigo-600/30 disabled:bg-indigo-400 disabled:cursor-not-allowed"
                 >
                   <Send className="w-5 h-5" />
-                  Submit Partnership Request
+                  {isSubmitting ? 'Submitting...' : 'Submit Partnership Request'}
                 </button>
               </form>
             </motion.div>

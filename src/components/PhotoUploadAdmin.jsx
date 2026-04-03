@@ -13,6 +13,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import axios from "axios";
+import { UploadCloud, CheckCircle2, AlertCircle, Image as ImageIcon, Plus, X } from 'lucide-react';
 
 // Helper to upload a single image to Cloudinary using Axios
 async function uploadToCloudinary(file) {
@@ -30,7 +31,7 @@ const PhotoUploadAdmin = () => {
   const [newHeading, setNewHeading] = useState("");
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" });
   const [previews, setPreviews] = useState([]);
 
   // Fetch existing headings on mount and after upload
@@ -66,16 +67,16 @@ const PhotoUploadAdmin = () => {
   }, [files]);
 
   const handleUpload = async () => {
-    setMessage("");
+    setMessage({ text: "", type: "" });
     if (!files.length) {
-      setMessage("Please select images to upload.");
+      setMessage({ text: "Please select images to upload.", type: "error" });
       return;
     }
     let headingToUse = selectedHeadingId
       ? headings.find((h) => h.id === selectedHeadingId)?.heading
       : newHeading.trim();
     if (!headingToUse) {
-      setMessage("Please select or enter a heading.");
+      setMessage({ text: "Please select an existing category or enter a new one.", type: "error" });
       return;
     }
     setLoading(true);
@@ -115,7 +116,7 @@ const PhotoUploadAdmin = () => {
         const q = query(collection(db, "gallery"), where("heading", "==", headingToUse));
         const qSnap = await getDocs(q);
         if (!qSnap.empty) {
-          setMessage("A gallery with this heading already exists. Please select it from the dropdown.");
+          setMessage({ text: "A gallery with this heading already exists. Please select it from the list above.", type: "error" });
           setLoading(false);
           return;
         }
@@ -126,76 +127,133 @@ const PhotoUploadAdmin = () => {
           images: uniqueUploads,
         });
       }
-      setMessage("Upload successful!");
+      setMessage({ text: "Gallery updated successfully!", type: "success" });
       setFiles([]);
       setNewHeading("");
       setSelectedHeadingId("");
       setPreviews([]);
       await fetchHeadings(); // Reload headings
     } catch (err) {
-      setMessage("Error: " + (err.message || err));
+      setMessage({ text: "Error: " + (err.message || err), type: "error" });
     }
     setLoading(false);
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded shadow mt-8">
-      <h2 className="text-2xl font-bold mb-4">Photo Upload Admin</h2>
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Select Existing Heading</label>
-        <select
-          className="w-full border rounded px-3 py-2"
-          value={selectedHeadingId}
-          onChange={(e) => {
-            setSelectedHeadingId(e.target.value);
-            setNewHeading("");
-          }}
-        >
-          <option value="">-- New Heading --</option>
-          {headings.map((h) => (
-            <option key={h.id} value={h.id}>
-              {h.heading}
-            </option>
-          ))}
-        </select>
+    <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-600 to-teal-700 p-8 text-white">
+        <h2 className="text-3xl font-black flex items-center gap-3">
+          <UploadCloud className="w-10 h-10" />
+          Gallery Group Upload
+        </h2>
+        <p className="text-emerald-50 mt-2 opacity-90 font-medium text-lg">Upload multiple event photos into a new or existing category.</p>
       </div>
-      <div className="mb-4">
-        <label className="block font-medium mb-1">New Heading</label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          value={newHeading}
-          onChange={(e) => setNewHeading(e.target.value)}
-          disabled={!!selectedHeadingId}
-          placeholder="Enter new heading"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Select Images</label>
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={(e) => setFiles(e.target.files)}
-          className="w-full"
-        />
+
+      <div className="p-8 md:p-12 space-y-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Category Selection */}
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-3">Target Gallery Category</label>
+              <select
+                className="w-full border border-slate-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all bg-slate-50 font-bold"
+                value={selectedHeadingId}
+                onChange={(e) => {
+                  setSelectedHeadingId(e.target.value);
+                  setNewHeading("");
+                }}
+              >
+                <option value="">✨ Create New Category</option>
+                {headings.map((h) => (
+                  <option key={h.id} value={h.id}>
+                    📂 {h.heading}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {!selectedHeadingId && (
+              <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                <label className="block text-sm font-bold text-slate-700 mb-3">New Category Name</label>
+                <input
+                  className="w-full border border-slate-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-slate-400 font-bold"
+                  value={newHeading}
+                  onChange={(e) => setNewHeading(e.target.value)}
+                  placeholder="e.g. Health Camp April 2026"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* File Selection */}
+          <div className="space-y-6">
+            <label className="block text-sm font-bold text-slate-700 mb-3">Select Event Photos</label>
+            <div className="relative border-2 border-dashed border-slate-200 rounded-3xl p-10 text-center hover:border-emerald-500 transition-all group cursor-pointer bg-slate-50">
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={(e) => setFiles(e.target.files)}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                  <Plus className="text-emerald-500 w-8 h-8" />
+                </div>
+                <span className="text-slate-600 font-black mb-1">Click to add photos</span>
+                <span className="text-slate-400 text-sm font-medium italic">You can select multiple photos at once</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Previews */}
         {previews.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
-            {previews.map((url, idx) => (
-              <img key={idx} src={url} alt="preview" className="h-20 w-20 object-cover rounded border" />
-            ))}
+          <div className="animate-in zoom-in-95 duration-300">
+            <div className="flex justify-between items-end mb-4">
+              <h4 className="text-sm font-black text-slate-700 uppercase tracking-widest">Selected Images ({previews.length})</h4>
+              <button onClick={() => setFiles([])} className="text-red-500 text-xs font-bold hover:underline flex items-center gap-1">
+                <X size={14} /> Clear All
+              </button>
+            </div>
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3 bg-slate-50 p-6 rounded-3xl border border-slate-200 max-h-64 overflow-y-auto custom-scrollbar">
+              {previews.map((url, idx) => (
+                <div key={idx} className="relative group aspect-square rounded-xl overflow-hidden shadow-sm border-2 border-white">
+                  <img src={url} alt="preview" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Submit */}
+        <button
+          onClick={handleUpload}
+          disabled={loading}
+          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-5 rounded-2xl shadow-xl shadow-emerald-600/20 transition-all hover:scale-[1.01] active:scale-95 disabled:bg-emerald-300 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-xl"
+        >
+          {loading ? (
+            <>
+              <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+              Processing Uploads...
+            </>
+          ) : (
+            <>
+              <ImageIcon className="w-6 h-6" />
+              Upload to Gallery
+            </>
+          )}
+        </button>
+
+        {message.text && (
+          <div className={`p-5 rounded-2xl flex items-center gap-4 font-bold border animate-in slide-in-from-top-2 duration-300 ${
+            message.type === 'success' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-red-50 border-red-100 text-red-700'
+          }`}>
+            {message.type === 'success' ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
+            {message.text}
           </div>
         )}
       </div>
-      <button
-        onClick={handleUpload}
-        disabled={loading}
-        className="w-full bg-indigo-600 text-white font-bold py-3 rounded shadow hover:bg-indigo-700 transition-all duration-300 disabled:opacity-50"
-      >
-        {loading ? "Uploading..." : "Upload"}
-      </button>
-      {message && (
-        <div className={`mt-4 text-center ${message.startsWith("Error") ? "text-red-600" : "text-green-600"}`}>{message}</div>
-      )}
     </div>
   );
 };

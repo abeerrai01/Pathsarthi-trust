@@ -6,6 +6,7 @@ import PhotoUploadAdmin from '../PhotoUploadAdmin';
 import EditGalleryHeadings from '../EditGalleryHeadings';
 import { onSnapshot, doc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import { LayoutDashboard, Images, UploadCloud, Users, Target, Activity, Type, Award, ListChecks, LogOut, ChevronRight, Newspaper } from 'lucide-react';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -21,6 +22,9 @@ import {
 } from 'chart.js';
 import AdminUpload from '../AdminUpload';
 import MediaFeed from '../MediaFeed';
+import TeamManager from './TeamManager';
+import MissionManager from './MissionManager';
+import AnalyticsPanel from './AnalyticsPanel';
 
 ChartJS.register(
   CategoryScale,
@@ -39,263 +43,25 @@ const Button = ({ children, onClick, className = "", variant = "ghost" }) => (
     onClick={onClick}
     className={`w-full text-left px-4 py-2 rounded transition font-medium ${
       variant === "outline"
-        ? "border border-white text-white hover:bg-gray-700"
-        : "bg-transparent hover:bg-gray-700 text-white"
+        ? "border border-slate-300 text-slate-700 hover:bg-slate-50"
+        : "bg-transparent hover:bg-slate-100 text-slate-700"
     } ${className}`}
   >
     {children}
   </button>
 );
 
-const TeamMembers = () => <div>Team Members Section (Coming Soon)</div>;
-const UpdateMission = () => <div>Update Mission Section (Coming Soon)</div>;
-const AnalyticsPanel = () => {
-  const [analytics, setAnalytics] = useState(null);
-  const [today, setToday] = useState('');
-  const [dateRange, setDateRange] = useState({ from: '', to: '' });
-  const [pages, setPages] = useState([]);
-  const [selectedPage, setSelectedPage] = useState('');
-  const [pageStats, setPageStats] = useState(null);
 
-  useEffect(() => {
-    const todayStr = new Date().toISOString().split('T')[0];
-    setToday(todayStr);
-    const unsub = onSnapshot(doc(db, 'analytics', 'pathsarthi-in'), (docSnap) => {
-      if (docSnap.exists()) {
-        setAnalytics(docSnap.data());
-      }
-    });
-    // Fetch per-page stats
-    const fetchPages = async () => {
-      const snap = await getDocs(collection(db, 'analytics', 'pathsarthi-in', 'pages'));
-      const arr = [];
-      snap.forEach(doc => arr.push({ id: doc.id, ...doc.data() }));
-      setPages(arr);
-      if (arr.length && !selectedPage) setSelectedPage(arr[0].id);
-    };
-    fetchPages();
-    return () => unsub();
-    // eslint-disable-next-line
-  }, []);
+// AnalyticsPanel is now imported from its own file
 
-  useEffect(() => {
-    if (!selectedPage) return;
-    const stat = pages.find(p => p.id === selectedPage);
-    setPageStats(stat);
-  }, [selectedPage, pages]);
-
-  if (!analytics) return <div>Loading analytics...</div>;
-
-  // Date range filter logic
-  const dailySorted = (analytics.daily || []).slice().sort((a, b) => a.date.localeCompare(b.date));
-  const filteredDaily = dailySorted.filter(d => {
-    if (!dateRange.from && !dateRange.to) return true;
-    if (dateRange.from && d.date < dateRange.from) return false;
-    if (dateRange.to && d.date > dateRange.to) return false;
-    return true;
-  });
-
-  const todayData = analytics.daily?.find(d => d.date === today);
-
-  // Line chart data
-  const lineChartData = {
-    labels: filteredDaily.map(d => d.date),
-    datasets: [
-      {
-        label: "Daily Visits",
-        data: filteredDaily.map(d => d.views),
-        fill: false,
-        borderColor: "#6366f1",
-        backgroundColor: "#6366f1",
-        tension: 0.3,
-      },
-    ],
-  };
-  const lineChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-      title: { display: true, text: 'Visits Per Day (Line)' },
-    },
-    scales: {
-      x: { title: { display: true, text: 'Date' } },
-      y: { title: { display: true, text: 'Visits' }, beginAtZero: true },
-    },
-  };
-
-  // Bar chart data
-  const barChartData = {
-    labels: filteredDaily.map(d => d.date),
-    datasets: [
-      {
-        label: "Daily Visits",
-        data: filteredDaily.map(d => d.views),
-        backgroundColor: "#818cf8",
-      },
-    ],
-  };
-  const barChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-      title: { display: true, text: 'Visits Per Day (Bar)' },
-    },
-    scales: {
-      x: { title: { display: true, text: 'Date' } },
-      y: { title: { display: true, text: 'Visits' }, beginAtZero: true },
-    },
-  };
-
-  // Pie chart data
-  const pieChartData = {
-    labels: ['Unique Visitors', 'Other Visitors'],
-    datasets: [
-      {
-        data: [analytics.uniqueVisitors?.length ?? 0, (analytics.visitors ?? 0) - (analytics.uniqueVisitors?.length ?? 0)],
-        backgroundColor: ['#6366f1', '#a5b4fc'],
-        hoverOffset: 4,
-      },
-    ],
-  };
-  const pieChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: { position: 'bottom' },
-      title: { display: true, text: 'Unique vs Total Visitors' },
-    },
-  };
-
-  // Device/browser pie chart for selected page
-  const devicePieData = pageStats ? {
-    labels: Object.keys(pageStats.devices || {}),
-    datasets: [{
-      data: Object.values(pageStats.devices || {}),
-      backgroundColor: ['#6366f1', '#818cf8', '#a5b4fc'],
-    }],
-  } : null;
-  const browserPieData = pageStats ? {
-    labels: Object.keys(pageStats.browsers || {}),
-    datasets: [{
-      data: Object.values(pageStats.browsers || {}),
-      backgroundColor: ['#6366f1', '#818cf8', '#a5b4fc', '#fbbf24', '#f87171'],
-    }],
-  } : null;
-
-  // CSV export logic
-  function exportCSV(data, filename) {
-    const csvRows = [];
-    const headers = Object.keys(data[0] || {});
-    csvRows.push(headers.join(','));
-    for (const row of data) {
-      csvRows.push(headers.map(h => JSON.stringify(row[h] ?? '')).join(','));
-    }
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  }
-
-  // Prepare daily and per-page CSV data
-  const dailyCSV = (analytics.daily || []).map(d => ({ ...d }));
-  const pagesCSV = pages.map(p => ({ page: p.id, views: p.pageViews, uniqueVisitors: p.uniqueVisitors?.length || 0 }));
-
-  return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
-      <h2 className="text-2xl font-bold mb-4">Live Website Analytics</h2>
-      <div className="mb-2 flex justify-between">
-        <span className="font-semibold">Total Visitors:</span>
-        <span>{analytics.visitors ?? 0}</span>
-      </div>
-      <div className="mb-2 flex justify-between">
-        <span className="font-semibold">Total Page Views:</span>
-        <span>{analytics.pageViews ?? 0}</span>
-      </div>
-      <div className="mb-2 flex justify-between">
-        <span className="font-semibold">Unique Visitors:</span>
-        <span>{analytics.uniqueVisitors?.length ?? 0}</span>
-      </div>
-      <div className="mb-2 flex justify-between">
-        <span className="font-semibold">Today's Visits:</span>
-        <span>{todayData ? todayData.views : 0}</span>
-      </div>
-      <div className="text-xs text-gray-500 mt-4 mb-4">Live updates from Firestore</div>
-      {/* Date Range Filter */}
-      <div className="flex gap-4 mb-6 items-center">
-        <label className="text-sm">From:
-          <input type="date" className="ml-2 border rounded px-2 py-1" value={dateRange.from} onChange={e => setDateRange(r => ({ ...r, from: e.target.value }))} />
-        </label>
-        <label className="text-sm">To:
-          <input type="date" className="ml-2 border rounded px-2 py-1" value={dateRange.to} onChange={e => setDateRange(r => ({ ...r, to: e.target.value }))} />
-        </label>
-        <button className="ml-2 px-3 py-1 bg-gray-200 rounded text-sm" onClick={() => setDateRange({ from: '', to: '' })}>Reset</button>
-      </div>
-      {filteredDaily.length > 0 && (
-        <div className="mt-6">
-          <Line data={lineChartData} options={lineChartOptions} />
-        </div>
-      )}
-      {filteredDaily.length > 0 && (
-        <div className="mt-6">
-          <Bar data={barChartData} options={barChartOptions} />
-        </div>
-      )}
-      <div className="mt-6">
-        <Pie data={pieChartData} options={pieChartOptions} />
-      </div>
-      {/* Per-page stats table */}
-      <div className="mt-10">
-        <h3 className="text-xl font-semibold mb-2">Per-Page Stats</h3>
-        <table className="w-full text-sm mb-4 border">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 border">Page</th>
-              <th className="p-2 border">Views</th>
-              <th className="p-2 border">Unique Visitors</th>
-              <th className="p-2 border">Select</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pages.map(p => (
-              <tr key={p.id} className={selectedPage === p.id ? 'bg-indigo-50' : ''}>
-                <td className="p-2 border">{p.id}</td>
-                <td className="p-2 border">{p.pageViews}</td>
-                <td className="p-2 border">{p.uniqueVisitors?.length || 0}</td>
-                <td className="p-2 border"><button className="px-2 py-1 bg-indigo-100 rounded" onClick={() => setSelectedPage(p.id)}>View</button></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {/* Device/browser breakdown for selected page */}
-      {pageStats && (
-        <div className="flex flex-wrap gap-8 mt-6">
-          <div className="w-64">
-            <Pie data={devicePieData} options={{ plugins: { title: { display: true, text: 'Device Type' }, legend: { position: 'bottom' } } }} />
-          </div>
-          <div className="w-64">
-            <Pie data={browserPieData} options={{ plugins: { title: { display: true, text: 'Browser' }, legend: { position: 'bottom' } } }} />
-          </div>
-        </div>
-      )}
-      {/* Export buttons */}
-      <div className="flex gap-4 mt-8">
-        <button className="px-4 py-2 bg-green-600 text-white rounded" onClick={() => exportCSV(dailyCSV, 'daily-analytics.csv')}>Export Daily CSV</button>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded" onClick={() => exportCSV(pagesCSV, 'per-page-analytics.csv')}>Export Per-Page CSV</button>
-      </div>
-    </div>
-  );
-};
 
 const DashboardLayout = () => {
-  const [activeSection, setActiveSection] = useState("gallery-group-upload");
+  const [activeSection, setActiveSection] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // or your auth logic
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -305,70 +71,165 @@ const DashboardLayout = () => {
     setSidebarOpen(false);
   };
 
+  const menuItems = [
+    { id: "overview", label: "Overview Home", icon: <LayoutDashboard size={20} /> },
+    { id: "analytics", label: "Website Analytics", icon: <Activity size={20} /> },
+    { id: "team", label: "Team & Supporters", icon: <Users size={20} /> },
+    { id: "gallery-group-upload", label: "Upload New Photos", icon: <UploadCloud size={20} /> },
+    { id: "gallery-manager", label: "Manage Existing Photos", icon: <Images size={20} /> },
+    { id: "media-upload", label: "News & Media Posts", icon: <Newspaper size={20} /> },
+    { id: "edit-gallery-headings", label: "Edit Section Headings", icon: <Type size={20} /> },
+    { id: "mission", label: "Update Mission", icon: <Target size={20} /> },
+  ];
+
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-slate-50 font-sans">
       <AdminNavbar onLogout={handleLogout} onMenuClick={handleMenuClick} />
-      <div className="flex flex-1 relative">
-        {/* Sidebar as drawer on mobile */}
-        <div>
-          {/* Overlay */}
-          {sidebarOpen && (
-            <div
-              className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
-              onClick={() => setSidebarOpen(false)}
-            ></div>
-          )}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Sidebar Overlay */}
+        {sidebarOpen && (
           <div
-            className={`fixed z-40 top-0 left-0 h-full w-64 bg-gray-800 text-white p-4 space-y-4 transform transition-transform duration-200 md:static md:translate-x-0 md:block ${
-              sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-            }`}
-          >
-            <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
-            <Button onClick={() => handleNav("gallery-manager")}>🗑️ Manage Gallery</Button>
-            <Button onClick={() => handleNav("gallery-group-upload")}>🖼️ Gallery Group Upload</Button>
-            <Button onClick={() => handleNav("media-upload")}>📸 Path Sarthi Media Upload</Button>
-            <Button onClick={() => handleNav("team")}>🧑‍🤝‍🧑 Team Members</Button>
-            <Button onClick={() => handleNav("mission")}>🎯 Update Mission</Button>
-            <Button onClick={() => handleNav("analytics")}>📊 Website Analytics</Button>
-            <Button onClick={() => handleNav("edit-gallery-headings")}>✏️ Edit Gallery Headings</Button>
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-30 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          ></div>
+        )}
+        
+        {/* Modern Sidebar */}
+        <div
+          className={`fixed z-40 top-0 left-0 h-full w-72 bg-white border-r border-slate-200 shadow-xl md:shadow-none transform transition-transform duration-300 md:static md:translate-x-0 flex flex-col ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="p-6 pb-2">
+            <h2 className="text-xs font-black tracking-widest text-slate-400 uppercase mb-4">Admin Menu</h2>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto px-4 space-y-1.5 custom-scrollbar">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleNav(item.id)}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${
+                  activeSection === item.id 
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-200" 
+                    : "text-slate-600 hover:bg-slate-100 hover:text-indigo-600"
+                }`}
+              >
+                <div className="flex items-center gap-3 font-semibold">
+                  {item.icon}
+                  {item.label}
+                </div>
+                {activeSection === item.id && <ChevronRight size={16} className="opacity-70" />}
+              </button>
+            ))}
+
+            <div className="pt-6 pb-2">
+              <h2 className="text-xs font-black tracking-widest text-slate-400 uppercase mb-4 px-2">Certificates</h2>
+            </div>
+            
             <Link
               to="/admin/certificates"
-              className="block w-full text-left px-4 py-2 rounded transition font-medium bg-green-600 hover:bg-green-700 text-white mt-2"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-indigo-600 font-semibold"
             >
-              🏅 Certificate Generator
+              <Award size={20} /> Generate Certificate
             </Link>
             <Link
               to="/admin/certificates-list"
-              className="block w-full text-left px-4 py-2 rounded transition font-medium bg-blue-600 hover:bg-blue-700 text-white mt-2"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 hover:bg-slate-100 hover:text-indigo-600 font-semibold"
             >
-              📋 Certificate List
+              <ListChecks size={20} /> Certificate Database
             </Link>
-            {/* Logout button for mobile */}
-            <Button
-              variant="outline"
-              className="mt-10 md:hidden"
+          </div>
+
+          <div className="p-4 border-t border-slate-100">
+            <button
               onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all duration-200 text-red-600 hover:bg-red-50 hover:text-red-700 font-bold md:hidden"
             >
-              🔒 Logout
-            </Button>
+              <LogOut size={20} /> Logout
+            </button>
+            <div className="hidden md:flex text-xs text-center text-slate-400 justify-center font-medium py-3">
+              Pathsarthi Trust © {new Date().getFullYear()}
+            </div>
           </div>
         </div>
-        {/* Main Content */}
-        <div className="flex-1 p-4 md:p-8 overflow-auto">
-          {activeSection === "gallery-manager" && <GalleryManager />}
-          {activeSection === "gallery-group-upload" && <PhotoUploadAdmin />}
-          {activeSection === "media-upload" && (
-            <>
-              <AdminUpload />
-              <div className="mt-10">
-                <MediaFeed isAdmin={true} />
+
+        {/* Main Content Area */}
+        <div className="flex-1 overflow-auto bg-slate-50 p-4 md:p-8 lg:p-10 relative">
+          
+          <div className="max-w-6xl mx-auto">
+            {/* Overview / Welcome Dash */}
+            {activeSection === "overview" && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="bg-gradient-to-br from-indigo-600 to-blue-700 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-32 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-pulse"></div>
+                  <h1 className="text-4xl md:text-5xl font-black mb-4 relative z-10">Welcome Admin! 👋</h1>
+                  <p className="text-indigo-100 text-lg md:text-xl max-w-2xl relative z-10 font-medium">Select an action below or from the menu to manage the Path Sarthi Trust website. Your updates go live instantly.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* Quick Action Cards */}
+                  <div onClick={() => handleNav("team")} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group">
+                    <div className="bg-indigo-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors text-indigo-600">
+                      <Users size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">Team & Supporters</h3>
+                    <p className="text-slate-500 font-medium text-sm">Add or edit Trustees, Members, Advisors, and Supporters easily.</p>
+                  </div>
+                  
+                  <div onClick={() => handleNav("gallery-group-upload")} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group">
+                    <div className="bg-emerald-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-emerald-500 group-hover:text-white transition-colors text-emerald-600">
+                      <UploadCloud size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">Upload Photos</h3>
+                    <p className="text-slate-500 font-medium text-sm">Post new pictures of events directly to the website gallery.</p>
+                  </div>
+
+                  <div onClick={() => handleNav("analytics")} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group">
+                    <div className="bg-sky-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-sky-500 group-hover:text-white transition-colors text-sky-600">
+                      <Activity size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">Website Traffic</h3>
+                    <p className="text-slate-500 font-medium text-sm">See how many people are visiting the website right now.</p>
+                  </div>
+                  
+                  <div onClick={() => handleNav("media-upload")} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group">
+                    <div className="bg-orange-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-orange-500 group-hover:text-white transition-colors text-orange-600">
+                      <Newspaper size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">News & Media</h3>
+                    <p className="text-slate-500 font-medium text-sm">Create posts for Trust News, Impact Stories and Media buzz.</p>
+                  </div>
+                  
+                  <Link to="/admin/certificates" className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group block">
+                    <div className="bg-purple-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-600 group-hover:text-white transition-colors text-purple-600">
+                      <Award size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">Create Certificate</h3>
+                    <p className="text-slate-500 font-medium text-sm">Generate beautiful new certificates for volunteers and donors.</p>
+                  </Link>
+
+                </div>
               </div>
-            </>
-          )}
-          {activeSection === "team" && <TeamMembers />}
-          {activeSection === "mission" && <UpdateMission />}
-          {activeSection === "analytics" && <AnalyticsPanel />}
-          {activeSection === "edit-gallery-headings" && <EditGalleryHeadings />}
+            )}
+
+            {/* Component Renders */}
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              {activeSection === "gallery-manager" && <GalleryManager />}
+              {activeSection === "gallery-group-upload" && <PhotoUploadAdmin />}
+              {activeSection === "media-upload" && (
+                <div className="space-y-10">
+                  <AdminUpload />
+                  <MediaFeed isAdmin={true} />
+                </div>
+              )}
+              {activeSection === "team" && <TeamManager />}
+              {activeSection === "mission" && <MissionManager />}
+              {activeSection === "analytics" && <AnalyticsPanel />}
+              {activeSection === "edit-gallery-headings" && <EditGalleryHeadings />}
+            </div>
+            
+          </div>
         </div>
       </div>
     </div>

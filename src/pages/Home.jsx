@@ -318,6 +318,9 @@ const Home = () => {
         </div>
       </section>
 
+      {/* CSR & Corporate Partnership Section */}
+      <CSRSection />
+
       {/* Our Supporters Slideshow */}
       <section className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-4 text-center">
@@ -369,9 +372,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* CSR & Corporate Partnership Section */}
-      <CSRSection />
 
       {/* Call to Action */}
       <section className="py-16 bg-indigo-600">
