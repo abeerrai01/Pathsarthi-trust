@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import VisitorCounter from "../components/VisitorCounter";
 import SupporterCard from '../components/SupporterCard';
 import TributeModal from '../components/TributeModal';
+import CSRSection from '../components/CSRSection';
 
 const Home = () => {
   const stats = [
@@ -368,6 +369,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* CSR & Corporate Partnership Section */}
+      <CSRSection />
 
       {/* Call to Action */}
       <section className="py-16 bg-indigo-600">
