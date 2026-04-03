@@ -60,8 +60,96 @@ const TeamManager = () => {
   const [editingId, setEditingId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
+  const [isMigrating, setIsMigrating] = useState(false);
 
   const currentSchema = SCHEMAS[activeTab];
+
+  // ONE-TIME MIGRATION DATA
+  const LEGACY_DATA = {
+    board_of_trustees: [
+      { name: 'Ravi Prakash Rai', gender: 'Male', designation: 'Chairman', joinedDate: '2022-02-23', image: '/Chairman.jpg' },
+      { name: 'Om Prakash Rai', gender: 'Male', designation: 'Accountant', joinedDate: '2022-02-23' },
+      { name: 'Arun Kumar Singh', gender: 'Male', designation: 'Secretary', joinedDate: '2022-02-23', image: '/Arun Kumar.jpg' },
+      { name: 'Rupesh Kumar Chauhan', gender: 'Male', designation: 'Vice-President', joinedDate: '2022-06-27' },
+      { name: 'Sanjay Sharma', gender: 'Male', designation: 'District President', joinedDate: '2024-10-01' },
+      { name: 'Srinivas Rai', gender: 'Male', designation: 'State President', district: 'Manali', state: 'Himachal Pradesh', joinedDate: '2024-06-01', image: '/Srinavas.jpg' },
+      { name: 'Rajeev Bishnoi', gender: 'Male', designation: 'State Coordinator', joinedDate: '2025-01-22', image: '/Rajeev.jpg' },
+      { name: 'Satya Prakash Rai', gender: 'Male', designation: 'Member', joinedDate: '2022-07-14' },
+      { name: 'Mridul Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
+      { name: 'Priyansh Manas Rai', gender: 'Male', designation: 'Co-Secretary', joinedDate: '2022-07-14' },
+      { name: 'Abeer Rai', gender: 'Male', designation: 'Technical Director', joinedDate: '2025-04-01', image: '/abeer.jpg' },
+      { name: 'Shreyansh Rai', gender: 'Male', designation: 'Internship Coordinator', joinedDate: '2025-07-01', image: '/Shreyansh.jpg' },
+      { name: 'Mehair Tripathi', gender: 'Male', designation: 'Trustee', joinedDate: '2025-06-01' },
+      { name: 'Swechha Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2023-01-01', image: '/Swechha.jpg' },
+      { name: 'Pramila Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2025-04-01', image: '/Pramila.jpg' },
+      { name: 'Deepansh Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
+    ],
+    members: [
+      { name: 'Sameer Sharma', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Sameer Sharma.jpg' },
+      { name: 'Pawan Thakur', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
+      { name: 'Amrit Agrawal', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
+      { name: 'Vikas Mathur', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
+      { name: 'Bhag Singh', gender: 'Male', district: 'Bijnor', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01', image: '/Bhag Singh.jpg' },
+      { name: 'Neeraj Gupta', gender: 'Male', district: 'Bareilly', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01' },
+      { name: 'Neeraj Chaturvedi', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01' },
+      { name: 'Sanjeev Rastogi', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01', image: '/Sanjeev Rastogi.jpg' },
+      { name: 'Jatadhari Rai', gender: 'Male', district: 'Jaunpur', state: 'Uttar Pradesh' },
+      { name: 'Manoj Sinha', gender: 'Male', district: 'Noida', state: 'Uttar Pradesh' },
+      { name: 'Shailendra Singh', gender: 'Male', district: 'Chandausi', state: 'Uttar Pradesh' },
+      { name: 'Gaurav Kathuriya', gender: 'Male', district: 'Delhi', state: 'Delhi' },
+      { name: 'Sanjay Rai', gender: 'Male', district: 'Ghaziabad', state: 'Uttar Pradesh', image: '/Sanjay rai.jpg' },
+      { name: 'Sanjay Rai', gender: 'Male', district: 'Mumbai', state: 'Maharashtra' },
+      { name: 'Pradeep Rai', gender: 'Male', district: 'Azamgarh', state: 'Uttar Pradesh' },
+      { name: 'Navneet Kumar Saxena', gender: 'Male', district: 'Rampur', state: 'Uttar Pradesh' },
+      { name: 'Rajendra Prasad Singh', gender: 'Male', district: 'Varanasi', state: 'Uttar Pradesh' },
+      { name: 'Madan Singh Negi', gender: 'Male', district: 'Noida', state: 'Uttar Pradesh' },
+      { name: 'Nathi Singh Bartwal', gender: 'Male', district: 'Noida', state: 'Uttar Pradesh' },
+      { name: 'Yashu Sharma', gender: 'Male', district: 'Guna', state: 'Madhya Pradesh' },
+      { name: 'Anil Kumar Sharma', gender: 'Male', district: 'Guna', state: 'Madhya Pradesh' },
+      { name: 'Rajendra Kumar Dhingra', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
+      { name: 'Kailash Chandra Sharma', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
+      { name: 'Parminder Sharma', gender: 'Male', district: 'Ludhiana', state: 'Punjab' },
+      { name: 'Amit Kumar Shukla', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/amit kumar.jpg' },
+      { name: 'Varun', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/varun.jpg' },
+      { name: 'Pradeep Kumar', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/pradeep.jpg' },
+      { name: 'Sachin Mittal', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/sachin mittal.jpg' },
+      { name: 'Anil Kumar Gupta', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Anil.jpg' },
+      { name: 'Ayush Kumar Singh', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Ayush.jpg' },
+      { name: 'Seema Singh', gender: 'Female', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Seema Singh.jpg' },
+    ],
+    supporters: [
+      { name: "SNR Hotel", since: "2024", description: "Stay with comfort - SNR Hotel, Old Manali", story: "SNR Hotel joined as a supporter in 2024...", image: "/SNR hotel.jpg" },
+      { name: "Sachin Tube Company", since: "2024", description: "Supported infrastructure for donation drives", story: "Sachin Tube Company provided essential infrastructure...", image: "/Sachin tube.jpg" },
+      { name: "Rastogi Provisional Store", since: "2023", description: "Donated weekly food and ration packs", story: "Rastogi Provisional Store has been a consistent supporter..." },
+      { name: "RJS Associates", since: "2024", description: "Provided financial guidance and sponsorship", story: "RJS Associates offered invaluable financial guidance..." },
+    ],
+    advisory_volunteers: [
+      { name: 'Adv.Gurbachan Singh Chawla', gender: 'Male', designation: 'Tax Advisor', type: 'Legal', joinedDate: '2025-07-08', image: '/GURBACHAN SINGH CHAWLA.jpg' },
+      { name: 'Adv. Paramveer Singh', gender: 'Male', designation: 'Criminal Lawyer', type: 'Legal', joinedDate: '2025-07-08', image: '/Paramveer singh.jpg' },
+      { name: 'Dr. Sandeep Kumar Bharti', gender: 'Male', designation: 'Health Advisor', type: 'Health', joinedDate: '2023-04-01' },
+    ]
+  };
+
+  const handleMigrate = async () => {
+    if (!window.confirm("This will import all existing website members into the database. Continue?")) return;
+    setIsMigrating(true);
+    let count = 0;
+    try {
+      for (const [tabKey, tabData] of Object.entries(LEGACY_DATA)) {
+        const colName = SCHEMAS[tabKey].collectionName;
+        for (const item of tabData) {
+          await addDoc(collection(db, colName), { ...item, createdAt: serverTimestamp() });
+          count++;
+        }
+      }
+      alert(`Success! Imported ${count} records. Refresing...`);
+      fetchItems(activeTab);
+    } catch (err) {
+      console.error(err);
+      alert("Error during migration: " + err.message);
+    }
+    setIsMigrating(false);
+  };
 
   // Fetch Items on Tab Change
   useEffect(() => {
@@ -174,13 +262,23 @@ const TeamManager = () => {
           <h2 className="text-3xl font-bold text-slate-800">Team & Supporters Manager</h2>
           <p className="text-slate-500 mt-1">Easily update team members, trustees, and supporters content.</p>
         </div>
-        <button 
-          onClick={handleOpenAdd}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg flex items-center font-semibold transition"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Add New
-        </button>
+        <div className="flex gap-2">
+          <button 
+            disabled={isMigrating}
+            onClick={handleMigrate}
+            className="border border-slate-300 hover:bg-slate-50 text-slate-600 px-4 py-2.5 rounded-lg flex items-center font-semibold transition text-sm disabled:opacity-50"
+            title="Import hardcoded data from the website for the first time"
+          >
+            {isMigrating ? "Importing..." : "Import Existing Data"}
+          </button>
+          <button 
+            onClick={handleOpenAdd}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg flex items-center font-semibold transition"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Add New
+          </button>
+        </div>
       </div>
 
       {/* TABS */}
