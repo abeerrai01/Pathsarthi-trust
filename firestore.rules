@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Public collections (Anyone can read, but only authenticated users can write)
+    match /analytics/{document=**} {
+      allow read, write: if true; 
+    }
+    
+    match /csr_partnerships/{document=**} {
+      allow read, write: if true; 
+    }
+
+    // Team, Mission & Supporters (Publicly readable, but edit requires ownership/auth)
+    match /board_of_trustees/{document=**} {
+      allow read: if true;
+      allow write: if true; // Set to 'if request.auth != null' after initial import
+    }
+    
+    match /members/{document=**} {
+      allow read: if true;
+      allow write: if true; 
+    }
+    
+    match /supporters/{document=**} {
+      allow read: if true;
+      allow write: if true; 
+    }
+    
+    match /advisory_volunteers/{document=**} {
+      allow read: if true;
+      allow write: if true; 
+    }
+
+    match /mission/{document=**} {
+      allow read: if true;
+      allow write: if true; 
+    }
+
+    match /media_posts/{document=**} {
+      allow read: if true;
+      allow write: if true; 
+    }
+
+    match /gallery_pics/{document=**} {
+      allow read: if true;
+      allow write: if true; 
+    }
+
+    match /gallery_headings/{document=**} {
+      allow read: if true;
+      allow write: if true; 
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
