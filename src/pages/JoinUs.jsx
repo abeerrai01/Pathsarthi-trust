@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import emailjs from 'emailjs-com';
-import { Youtube, CheckCircle2, User, Phone, Mail, Map, Home, Star, Send } from 'lucide-react';
-import Section from '../components/ui/Section';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
+import { FaYoutube } from 'react-icons/fa';
 
 const SERVICE_ID = 'service_aj9ohf7';
 const TEMPLATE_ID = 'template_cikb2vt';
@@ -25,19 +22,24 @@ const JoinUs = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     if (!subscribed) {
-      setSubscribeError("You must join the movement on YouTube first! 🚀");
+      setSubscribeError("You must subscribe to our YouTube channel to submit the form.");
       return;
+    } else {
+      setSubscribeError("");
     }
-    setSubscribeError("");
     setSubmitting(true);
     try {
-      await emailjs.send(SERVICE_ID, TEMPLATE_ID, form, PUBLIC_KEY);
+      await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        form,
+        PUBLIC_KEY
+      );
       setShowModal(true);
     } catch (error) {
-      alert('Oops! Our pigeons got lost. Please try submitting again.');
-    } finally {
-      setSubmitting(false);
+      alert('There was an error sending your registration. Please try again.');
     }
+    setSubmitting(false);
   };
 
   const handleOk = () => {
@@ -45,145 +47,121 @@ const JoinUs = () => {
     navigate('/');
   };
 
-  const inputClasses = "w-full bg-white border-4 border-foreground rounded-2xl p-4 font-bold text-lg focus:ring-4 focus:ring-accent/20 transition-all outline-none placeholder:text-mutedForeground/30";
-  const labelClasses = "block text-xs font-black uppercase tracking-widest text-mutedForeground mb-2 ml-1";
-
   return (
-    <div className="bg-background">
-      <Section title="Join the Movement" subtitle="Hero Registration" className="pt-32">
-        <div className="max-w-2xl mx-auto">
-          <Card variant="featured" className="p-8 md:p-12 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-3xl -mr-16 -mt-16" />
-            
-            <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-              <div className="text-center mb-10">
-                <h2 className="text-3xl font-heading font-black text-foreground uppercase tracking-tighter">Become a Path Sarthi</h2>
-                <p className="text-mutedForeground font-bold">Help us build a kinder world, one step at a time.</p>
-              </div>
-
-              {/* Personal Info Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className={labelClasses}>Full Name</label>
-                  <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent" />
-                    <input name="name" value={form.name} onChange={handleChange} required className={`${inputClasses} pl-12`} placeholder="Arjun Singh" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className={labelClasses}>Age</label>
-                  <input name="age" type="number" value={form.age} onChange={handleChange} required className={inputClasses} placeholder="24" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className={labelClasses}>Email Address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary" />
-                    <input name="email" type="email" value={form.email} onChange={handleChange} required className={`${inputClasses} pl-12`} placeholder="arjun@hero.com" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className={labelClasses}>Phone Number</label>
-                  <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-tertiary" />
-                    <input name="phone" type="tel" value={form.phone} onChange={handleChange} required className={`${inputClasses} pl-12`} placeholder="+91 99999..." />
-                  </div>
-                </div>
-              </div>
-
-              {/* Location Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <div className="space-y-2">
-                  <label className={labelClasses}>City</label>
-                  <input name="city" value={form.city} onChange={handleChange} required className={inputClasses} placeholder="Moradabad" />
-                </div>
-                <div className="space-y-2">
-                  <label className={labelClasses}>District</label>
-                  <input name="district" value={form.district} onChange={handleChange} required className={inputClasses} placeholder="Moradabad" />
-                </div>
-                <div className="space-y-2">
-                  <label className={labelClasses}>State</label>
-                  <input name="state" value={form.state} onChange={handleChange} required className={inputClasses} placeholder="UP" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className={labelClasses}>How did you hear about us?</label>
-                <select name="hearAbout" value={form.hearAbout} onChange={handleChange} className={inputClasses}>
-                  <option value="">Select an option</option>
-                  <option value="Instagram">Instagram</option>
-                  <option value="YouTube">YouTube</option>
-                  <option value="Member Referral">Member Referral</option>
-                  <option value="Event">Event</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              {/* YouTube Verification Sticker */}
-              <div className="p-6 bg-accent/5 border-4 border-dashed border-foreground/20 rounded-3xl group transition-colors hover:border-accent/40">
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  <div className="w-16 h-16 bg-white border-2 border-foreground rounded-2xl flex items-center justify-center shadow-pop group-hover:rotate-6 transition-transform">
-                    <Youtube className="w-8 h-8 text-[#FF0000]" />
-                  </div>
-                  <div className="flex-1 text-center md:text-left">
-                    <h4 className="font-heading font-black text-foreground">Join the Digital Force</h4>
-                    <p className="text-xs font-bold text-mutedForeground">Subscribe to our YouTube to unlock your registration.</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <input
-                      id="youtube-subscribe"
-                      type="checkbox"
-                      checked={subscribed}
-                      onChange={e => setSubscribed(e.target.checked)}
-                      className="w-8 h-8 border-4 border-foreground rounded-lg bg-white checked:bg-accent appearance-none cursor-pointer relative checked:after:content-['✓'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-foreground after:font-black"
-                    />
-                    <a
-                      href="https://www.youtube.com/channel/UCH85rcaMHgCtN2fV8W_51LQ"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-black text-xs uppercase underline tracking-widest text-[#FF0000]"
-                    >
-                      Visit Channel
-                    </a>
-                  </div>
-                </div>
-                {subscribeError && (
-                  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 text-secondary font-black text-xs text-center uppercase tracking-widest">
-                    {subscribeError}
-                  </motion.div>
-                )}
-              </div>
-
-              <Button type="submit" variant="accent" className="w-full p-6 text-xl" disabled={submitting} icon={Send}>
-                {submitting ? 'Transmitting...' : 'Register as Hero'}
-              </Button>
-            </form>
-          </Card>
+    <div className="py-12 min-h-screen bg-gray-50 flex items-center justify-center">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-6 text-center">Join Us</h1>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Name</label>
+          <input name="name" value={form.name} onChange={handleChange} required className="w-full border rounded px-3 py-2" />
         </div>
-      </Section>
-
-      {/* Success Modal */}
-      <AnimatePresence>
-        {showModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 flex items-center justify-center bg-foreground/60 backdrop-blur-sm z-[200] p-4">
-            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="max-w-md w-full">
-              <Card variant="featured" className="p-10 text-center">
-                <div className="w-20 h-20 bg-secondary border-4 border-foreground rounded-full flex items-center justify-center shadow-pop mx-auto mb-6 animate-bounce">
-                  <CheckCircle2 className="w-10 h-10 text-foreground" strokeWidth={3} />
-                </div>
-                <h2 className="text-3xl font-heading font-black text-foreground mb-4">Application Sent!</h2>
-                <p className="text-mutedForeground font-bold mb-8">Our trustees are reviewing your heroic profile. We'll be in touch soon!</p>
-                <Button variant="accent" className="w-full" onClick={handleOk}>Roger That!</Button>
-              </Card>
-            </motion.div>
-          </motion.div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Age</label>
+          <input name="age" type="number" value={form.age} onChange={handleChange} required className="w-full border rounded px-3 py-2" />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Email ID</label>
+          <input name="email" type="email" value={form.email} onChange={handleChange} required className="w-full border rounded px-3 py-2" />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Phone Number</label>
+          <input name="phone" type="tel" value={form.phone} onChange={handleChange} required className="w-full border rounded px-3 py-2" />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">District</label>
+          <input name="district" value={form.district} onChange={handleChange} required className="w-full border rounded px-3 py-2" />
+        </div>
+        <div className="mb-6">
+          <label className="block mb-1 font-medium">State</label>
+          <input name="state" value={form.state} onChange={handleChange} required className="w-full border rounded px-3 py-2" />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">City</label>
+          <input name="city" value={form.city || ''} onChange={handleChange} required className="w-full border rounded px-3 py-2" />
+        </div>
+        {/* How did you hear about us? (optional dropdown) */}
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">How did you hear about us? <span className="text-gray-400 text-xs">(Optional)</span></label>
+          <select
+            name="hearAbout"
+            value={form.hearAbout || ''}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="">Select an option</option>
+            <option value="Member Referral">Member Referral</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="WhatsApp Group">WhatsApp Group</option>
+            <option value="WhatsApp Status / Story">WhatsApp Status / Story</option>
+            <option value="Campus Ambassador">Campus Ambassador</option>
+            <option value="Poster / Banner">Poster / Banner</option>
+            <option value="YouTube / Shorts">YouTube / Shorts</option>
+            <option value="Email / Newsletter">Email / Newsletter</option>
+            <option value="Pathsarthi Website">Pathsarthi Website</option>
+            <option value="Google Search">Google Search</option>
+            <option value="Event">Event</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        {(form.hearAbout === 'Member Referral' || form.hearAbout === 'Other') && (
+          <div className="mb-4">
+            <label className="block mb-1 font-medium">Please specify</label>
+            <input
+              name="hearAboutDetail"
+              value={form.hearAboutDetail}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+              placeholder={form.hearAbout === 'Member Referral' ? 'Who referred you?' : 'Please specify'}
+              required
+            />
+          </div>
         )}
-      </AnimatePresence>
+        <div className="mb-4 flex items-center">
+          <input
+            id="youtube-subscribe"
+            type="checkbox"
+            checked={subscribed}
+            onChange={e => setSubscribed(e.target.checked)}
+            className="mr-2"
+            required
+          />
+          <label htmlFor="youtube-subscribe" className="flex items-center cursor-pointer">
+            <FaYoutube className="text-red-600 text-2xl mr-2" />
+            <span>
+              I have subscribed to our
+              <a
+                href="https://www.youtube.com/channel/UCH85rcaMHgCtN2fV8W_51LQ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline ml-1"
+              >
+                YouTube channel
+              </a>
+              .
+            </span>
+          </label>
+        </div>
+        {subscribeError && (
+          <div className="mb-4 text-red-600 text-sm font-semibold">{subscribeError}</div>
+        )}
+        <button type="submit" disabled={submitting} className="w-full bg-indigo-600 text-white py-2 rounded font-semibold hover:bg-indigo-700 transition">
+          {submitting ? 'Submitting...' : 'Submit'}
+        </button>
+      </form>
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-sm w-full">
+            <h2 className="text-xl font-bold mb-4">Registration Successful</h2>
+            <p className="mb-6">Board of trustee will verify your application and contact you soon.</p>
+            <button onClick={handleOk} className="bg-indigo-600 text-white px-6 py-2 rounded font-semibold hover:bg-indigo-700 transition">OK</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default JoinUs; 
- 

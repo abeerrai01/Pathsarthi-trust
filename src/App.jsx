@@ -206,7 +206,7 @@ function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: loading ? 0 : 1 }}
           transition={{ duration: 0.5 }}
-          className="min-h-screen flex flex-col bg-background text-foreground"
+          className="min-h-screen flex flex-col bg-gray-50 text-gray-900"
         >
           <Navbar />
           <main className="flex-grow pt-16">

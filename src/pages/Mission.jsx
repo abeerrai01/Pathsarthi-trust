@@ -1,143 +1,187 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, HeartPulse, UserCheck, Users, Star, Quote } from 'lucide-react';
-import Section from '../components/ui/Section';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
 
 const Mission = () => {
   const initiatives = [
     {
       title: 'Education that Empowers',
-      description: 'We believe education is the most powerful weapon we can use to change the world. We ensure that children in slums receive access to basic learning tools.',
-      icon: BookOpen,
-      color: 'bg-accent'
+      description: 'We believe education is the most powerful weapon we can use to change the world. We work tirelessly to ensure that children living in slums, villages, or construction sites receive access to basic learning tools — be it notebooks, school bags, or enrollment support.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" 
+          />
+        </svg>
+      ),
     },
     {
       title: 'Health with Dignity',
-      description: 'Health is a right. We organize medical aid drives, rehabilitation programs, and distribute mobility aids like crutches and wheelchairs.',
-      icon: HeartPulse,
-      color: 'bg-secondary'
+      description: 'Health is not a privilege — it is a right. Our mission includes organizing medical aid drives, corrective surgeries, rehabilitation programs, and distributing essential mobility aids like crutches, wheelchairs, and hearing devices.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
+          />
+        </svg>
+      ),
     },
     {
       title: 'Caring for the Forgotten',
-      description: 'We ensure our seniors are respected and cared for through warm meals, monthly ration kits, and genuine companionship.',
-      icon: UserCheck,
-      color: 'bg-tertiary'
+      description: 'The elderly often go unseen in our fast-paced world. We ensure that our seniors are not forgotten, but remembered, respected, and cared for through warm meals, monthly ration kits, and companionship.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
+          />
+        </svg>
+      ),
     },
     {
       title: 'Empowering Communities',
-      description: 'Building self-reliant communities through skill-building programs and inclusive events. We work with communities, not just for them.',
-      icon: Users,
-      color: 'bg-quaternary'
+      description: 'We believe in building self-reliant communities through skill-building programs, awareness campaigns, and inclusive events. We work with communities, not just for them.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" 
+          />
+        </svg>
+      ),
     },
   ];
 
   const stats = [
-    { value: '70+', label: 'Donors' },
+    { value: '70+', label: 'Active Donors' },
     { value: '52+', label: 'Volunteers' },
     { value: '2022', label: 'Founded' },
-    { value: '1000+', label: 'Impacted' },
+    { value: '1000+', label: 'Lives Impacted' },
   ];
 
   return (
-    <div className="bg-background">
-      {/* Hero Mission Statement */}
-      <Section 
-        title="Empowering Lives, One Step at a Time" 
-        subtitle="Our Mission"
-        className="pt-32"
-      >
-        <div className="max-w-3xl mx-auto text-center space-y-8">
-          <p className="text-xl text-mutedForeground font-body leading-relaxed">
-            Founded in 2022 in Moradabad, Path Sarthi Trust began with a single belief: <br/>
-            <span className="text-foreground font-bold italic text-2xl mt-4 block">
-              "Every life deserves a chance to dream, to heal, and to rise."
-            </span>
-          </p>
-          
-          {/* Upcoming Mission Sticker */}
-          <motion.div
-            initial={{ rotate: 2, scale: 0.9, opacity: 0 }}
-            whileInView={{ rotate: -1, scale: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            className="my-12"
-          >
-            <Card variant="featured" className="p-8 md:p-12 relative overflow-hidden group">
-              {/* Decorative Circle */}
-              <div className="absolute -top-12 -right-12 w-48 h-48 bg-tertiary/10 rounded-full group-hover:scale-110 transition-transform" />
-              
-              <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
-                <div className="flex-shrink-0">
-                  <div className="w-48 h-48 rounded-blob border-4 border-foreground overflow-hidden shadow-pop rotate-3 group-hover:rotate-0 transition-transform">
-                    <img src="/child.jpg" alt="Mission" className="w-full h-full object-cover" />
-                  </div>
-                </div>
-                
-                <div className="flex-grow text-center md:text-left space-y-4">
-                  <div className="inline-block px-4 py-1 bg-tertiary border-2 border-foreground rounded-full text-xs font-black uppercase tracking-widest">Upcoming Campaign</div>
-                  <h2 className="text-3xl md:text-4xl font-heading font-black text-foreground">एक किताब, एक भविष्य</h2>
-                  <p className="text-lg font-bold text-mutedForeground">
-                    आपकी दी हुई एक किताब, किसी बच्चे का भविष्य बना सकती है। <br/>
-                    <span className="text-secondary italic">"अब मेरी भी किताब है, अब मेरा भी सपना है…"</span>
-                  </p>
-                  <Button variant="primary" onClick={() => window.location.href = '/donate'}>सहयोग करें</Button>
-                </div>
+    <div className="py-12">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Mission Statement */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-4xl font-bold mb-6">🌟 Our Mission: Empowering Lives, One Step at a Time</h1>
+          <div className="max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 mb-6">
+              At Path Sarthi Trust, our mission goes beyond charity — it's a heartfelt commitment to stand with those who have been overlooked, to serve with compassion, and to uplift with dignity. Founded in 2022 in Moradabad, Uttar Pradesh, our journey began with a single belief:
+            </p>
+            <p className="text-2xl font-semibold text-indigo-600 italic mb-6">
+              "Every life, no matter where it begins, deserves a chance to dream, to heal, and to rise."
+            </p>
+            <p className="text-lg text-gray-600">
+              We aim to bring lasting transformation in the lives of underprivileged children, the elderly, persons with disabilities, and marginalized communities through structured, compassionate, and deeply impactful initiatives.
+            </p>
+            {/* Upcoming Mission Box */}
+            <div className="my-8 bg-yellow-50 border-4 border-yellow-400 rounded-xl shadow-lg p-6 flex flex-col items-center animate-fade-in w-full">
+              <img
+                src="/child.jpg"
+                alt="Smiling child"
+                className="w-48 h-48 object-contain rounded-lg shadow-lg border-4 border-yellow-200 mb-4 bg-white"
+              />
+              <h2 className="text-2xl md:text-3xl font-extrabold text-yellow-700 mb-2 tracking-wide text-center">Upcoming Mission</h2>
+              <div className="text-lg md:text-xl font-bold text-gray-800 text-center leading-relaxed">
+                <span className="block text-2xl md:text-3xl text-yellow-800 mb-2 font-extrabold">Path Sarthi Trust ला रहा है —</span>
+                <span className="block text-xl md:text-2xl text-indigo-700 mb-2 font-bold">'एक किताब, एक भविष्य' अभियान।</span>
+                <span className="block text-lg md:text-xl text-gray-700 mb-2">आपकी दी हुई एक किताब, किसी बच्चे का भविष्य बना सकती है।</span>
+                <span className="block text-lg md:text-xl text-pink-700 font-semibold italic mb-4">बस एक छोटा सा कदम… और कोई बच्चा भी कह सकेगा —<br/> 'अब मेरी भी किताब है, अब मेरा&nbsp;भी&nbsp;सपना&nbsp;है…'</span>
+                <button
+                  onClick={() => window.location.href = '/donate'}
+                  className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold px-8 py-3 rounded-full shadow-lg text-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2"
+                >
+                  सहयोग करें
+                </button>
               </div>
-            </Card>
-          </motion.div>
-        </div>
-      </Section>
+            </div>
+          </div>
+        </motion.section>
 
-      {/* Stats Section */}
-      <Section variant="muted" pattern={false}>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {stats.map((stat, idx) => (
-            <Card key={idx} variant="flat" className="text-center group">
-              <div className="text-4xl font-heading font-black text-accent mb-1 group-hover:scale-110 transition-transform">{stat.value}</div>
-              <div className="text-sm font-bold uppercase tracking-widest text-mutedForeground">{stat.label}</div>
-            </Card>
-          ))}
-        </div>
-      </Section>
+        {/* Impact Stats */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-16"
+        >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+                className="text-center p-6 bg-white rounded-lg shadow-sm"
+              >
+                <div className="text-4xl font-bold text-indigo-600 mb-2">{stat.value}</div>
+                <div className="text-gray-600">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
 
-      {/* Initiatives Grid */}
-      <Section title="Our Heartfelt Initiatives" subtitle="Focus Areas">
-        <div className="grid md:grid-cols-2 gap-8">
-          {initiatives.map((item, idx) => (
-            <Card key={idx} className="group overflow-hidden">
-              <div className="flex gap-6 items-start">
-                <div className={`${item.color} p-4 rounded-xl border-2 border-foreground shadow-pop group-hover:-rotate-6 transition-transform flex-shrink-0`}>
-                  <item.icon className="w-8 h-8 text-foreground" strokeWidth={2.5} />
+        {/* Initiatives */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mb-16"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {initiatives.map((initiative, index) => (
+              <motion.div
+                key={initiative.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
+                className="bg-white rounded-lg p-6 shadow-sm"
+              >
+                <div className="text-indigo-600 mb-4 flex items-center">
+                  {initiative.icon}
+                  <h3 className="text-xl font-semibold ml-3">{initiative.title}</h3>
                 </div>
-                <div className="space-y-3">
-                  <h3 className="text-2xl font-heading font-bold text-foreground">{item.title}</h3>
-                  <p className="text-mutedForeground font-body leading-relaxed">{item.description}</p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </Section>
+                <p className="text-gray-600">{initiative.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
 
-      {/* Movement of Hope */}
-      <Section variant="accent" pattern={false} className="text-white">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <Quote className="w-16 h-16 mx-auto opacity-20" />
-          <h2 className="text-4xl md:text-5xl font-heading font-black">A Movement of Hope</h2>
-          <p className="text-xl opacity-90 font-medium italic">
-            "We don't need to change the whole world at once — we just need to change someone's world every day."
-          </p>
-          <div className="h-1 w-20 bg-tertiary mx-auto rounded-full" />
-          <p className="text-lg opacity-80 max-w-2xl mx-auto">
-            Path Sarthi is more than an organization — it's a family of change-makers including 70+ donors and 52+ volunteers powered by compassion.
-          </p>
-          <Button variant="secondary" className="border-white text-white hover:bg-white hover:text-accent">Join the Movement</Button>
-        </div>
-      </Section>
+        {/* Movement of Hope */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="text-center"
+        >
+          <div className="bg-indigo-50 rounded-lg p-8 max-w-3xl mx-auto">
+            <h2 className="text-2xl font-bold mb-6">🌱 A Movement of Hope</h2>
+            <p className="text-gray-600 mb-6">
+              Path Sarthi is more than an organization — it's a family of change-makers, including volunteers, donors, and advisors who believe that small acts of kindness can ripple out into big changes. With over 70 active donors, 52+ volunteers, and a committed core team, we're not just running programs — we're nurturing a movement powered by compassion.
+            </p>
+            <div className="text-xl font-semibold text-indigo-600 italic">
+              "We don't need to change the whole world at once — we just need to change someone's world every day."
+            </div>
+          </div>
+        </motion.section>
+      </div>
     </div>
   );
 };
 
 export default Mission; 
- 
