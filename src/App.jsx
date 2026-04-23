@@ -48,6 +48,7 @@ import Legal from './pages/Legal';
 import Doctor from './pages/Doctor';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogArticle';
+import EducationSupport from './pages/EducationSupport';
 
 function MissionPopup() {
   const [show, setShow] = useState(false);
@@ -256,6 +257,7 @@ function App() {
                 } />
                 <Route path="/verify/:name" element={<VerifyCertificate />} />
                 <Route path="/membership" element={<MembershipForm />} />
+                <Route path="/education-support" element={<EducationSupport />} />
 
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" />} />
