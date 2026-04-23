@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../config/firebase";
 
 const indianStates = [
@@ -46,6 +46,26 @@ const EducationSupport = () => {
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState(null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [uploadError, setUploadError] = useState('');
+
+  // Carousel States
+  const [approvedStudents, setApprovedStudents] = useState([]);
+  const [isStudentsLoading, setIsStudentsLoading] = useState(true);
+  const carouselRef = useRef(null);
+
+  useEffect(() => {
+    const q = query(collection(db, 'applications'), where('status', '==', 'approved'));
+    const unsub = onSnapshot(q, (snapshot) => {
+      const students = [];
+      snapshot.forEach(doc => students.push({ id: doc.id, ...doc.data() }));
+      setApprovedStudents(students);
+      setIsStudentsLoading(false);
+    }, (error) => {
+      console.warn("Firestore snapshot listener error (rules may be updating):", error);
+      setApprovedStudents([]);
+      setIsStudentsLoading(false);
+    });
+    return () => unsub();
+  }, []);
 
   // SVG Icons
   const UserIcon = () => (
@@ -890,6 +910,67 @@ const EducationSupport = () => {
             <svg className="w-8 h-8 text-indigo-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
             <span className="font-semibold text-gray-700 tracking-wide uppercase text-sm">Trusted by community</span>
           </div>
+        </div>
+
+        {/* Students We Support Carousel */}
+        <div className="max-w-6xl mx-auto my-16 px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Students We Support</h2>
+            <div className="w-24 h-1.5 bg-[#f06020] mx-auto rounded-full mb-4"></div>
+            <p className="text-gray-600 max-w-2xl mx-auto">Meet some of the bright minds who have received support from the Pathsarthi Education Support Program.</p>
+          </div>
+          
+          {isStudentsLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <svg className="animate-spin h-10 w-10 text-[#f06020]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </div>
+          ) : approvedStudents.length === 0 ? (
+            <div className="bg-gray-50 rounded-2xl p-12 text-center text-gray-500 border border-gray-100 shadow-inner flex flex-col items-center">
+              <svg className="w-16 h-16 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14v6m-3-3l3 3 3-3"></path></svg>
+              <p className="mt-4 text-lg font-medium">Be the first to join our supported students gallery!</p>
+            </div>
+          ) : (
+            <div className="relative group">
+              <div 
+                ref={carouselRef}
+                className="flex overflow-x-auto gap-6 pb-8 pt-4 px-4 snap-x snap-mandatory hide-scrollbar justify-center md:justify-start"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {approvedStudents.map(student => (
+                  <motion.div 
+                    whileHover={{ scale: 1.02, translateY: -4 }}
+                    key={student.id} 
+                    className="shrink-0 w-72 md:w-80 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden snap-center"
+                  >
+                    <div className="h-40 bg-gradient-to-br from-indigo-100 to-amber-50 relative">
+                      {student.photoUrl ? (
+                         <img src={student.photoUrl} alt={student.firstName} className="w-full h-full object-cover" />
+                      ) : (
+                         <div className="w-full h-full flex items-center justify-center text-indigo-300">
+                           <UserIcon />
+                         </div>
+                      )}
+                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-[#f06020] shadow-sm">
+                        {student.supportType === 'Financial' ? '💸 Financial' : student.supportType === 'Legal' ? '⚖️ Legal' : '🎓 Educational'}
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-1 line-clamp-1">{student.firstName} {student.lastName}</h3>
+                      <p className="text-indigo-600 font-semibold text-sm mb-4 line-clamp-1">{student.desiredField || 'Higher Education'}</p>
+                      
+                      <div className="bg-orange-50 rounded-lg p-3 border border-orange-100">
+                        <p className="text-xs text-gray-700 italic flex items-start">
+                          <span className="text-[#f06020] mr-1">"</span>
+                          Supported by Pathsarthi Trust towards their amazing journey.
+                          <span className="text-[#f06020] ml-1">"</span>
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer Info Area */}
