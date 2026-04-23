@@ -181,23 +181,23 @@ const EducationSupport = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      {/* Banner / Header Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-teal-500 py-12 px-4 mt-0">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between">
-          <div className="text-center md:text-left md:w-1/2 mb-8 md:mb-0">
+      {/* Header Section */}
+      <div className="py-12 px-4 max-w-6xl mx-auto w-full">
+        <div className="flex flex-col md:flex-row items-center justify-between text-center md:text-left">
+          <div className="md:w-1/2 mb-8 md:mb-0">
             <motion.h1 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight"
+              className="text-4xl font-bold text-gray-900 mb-6"
             >
-              Empowering Education for Every Student
+              Education Support Program
             </motion.h1>
             <motion.p 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg md:text-xl text-blue-100 max-w-xl mx-auto md:mx-0"
+              className="text-xl text-gray-600 max-w-xl mx-auto md:mx-0"
             >
               Apply for financial, legal, or specialized educational support through Pathsarthi Trust.
             </motion.p>
@@ -208,18 +208,18 @@ const EducationSupport = () => {
              transition={{ duration: 0.6, delay: 0.3 }}
              className="md:w-1/2 flex justify-center md:justify-end"
           >
-             <img src="/Forms.gif" alt="Educational Support Form" className="w-64 md:w-80 md:h-auto rounded-2xl drop-shadow-2xl object-cover mix-blend-multiply" style={{ mixBlendMode: 'luminosity' }} />
+             <img src="/Forms.gif" alt="Educational Support Form" className="w-56 md:w-72 h-auto mix-blend-multiply" />
           </motion.div>
         </div>
       </div>
 
       {/* Main Form Section */}
-      <div className="max-w-4xl mx-auto px-4 py-12 w-full -mt-10 relative z-10">
+      <div className="max-w-4xl mx-auto px-4 py-4 w-full relative z-10 mb-12">
         <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-white rounded-2xl shadow-xl p-8 md:p-10 border border-gray-100"
+          className="bg-white rounded-lg shadow-sm p-8 md:p-10 border border-gray-100"
         >
           {isSuccess ? (
             <div className="text-center py-16">
@@ -243,9 +243,9 @@ const EducationSupport = () => {
             <form onSubmit={handleSubmit} className="space-y-10">
               {/* Personal Details Section */}
               <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-100 flex items-center">
-                  <span className="bg-blue-100 text-blue-600 p-2 rounded-lg mr-3">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200 flex items-center">
+                  <span className="text-indigo-600 mr-3">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                   </span>
                   Personal Details
                 </h3>
@@ -260,7 +260,7 @@ const EducationSupport = () => {
                         name="firstName" 
                         value={formData.firstName} 
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.firstName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-2.5 rounded-lg border ${errors.firstName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-1 transition-colors`}
                         placeholder="Rahul" 
                       />
                     </div>
@@ -291,7 +291,7 @@ const EducationSupport = () => {
                         name="lastName" 
                         value={formData.lastName} 
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.lastName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.lastName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                         placeholder="Sharma" 
                       />
                     </div>
@@ -307,7 +307,7 @@ const EducationSupport = () => {
                         name="fatherName" 
                         value={formData.fatherName} 
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.fatherName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.fatherName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                         placeholder="Satish Sharma" 
                       />
                     </div>
@@ -323,7 +323,7 @@ const EducationSupport = () => {
                         name="motherName" 
                         value={formData.motherName} 
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.motherName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.motherName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                         placeholder="Sunita Sharma" 
                       />
                     </div>
@@ -334,9 +334,9 @@ const EducationSupport = () => {
 
               {/* Contact Information Section */}
               <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-100 flex items-center">
-                  <span className="bg-teal-100 text-teal-600 p-2 rounded-lg mr-3">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200 flex items-center">
+                  <span className="text-indigo-600 mr-3">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                   </span>
                   Contact Information
                 </h3>
@@ -350,7 +350,7 @@ const EducationSupport = () => {
                         name="email" 
                         value={formData.email} 
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.email ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-teal-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.email ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                         placeholder="rahul.sharma@example.com" 
                       />
                     </div>
@@ -365,7 +365,7 @@ const EducationSupport = () => {
                         name="phone" 
                         value={formData.phone} 
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-teal-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                         placeholder="9876543210" 
                       />
                     </div>
@@ -376,9 +376,9 @@ const EducationSupport = () => {
 
               {/* Address Section */}
               <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-100 flex items-center">
-                  <span className="bg-orange-100 text-orange-600 p-2 rounded-lg mr-3">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200 flex items-center">
+                  <span className="text-indigo-600 mr-3">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                   </span>
                   Residential Address
                 </h3>
@@ -394,7 +394,7 @@ const EducationSupport = () => {
                         name="houseNumber" 
                         value={formData.houseNumber} 
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.houseNumber ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.houseNumber ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                         placeholder="Flat 101, B-Wing" 
                       />
                     </div>
@@ -410,7 +410,7 @@ const EducationSupport = () => {
                         name="streetName" 
                         value={formData.streetName} 
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.streetName ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.streetName ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                         placeholder="M.G. Road" 
                       />
                     </div>
@@ -427,7 +427,7 @@ const EducationSupport = () => {
                         value={formData.completeAddress} 
                         onChange={handleChange}
                         rows="2"
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border resize-none ${errors.completeAddress ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border resize-none ${errors.completeAddress ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                         placeholder="Your full address here..." 
                       ></textarea>
                     </div>
@@ -444,7 +444,7 @@ const EducationSupport = () => {
                       value={formData.pincode} 
                       onChange={handleChange}
                       maxLength="6"
-                      className={`w-full px-4 py-3 rounded-lg border ${errors.pincode ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                      className={`w-full px-4 py-3 rounded-lg border ${errors.pincode ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                       placeholder="110001" 
                     />
                     {errors.pincode && <p className="text-red-500 text-xs mt-1">{errors.pincode}</p>}
@@ -457,7 +457,7 @@ const EducationSupport = () => {
                       name="state" 
                       value={formData.state} 
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 rounded-lg border appearance-none ${errors.state ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                      className={`w-full px-4 py-3 rounded-lg border appearance-none ${errors.state ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                     >
                       <option value="">Select State</option>
                       {indianStates.map((s, i) => (
@@ -474,7 +474,7 @@ const EducationSupport = () => {
                         name="city" 
                         value={formData.city} 
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 rounded-lg border appearance-none ${errors.city ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full px-4 py-3 rounded-lg border appearance-none ${errors.city ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                       >
                         <option value="">Select City</option>
                         {cities.map((c, i) => (
@@ -487,7 +487,7 @@ const EducationSupport = () => {
                         name="city" 
                         value={formData.city} 
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 rounded-lg border ${errors.city ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full px-4 py-3 rounded-lg border ${errors.city ? 'border-red-500 bg-red-50' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                         placeholder="City" 
                       />
                     )}
@@ -509,9 +509,9 @@ const EducationSupport = () => {
 
               {/* Academic Details */}
               <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-100 flex items-center">
-                  <span className="bg-purple-100 text-purple-600 p-2 rounded-lg mr-3">
-                    <AcademicIcon />
+                <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200 flex items-center">
+                  <span className="text-indigo-600 mr-3">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
                   </span>
                   Academic Details
                 </h3>
@@ -523,7 +523,7 @@ const EducationSupport = () => {
                         name="qualification" 
                         value={formData.qualification} 
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-10 py-3 rounded-lg border appearance-none ${errors.qualification ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-10 py-3 rounded-lg border appearance-none ${errors.qualification ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                       >
                         <option value="">Select Qualification</option>
                         <option value="High School">High School (10th)</option>
@@ -575,9 +575,9 @@ const EducationSupport = () => {
 
               {/* Education Support Requirement */}
               <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-100 flex items-center">
-                  <span className="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200 flex items-center">
+                  <span className="text-indigo-600 mr-3">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                   </span>
                   Support Request Details
                 </h3>
@@ -590,7 +590,7 @@ const EducationSupport = () => {
                         name="supportType" 
                         value={formData.supportType} 
                         onChange={handleChange}
-                        className={`w-full pl-10 pr-10 py-3 rounded-lg border appearance-none ${errors.supportType ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        className={`w-full pl-10 pr-10 py-3 rounded-lg border appearance-none ${errors.supportType ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-200 focus:ring-indigo-600 focus:border-indigo-600'} focus:outline-none focus:ring-2 transition-colors`}
                       >
                         <option value="">Select Support Type</option>
                         <option value="Financial">Financial Support</option>
@@ -643,7 +643,7 @@ const EducationSupport = () => {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full relative py-4 px-6 bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
+                  className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors shadow-sm"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center">
