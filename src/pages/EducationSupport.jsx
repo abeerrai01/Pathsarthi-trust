@@ -318,7 +318,7 @@ const EducationSupport = () => {
               <p className="text-indigo-600 font-bold text-lg border-t-2 border-indigo-100 pt-6 mb-8 max-w-sm mx-auto">Keep working towards your dreams — we’re with you.</p>
               <button 
                 onClick={() => setIsSuccess(false)}
-                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition shadow-md"
+                className="px-8 py-3 bg-[#f06020] text-white font-semibold rounded-lg hover:bg-[#d8551a] transition shadow-md"
               >
                 Submit Another Application
               </button>
@@ -769,7 +769,7 @@ const EducationSupport = () => {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors shadow-sm"
+                  className="w-full bg-[#f06020] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[#d8551a] transition-colors shadow-sm"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center">
@@ -802,22 +802,22 @@ const EducationSupport = () => {
         </div>
 
         {/* Footer Info Area */}
-        <div className="bg-indigo-600 text-white rounded-lg p-8 md:p-12 text-center max-w-4xl mx-auto shadow-sm">
+        <div className="bg-gradient-to-br from-[#f06020] to-[#f5a623] text-white rounded-lg p-8 md:p-12 text-center max-w-4xl mx-auto shadow-sm">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">A Small Step Today, A Big Future Tomorrow</h2>
-          <p className="text-indigo-100 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">Pathsarthi Trust has supported hundreds of students in achieving their dreams. You could be next.</p>
+          <p className="text-white/90 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">Pathsarthi Trust has supported hundreds of students in achieving their dreams. You could be next.</p>
           
-          <div className="border-t border-indigo-400/50 pt-8 mt-4">
+          <div className="border-t border-white/20 pt-8 mt-4">
             <h3 className="text-xl font-bold mb-4">Need Help?</h3>
-            <p className="text-indigo-100 mb-8 max-w-xl mx-auto">If you have any questions or face any issues while applying, feel free to reach out to us.</p>
+            <p className="text-white/90 mb-8 max-w-xl mx-auto">If you have any questions or face any issues while applying, feel free to reach out to us.</p>
             
             <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-12">
-              <div className="flex items-center bg-indigo-700/50 px-6 py-3 rounded-full">
-                <svg className="w-5 h-5 mr-3 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                <span className="font-medium tracking-wide">support@pathsarthi.in</span>
+              <div className="flex items-center bg-black/10 px-6 py-3 rounded-full">
+                <svg className="w-5 h-5 mr-3 text-yellow-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <span className="font-medium tracking-wide">pathsarthi2022@gmail.com</span>
               </div>
-              <div className="flex items-center bg-indigo-700/50 px-6 py-3 rounded-full">
-                <svg className="w-5 h-5 mr-3 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                <span className="font-medium tracking-wide">+91-XXXXXXXXXX</span>
+              <div className="flex items-center bg-black/10 px-6 py-3 rounded-full">
+                <svg className="w-5 h-5 mr-3 text-yellow-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                <span className="font-medium tracking-wide">+91-8958421200</span>
               </div>
             </div>
           </div>
