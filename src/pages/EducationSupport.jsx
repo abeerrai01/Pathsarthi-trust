@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const indianStates = [
   "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
@@ -236,23 +238,49 @@ const EducationSupport = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       setIsSubmitting(true);
-      // Simulate API call
-      setTimeout(() => {
-        setIsSubmitting(false);
+      try {
+        await addDoc(collection(db, "applications"), {
+          firstName: formData.firstName,
+          middleName: formData.middleName,
+          lastName: formData.lastName,
+          fatherName: formData.fatherName,
+          motherName: formData.motherName,
+          email: formData.email,
+          phone: formData.phone,
+          qualification: formData.qualification,
+          houseNumber: formData.houseNumber,
+          streetName: formData.streetName,
+          completeAddress: formData.completeAddress,
+          pincode: formData.pincode,
+          state: formData.state,
+          city: formData.city,
+          nation: formData.nation,
+          photoUrl: formData.photoUrl,
+          supportType: formData.supportType,
+          educationDetails: formData.educationDetails,
+          status: "pending", 
+          createdAt: new Date(),
+        });
+        
         setIsSuccess(true);
         // clear form
         setFormData({
           firstName: '', middleName: '', lastName: '', fatherName: '', motherName: '',
           email: '', phone: '', qualification: '', houseNumber: '', streetName: '',
           completeAddress: '', pincode: '', state: '', city: '', nation: 'India',
-          photo: null, supportType: '', educationDetails: '', agreeTerms: false,
+          photo: null, photoUrl: '', supportType: '', educationDetails: '', agreeTerms: false
         });
-        setCities([]);
-      }, 2000);
+        setPhotoPreviewUrl(null);
+      } catch (error) {
+        console.error("Error submitting application:", error);
+        alert("Failed to submit the application. Please try again later.");
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 

@@ -123,9 +123,25 @@ const MembershipForm = () => {
               <br />
               - Once payment is successful, please click the "Complete Payment" button below.
             </p>
-            <button className="w-full bg-[#ff7300] text-white font-semibold py-2 rounded-lg hover:bg-orange-600 transition" onClick={() => {
-              showToast('Payment instructions are displayed above.', 'info');
-            }}>Complete Payment</button>
+            <button className="w-full bg-[#ff7300] text-white font-semibold py-2 rounded-lg hover:bg-orange-600 transition disabled:opacity-50" disabled={loading} onClick={async () => {
+              setLoading(true);
+              try {
+                const generatedId = 'MEMB-' + Math.floor(Math.random() * 1000000);
+                await addDoc(collection(db, "memberships"), {
+                  ...form,
+                  paymentId: generatedId,
+                  createdAt: new Date(),
+                  status: 'pending'
+                });
+                setPaymentId(generatedId);
+                setStep('done');
+              } catch (error) {
+                console.error(error);
+                showToast('Failed to process. Please try again.', 'error');
+              } finally {
+                setLoading(false);
+              }
+            }}>{loading ? 'Reconciling...' : 'Complete Payment'}</button>
           </div>
         )}
         {step === 'done' && (

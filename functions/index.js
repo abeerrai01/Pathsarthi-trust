@@ -1,19 +1,33 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const functions = require("firebase-functions");
+const nodemailer = require("nodemailer");
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+exports.sendEmailOnNewApplication = functions.firestore
+  .document("applications/{id}")
+  .onCreate(async (snap, context) => {
+    const data = snap.data();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "pathsarthi2022@gmail.com",
+        pass: "2022@Pathsarthi",
+      },
+    });
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+    const mailOptions = {
+      from: "pathsarthi2022@gmail.com",
+      to: "pathsarthi2022@gmail.com",
+      subject: "New Student Application",
+      text: `
+        Name: ${data.firstName} ${data.lastName}
+        Email: ${data.email}
+        Phone: ${data.phone}
+        Highest Qualification: ${data.qualification}
+        Support Type: ${data.supportType}
+        Education Details: ${data.educationDetails}
+        Location: ${data.city}, ${data.state}
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+  });

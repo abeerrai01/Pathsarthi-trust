@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const Feedback = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -8,10 +10,19 @@ const Feedback = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    // Here you could send the feedback to your backend or a service
+    try {
+      await addDoc(collection(db, "feedbacks"), {
+        ...form,
+        createdAt: new Date(),
+        status: 'unread'
+      });
+      setSubmitted(true);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit. Please try again.");
+    }
   };
 
   return (

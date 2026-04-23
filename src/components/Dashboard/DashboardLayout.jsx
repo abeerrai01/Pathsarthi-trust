@@ -6,7 +6,7 @@ import PhotoUploadAdmin from '../PhotoUploadAdmin';
 import EditGalleryHeadings from '../EditGalleryHeadings';
 import { onSnapshot, doc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { LayoutDashboard, Images, UploadCloud, Users, Target, Activity, Type, Award, ListChecks, LogOut, ChevronRight, Newspaper } from 'lucide-react';
+import { LayoutDashboard, Images, UploadCloud, Users, Target, Activity, Type, Award, ListChecks, LogOut, ChevronRight, Newspaper, GraduationCap } from 'lucide-react';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -25,6 +25,7 @@ import MediaFeed from '../MediaFeed';
 import TeamManager from './TeamManager';
 import MissionManager from './MissionManager';
 import AnalyticsPanel from './AnalyticsPanel';
+import AdminEducation from './AdminEducation';
 
 ChartJS.register(
   CategoryScale,
@@ -73,6 +74,7 @@ const DashboardLayout = () => {
 
   const menuItems = [
     { id: "overview", label: "Overview Home", icon: <LayoutDashboard size={20} /> },
+    { id: "education-applications", label: "Education Requests", icon: <GraduationCap size={20} /> },
     { id: "analytics", label: "Website Analytics", icon: <Activity size={20} /> },
     { id: "team", label: "Team & Supporters", icon: <Users size={20} /> },
     { id: "gallery-group-upload", label: "Upload New Photos", icon: <UploadCloud size={20} /> },
@@ -169,6 +171,14 @@ const DashboardLayout = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* Quick Action Cards */}
+                  <div onClick={() => handleNav("education-applications")} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group">
+                    <div className="bg-amber-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-amber-500 group-hover:text-white transition-colors text-amber-600">
+                      <GraduationCap size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">Education Requests</h3>
+                    <p className="text-slate-500 font-medium text-sm">Review & approve student applications for public showcase.</p>
+                  </div>
+                  
                   <div onClick={() => handleNav("team")} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group">
                     <div className="bg-indigo-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors text-indigo-600">
                       <Users size={28} />
@@ -227,6 +237,7 @@ const DashboardLayout = () => {
               {activeSection === "mission" && <MissionManager />}
               {activeSection === "analytics" && <AnalyticsPanel />}
               {activeSection === "edit-gallery-headings" && <EditGalleryHeadings />}
+              {activeSection === "education-applications" && <AdminEducation />}
             </div>
             
           </div>

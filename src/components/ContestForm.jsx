@@ -1,28 +1,34 @@
-import React, { useRef } from "react";
-import emailjs from "@emailjs/browser";
+import React, { useRef, useState } from "react";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const ContestForm = ({ onSuccess }) => {
   const form = useRef();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const sendEmail = (e) => {
+  const sendEmail = async (e) => {
     e.preventDefault();
-    emailjs.sendForm(
-      "service_aj9ohf7",
-      "template_szv3iog",
-      form.current,
-      "0qpshPwH1REx-2KTB"
-    )
-      .then(
-        (result) => {
-          alert("🎉 Submission successful!");
-          if (onSuccess) onSuccess();
-          form.current.reset();
-        },
-        (error) => {
-          alert("❌ Submission failed. Please try again.");
-          console.error(error);
-        }
-      );
+    setIsSubmitting(true);
+
+    const formData = new FormData(form.current);
+    try {
+      await addDoc(collection(db, "contest_entries"), {
+        name: formData.get("name"),
+        age: formData.get("age"),
+        email: formData.get("email"),
+        message: formData.get("message"),
+        createdAt: new Date(),
+        status: 'pending'
+      });
+      alert("🎉 Submission successful!");
+      if (onSuccess) onSuccess();
+      form.current.reset();
+    } catch (error) {
+      console.error(error);
+      alert("❌ Submission failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -32,8 +38,8 @@ const ContestForm = ({ onSuccess }) => {
       <input type="number" name="age" placeholder="Age" required className="w-full p-2 border rounded" />
       <input type="email" name="email" placeholder="Parent's Email" required className="w-full p-2 border rounded" />
       <textarea name="message" placeholder="Any message (optional)" className="w-full p-2 border rounded" />
-      <button type="submit" className="bg-green-600 hover:bg-green-700 text-white w-full p-2 rounded">
-        🎯 Submit Entry
+      <button type="submit" disabled={isSubmitting} className="bg-green-600 hover:bg-green-700 text-white w-full p-2 rounded disabled:opacity-70">
+        {isSubmitting ? "Submitting..." : "🎯 Submit Entry"}
       </button>
     </form>
   );

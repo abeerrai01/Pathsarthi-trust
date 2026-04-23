@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import emailjs from 'emailjs-com';
 import { FaYoutube } from 'react-icons/fa';
-
-const SERVICE_ID = 'service_aj9ohf7';
-const TEMPLATE_ID = 'template_cikb2vt';
-const PUBLIC_KEY = '0qpshPwH1REx-2KTB';
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const JoinUs = () => {
   const [form, setForm] = useState({ name: '', age: '', email: '', phone: '', district: '', state: '', city: '', hearAbout: '', hearAboutDetail: '' });
@@ -29,12 +26,11 @@ const JoinUs = () => {
     }
     setSubmitting(true);
     try {
-      await emailjs.send(
-        SERVICE_ID,
-        TEMPLATE_ID,
-        form,
-        PUBLIC_KEY
-      );
+      await addDoc(collection(db, "joinus_registrations"), {
+        ...form,
+        createdAt: new Date(),
+        status: "pending"
+      });
       setShowModal(true);
     } catch (error) {
       alert('There was an error sending your registration. Please try again.');
