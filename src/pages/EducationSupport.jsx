@@ -1,5 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+
+const indianStates = [
+  "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
+  "Chandigarh", "Chhattisgarh", "Dadra and Nagar Haveli", "Daman and Diu", "Delhi", 
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", 
+  "Karnataka", "Kerala", "Ladakh", "Lakshadweep", "Madhya Pradesh", "Maharashtra", 
+  "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Puducherry", "Punjab", 
+  "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", 
+  "Uttarakhand", "West Bengal"
+];
 
 const EducationSupport = () => {
   const [formData, setFormData] = useState({
@@ -11,13 +21,20 @@ const EducationSupport = () => {
     email: '',
     phone: '',
     qualification: '',
-    address: '',
+    houseNumber: '',
+    streetName: '',
+    completeAddress: '',
+    pincode: '',
+    state: '',
+    city: '',
+    nation: 'India',
     photo: null,
     supportType: '',
     educationDetails: '',
     agreeTerms: false,
   });
 
+  const [cities, setCities] = useState([]);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -36,7 +53,7 @@ const EducationSupport = () => {
   );
 
   const AcademicIcon = () => (
-    <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path></svg>
+    <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
   );
 
   const HomeIcon = () => (
@@ -55,14 +72,56 @@ const EducationSupport = () => {
     <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
   );
 
-  const handleChange = (e) => {
+  const MapMarkerIcon = () => (
+    <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+  );
+
+  const fetchCitiesForState = async (stateName) => {
+    try {
+      const response = await fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ country: "India", state: stateName })
+      });
+      const data = await response.json();
+      if (!data.error && data.data) {
+        setCities(data.data);
+      } else {
+        setCities([]);
+      }
+    } catch (err) {
+      console.error("Failed to fetch cities", err);
+      setCities([]);
+    }
+  };
+
+  const handleChange = async (e) => {
     const { name, value, type, checked, files } = e.target;
-    if (type === 'checkbox') {
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-    } else if (type === 'file') {
-      setFormData((prev) => ({ ...prev, [name]: files[0] }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+    let newValue = type === 'checkbox' ? checked : (type === 'file' ? files[0] : value);
+    
+    setFormData((prev) => ({ ...prev, [name]: newValue }));
+
+    if (name === 'pincode' && newValue.length === 6) {
+      try {
+        const response = await fetch(`https://api.postalpincode.in/pincode/${newValue}`);
+        const data = await response.json();
+        if (data && data[0] && data[0].Status === 'Success') {
+          const postOffice = data[0].PostOffice[0];
+          setFormData(prev => ({
+            ...prev,
+            state: postOffice.State,
+            city: postOffice.District // usually acts as city
+          }));
+          fetchCitiesForState(postOffice.State);
+        }
+      } catch (error) {
+        console.error("Error fetching pincode details", error);
+      }
+    }
+
+    if (name === 'state') {
+      fetchCitiesForState(newValue);
+      setFormData(prev => ({ ...prev, city: '' }));
     }
   };
 
@@ -83,7 +142,14 @@ const EducationSupport = () => {
       newErrors.phone = 'Phone Number must be valid digits';
     }
     if (!formData.qualification.trim()) newErrors.qualification = 'Highest Qualification is required';
-    if (!formData.address.trim()) newErrors.address = 'Address is required';
+    if (!formData.houseNumber.trim()) newErrors.houseNumber = 'House Number is required';
+    if (!formData.streetName.trim()) newErrors.streetName = 'Street Name is required';
+    if (!formData.completeAddress.trim()) newErrors.completeAddress = 'Complete Address is required';
+    if (!formData.pincode.trim() || !/^\d{6}$/.test(formData.pincode)) newErrors.pincode = 'Valid 6-digit Pincode is required';
+    if (!formData.state.trim()) newErrors.state = 'State is required';
+    if (!formData.city.trim()) newErrors.city = 'City is required';
+    if (!formData.nation.trim()) newErrors.nation = 'Nation is required';
+    
     if (!formData.supportType) newErrors.supportType = 'Support Type is required';
     if (!formData.educationDetails.trim()) newErrors.educationDetails = 'Details are required';
     if (!formData.agreeTerms) newErrors.agreeTerms = 'You must agree to the Terms and Conditions';
@@ -101,22 +167,14 @@ const EducationSupport = () => {
       setTimeout(() => {
         setIsSubmitting(false);
         setIsSuccess(true);
-        // Optional: clear form
+        // clear form
         setFormData({
-          firstName: '',
-          middleName: '',
-          lastName: '',
-          fatherName: '',
-          motherName: '',
-          email: '',
-          phone: '',
-          qualification: '',
-          address: '',
-          photo: null,
-          supportType: '',
-          educationDetails: '',
-          agreeTerms: false,
+          firstName: '', middleName: '', lastName: '', fatherName: '', motherName: '',
+          email: '', phone: '', qualification: '', houseNumber: '', streetName: '',
+          completeAddress: '', pincode: '', state: '', city: '', nation: 'India',
+          photo: null, supportType: '', educationDetails: '', agreeTerms: false,
         });
+        setCities([]);
       }, 2000);
     }
   };
@@ -151,7 +209,6 @@ const EducationSupport = () => {
              className="md:w-1/2 flex justify-center md:justify-end"
           >
              <img src="/Forms.gif" alt="Educational Support Form" className="w-64 md:w-80 md:h-auto rounded-2xl drop-shadow-2xl object-cover mix-blend-multiply" style={{ mixBlendMode: 'luminosity' }} />
-             {/* Note: if the gif has a background, it might show. Adjust mix-blend-mode or styling as suitable. Keeping it simple first. */}
           </motion.div>
         </div>
       </div>
@@ -183,7 +240,7 @@ const EducationSupport = () => {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-10">
               {/* Personal Details Section */}
               <div>
                 <h3 className="text-xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-100 flex items-center">
@@ -204,7 +261,7 @@ const EducationSupport = () => {
                         value={formData.firstName} 
                         onChange={handleChange}
                         className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.firstName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'} focus:outline-none focus:ring-2 transition-colors`}
-                        placeholder="John" 
+                        placeholder="Rahul" 
                       />
                     </div>
                     {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
@@ -220,7 +277,7 @@ const EducationSupport = () => {
                         value={formData.middleName} 
                         onChange={handleChange}
                         className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-                        placeholder="Edward" 
+                        placeholder="Kumar" 
                       />
                     </div>
                   </div>
@@ -235,7 +292,7 @@ const EducationSupport = () => {
                         value={formData.lastName} 
                         onChange={handleChange}
                         className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.lastName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'} focus:outline-none focus:ring-2 transition-colors`}
-                        placeholder="Doe" 
+                        placeholder="Sharma" 
                       />
                     </div>
                     {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
@@ -251,7 +308,7 @@ const EducationSupport = () => {
                         value={formData.fatherName} 
                         onChange={handleChange}
                         className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.fatherName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'} focus:outline-none focus:ring-2 transition-colors`}
-                        placeholder="Father's Name" 
+                        placeholder="Satish Sharma" 
                       />
                     </div>
                     {errors.fatherName && <p className="text-red-500 text-xs mt-1">{errors.fatherName}</p>}
@@ -267,7 +324,7 @@ const EducationSupport = () => {
                         value={formData.motherName} 
                         onChange={handleChange}
                         className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.motherName ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'} focus:outline-none focus:ring-2 transition-colors`}
-                        placeholder="Mother's Name" 
+                        placeholder="Sunita Sharma" 
                       />
                     </div>
                     {errors.motherName && <p className="text-red-500 text-xs mt-1">{errors.motherName}</p>}
@@ -294,7 +351,7 @@ const EducationSupport = () => {
                         value={formData.email} 
                         onChange={handleChange}
                         className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.email ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-teal-500'} focus:outline-none focus:ring-2 transition-colors`}
-                        placeholder="john.doe@example.com" 
+                        placeholder="rahul.sharma@example.com" 
                       />
                     </div>
                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
@@ -309,7 +366,7 @@ const EducationSupport = () => {
                         value={formData.phone} 
                         onChange={handleChange}
                         className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-teal-500'} focus:outline-none focus:ring-2 transition-colors`}
-                        placeholder="+91 9876543210" 
+                        placeholder="9876543210" 
                       />
                     </div>
                     {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
@@ -317,61 +374,182 @@ const EducationSupport = () => {
                 </div>
               </div>
 
-              {/* Academic & Upload Section */}
+              {/* Address Section */}
+              <div>
+                <h3 className="text-xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-100 flex items-center">
+                  <span className="bg-orange-100 text-orange-600 p-2 rounded-lg mr-3">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                  </span>
+                  Residential Address
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  {/* House Number */}
+                  <div className="relative">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">House/Flat Number *</label>
+                    <div className="relative">
+                      <HomeIcon />
+                      <input 
+                        type="text" 
+                        name="houseNumber" 
+                        value={formData.houseNumber} 
+                        onChange={handleChange}
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.houseNumber ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        placeholder="Flat 101, B-Wing" 
+                      />
+                    </div>
+                    {errors.houseNumber && <p className="text-red-500 text-xs mt-1">{errors.houseNumber}</p>}
+                  </div>
+                  {/* Street Name */}
+                  <div className="relative">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Street/Landmark Name *</label>
+                    <div className="relative">
+                      <MapMarkerIcon />
+                      <input 
+                        type="text" 
+                        name="streetName" 
+                        value={formData.streetName} 
+                        onChange={handleChange}
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${errors.streetName ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        placeholder="M.G. Road" 
+                      />
+                    </div>
+                    {errors.streetName && <p className="text-red-500 text-xs mt-1">{errors.streetName}</p>}
+                  </div>
+                </div>
+
+                <div className="relative mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Complete Address *</label>
+                    <div className="relative">
+                      <MapMarkerIcon />
+                      <textarea 
+                        name="completeAddress" 
+                        value={formData.completeAddress} 
+                        onChange={handleChange}
+                        rows="2"
+                        className={`w-full pl-10 pr-4 py-3 rounded-lg border resize-none ${errors.completeAddress ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        placeholder="Your full address here..." 
+                      ></textarea>
+                    </div>
+                    {errors.completeAddress && <p className="text-red-500 text-xs mt-1">{errors.completeAddress}</p>}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  {/* Pincode */}
+                  <div className="relative md:col-span-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Pincode *</label>
+                    <input 
+                      type="text" 
+                      name="pincode" 
+                      value={formData.pincode} 
+                      onChange={handleChange}
+                      maxLength="6"
+                      className={`w-full px-4 py-3 rounded-lg border ${errors.pincode ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                      placeholder="110001" 
+                    />
+                    {errors.pincode && <p className="text-red-500 text-xs mt-1">{errors.pincode}</p>}
+                    <p className="text-[10px] text-gray-400 mt-1">Auto-fills State & City</p>
+                  </div>
+                  {/* State */}
+                  <div className="relative md:col-span-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
+                    <select 
+                      name="state" 
+                      value={formData.state} 
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 rounded-lg border appearance-none ${errors.state ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                    >
+                      <option value="">Select State</option>
+                      {indianStates.map((s, i) => (
+                        <option key={i} value={s}>{s}</option>
+                      ))}
+                    </select>
+                    {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state}</p>}
+                  </div>
+                  {/* City */}
+                  <div className="relative md:col-span-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">City/District *</label>
+                    {cities.length > 0 ? (
+                      <select 
+                        name="city" 
+                        value={formData.city} 
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 rounded-lg border appearance-none ${errors.city ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                      >
+                        <option value="">Select City</option>
+                        {cities.map((c, i) => (
+                          <option key={i} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input 
+                        type="text" 
+                        name="city" 
+                        value={formData.city} 
+                        onChange={handleChange}
+                        className={`w-full px-4 py-3 rounded-lg border ${errors.city ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:ring-orange-500'} focus:outline-none focus:ring-2 transition-colors`}
+                        placeholder="City" 
+                      />
+                    )}
+                    {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
+                  </div>
+                  {/* Nation */}
+                  <div className="relative md:col-span-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Nation *</label>
+                    <input 
+                      type="text" 
+                      name="nation" 
+                      value={formData.nation} 
+                      readOnly
+                      className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-100 text-gray-600 focus:outline-none cursor-not-allowed"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Academic Details */}
               <div>
                 <h3 className="text-xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-100 flex items-center">
                   <span className="bg-purple-100 text-purple-600 p-2 rounded-lg mr-3">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"></path></svg>
+                    <AcademicIcon />
                   </span>
-                  Academic & Document Details
+                  Academic Details
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-6">
-                    <div className="relative">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Highest Qualification *</label>
-                      <div className="relative">
-                        <AcademicIcon />
-                        <select 
-                          name="qualification" 
-                          value={formData.qualification} 
-                          onChange={handleChange}
-                          className={`w-full pl-10 pr-10 py-3 rounded-lg border appearance-none ${errors.qualification ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-500'} focus:outline-none focus:ring-2 transition-colors`}
-                        >
-                          <option value="">Select Qualification</option>
-                          <option value="High School">High School (10th)</option>
-                          <option value="Higher Secondary">Higher Secondary (12th)</option>
-                          <option value="Undergraduate">Undergraduate</option>
-                          <option value="Postgraduate">Postgraduate</option>
-                          <option value="Other">Other</option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
-                      </div>
-                      {errors.qualification && <p className="text-red-500 text-xs mt-1">{errors.qualification}</p>}
-                    </div>
-
-                    <div className="relative">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Residential Address *</label>
-                      <div className="relative">
-                        <HomeIcon />
-                        <textarea 
-                          name="address" 
-                          value={formData.address} 
-                          onChange={handleChange}
-                          rows="3"
-                          className={`w-full pl-10 pr-4 py-3 rounded-lg border resize-none ${errors.address ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-500'} focus:outline-none focus:ring-2 transition-colors`}
-                          placeholder="Your full address here..." 
-                        ></textarea>
-                      </div>
-                      {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
-                    </div>
-                  </div>
-
                   <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Passport Size Photograph *</label>
-                    <div className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition-colors ${errors.photo ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:bg-gray-50'} bg-white`}>
-                      <div className="space-y-1 text-center">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Highest Qualification *</label>
+                    <div className="relative">
+                      <AcademicIcon />
+                      <select 
+                        name="qualification" 
+                        value={formData.qualification} 
+                        onChange={handleChange}
+                        className={`w-full pl-10 pr-10 py-3 rounded-lg border appearance-none ${errors.qualification ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'border-gray-300 focus:ring-purple-500'} focus:outline-none focus:ring-2 transition-colors`}
+                      >
+                        <option value="">Select Qualification</option>
+                        <option value="High School">High School (10th)</option>
+                        <option value="Higher Secondary">Higher Secondary (12th)</option>
+                        <option value="Undergraduate">Undergraduate</option>
+                        <option value="Postgraduate">Postgraduate</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                      </div>
+                    </div>
+                    {errors.qualification && <p className="text-red-500 text-xs mt-1">{errors.qualification}</p>}
+                  </div>
+              </div>
+
+              {/* Passport Size Photo - Centered & Separate */}
+              <div className="py-6 border-t border-b border-gray-100">
+                <h3 className="text-xl font-bold text-gray-800 text-center mb-6">
+                  Applicant Photograph
+                </h3>
+                <div className="max-w-md mx-auto">
+                  <div className="relative">
+                    <label className="block text-sm font-medium text-gray-700 text-center mb-2">Upload Passport Size Photograph *</label>
+                    <div className={`mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-dashed rounded-xl transition-colors ${errors.photo ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:bg-gray-50'} bg-white`}>
+                      <div className="space-y-2 text-center flex flex-col items-center">
                         <UploadIcon />
                         <div className="flex text-sm text-gray-600 justify-center">
                           <label className="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500">
@@ -382,13 +560,15 @@ const EducationSupport = () => {
                         </div>
                         <p className="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
                         {formData.photo && (
-                          <p className="text-sm font-semibold text-green-600 mt-2">
-                            Selected file: {formData.photo.name}
-                          </p>
+                          <div className="mt-4 p-2 bg-green-50 rounded-lg border border-green-200 w-full text-center">
+                            <p className="text-sm font-semibold text-green-700 overflow-hidden text-ellipsis whitespace-nowrap">
+                              Selected: {formData.photo.name}
+                            </p>
+                          </div>
                         )}
                       </div>
                     </div>
-                    {errors.photo && <p className="text-red-500 text-xs mt-1">{errors.photo}</p>}
+                    {errors.photo && <p className="text-red-500 text-xs mt-2 text-center">{errors.photo}</p>}
                   </div>
                 </div>
               </div>
