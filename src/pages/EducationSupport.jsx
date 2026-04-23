@@ -29,6 +29,7 @@ const EducationSupport = () => {
     city: '',
     nation: 'India',
     photo: null,
+    photoUrl: '',
     supportType: '',
     educationDetails: '',
     agreeTerms: false,
@@ -38,6 +39,11 @@ const EducationSupport = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // Cloudinary Upload States
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   // SVG Icons
   const UserIcon = () => (
@@ -76,6 +82,37 @@ const EducationSupport = () => {
     <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
   );
 
+  const handleCloudinaryUpload = async (file) => {
+    setIsUploadingPhoto(true);
+    setUploadError('');
+    
+    // In production, configure Cloudinary variables in your .env file
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "demo";
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "pathsarthi_preset";
+    
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+    uploadData.append("upload_preset", uploadPreset);
+    
+    try {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: uploadData,
+      });
+      const data = await response.json();
+      if (data.secure_url) {
+        setFormData(prev => ({ ...prev, photoUrl: data.secure_url }));
+      } else {
+         setUploadError('Failed to upload image. Please verify your Cloudinary settings.');
+      }
+    } catch (error) {
+      console.error("Cloudinary Upload Error:", error);
+      setUploadError('Network error while uploading image.');
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
+
   const fetchCitiesForState = async (stateName) => {
     try {
       const response = await fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
@@ -101,6 +138,17 @@ const EducationSupport = () => {
     
     if (name === 'pincode') {
       newValue = newValue.replace(/\D/g, '').slice(0, 6);
+    }
+
+    if (name === 'photo' && type === 'file' && files[0]) {
+      const file = files[0];
+      setFormData((prev) => ({ ...prev, photo: file }));
+      
+      const objectUrl = URL.createObjectURL(file);
+      setPhotoPreviewUrl(objectUrl);
+      
+      handleCloudinaryUpload(file);
+      return;
     }
     
     setFormData((prev) => ({ ...prev, [name]: newValue }));
@@ -659,27 +707,42 @@ const EducationSupport = () => {
                 <div className="max-w-md mx-auto">
                   <div className="relative">
                     <label className="block text-sm font-medium text-gray-700 text-center mb-2">Upload Passport Size Photograph *</label>
-                    <div className={`mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-dashed rounded-xl transition-colors ${errors.photo ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:bg-gray-50'} bg-white`}>
-                      <div className="space-y-2 text-center flex flex-col items-center">
-                        <UploadIcon />
+                    <div className={`mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-dashed rounded-xl transition-colors ${errors.photo || uploadError ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:bg-gray-50'} bg-white relative overflow-hidden`}>
+                      <div className="space-y-2 text-center flex flex-col items-center z-10">
+                        {photoPreviewUrl ? (
+                          <div className="relative w-32 h-40 mb-4 rounded-md overflow-hidden border-2 border-indigo-200 shadow-sm">
+                            <img src={photoPreviewUrl} alt="Passport Preview" className="w-full h-full object-cover" />
+                            {isUploadingPhoto && (
+                              <div className="absolute inset-0 bg-white/70 flex items-center justify-center flex-col">
+                                <svg className="animate-spin h-6 w-6 text-[#f06020] mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span className="text-xs font-semibold text-gray-800">Uploading...</span>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <UploadIcon />
+                        )}
                         <div className="flex text-sm text-gray-600 justify-center">
-                          <label className="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500">
-                            <span>Upload a file</span>
+                          <label className="relative cursor-pointer bg-transparent rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                            <span>{photoPreviewUrl ? 'Change photo' : 'Upload a file'}</span>
                             <input type="file" name="photo" accept="image/*" onChange={handleChange} className="sr-only" />
                           </label>
-                          <p className="pl-1">or drag and drop</p>
+                          {!photoPreviewUrl && <p className="pl-1">or drag and drop</p>}
                         </div>
                         <p className="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
-                        {formData.photo && (
-                          <div className="mt-4 p-2 bg-green-50 rounded-lg border border-green-200 w-full text-center">
-                            <p className="text-sm font-semibold text-green-700 overflow-hidden text-ellipsis whitespace-nowrap">
-                              Selected: {formData.photo.name}
-                            </p>
-                          </div>
+                        
+                        {formData.photoUrl && !isUploadingPhoto && (
+                           <div className="mt-2 text-xs font-medium text-green-600 flex items-center justify-center bg-green-50 px-3 py-1 rounded-full border border-green-200">
+                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                             Upload successful
+                           </div>
                         )}
                       </div>
                     </div>
-                    {errors.photo && <p className="text-red-500 text-xs mt-2 text-center">{errors.photo}</p>}
+                    {(errors.photo || uploadError) && <p className="text-red-500 text-xs mt-2 text-center">{errors.photo || uploadError}</p>}
                   </div>
                 </div>
               </div>

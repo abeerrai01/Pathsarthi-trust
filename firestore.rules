@@ -79,9 +79,8 @@ service cloud.firestore {
     // 📊 ANALYTICS (LIMITED PUBLIC WRITE)
     // =========================
 
-    match /analytics/{docId} {
-      allow create: if true;   // tracking events
-      allow read, update, delete: if request.auth != null;
+    match /analytics/{document=**} {
+      allow read, write: if true;
     }
 
     // =========================
