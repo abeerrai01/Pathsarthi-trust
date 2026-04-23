@@ -87,8 +87,8 @@ const EducationSupport = () => {
     setUploadError('');
     
     // In production, configure Cloudinary variables in your .env file
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "demo";
-    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "pathsarthi_preset";
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "dgmhz64fs";
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "ml_default";
     
     const uploadData = new FormData();
     uploadData.append("file", file);
