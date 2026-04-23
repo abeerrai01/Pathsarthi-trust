@@ -99,24 +99,53 @@ const EducationSupport = () => {
     const { name, value, type, checked, files } = e.target;
     let newValue = type === 'checkbox' ? checked : (type === 'file' ? files[0] : value);
     
+    if (name === 'pincode') {
+      newValue = newValue.replace(/\D/g, '').slice(0, 6);
+    }
+    
     setFormData((prev) => ({ ...prev, [name]: newValue }));
 
     if (name === 'pincode' && newValue.length === 6) {
       try {
         const response = await fetch(`https://api.postalpincode.in/pincode/${newValue}`);
         const data = await response.json();
-        if (data && data[0] && data[0].Status === 'Success') {
+        if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length > 0) {
           const postOffice = data[0].PostOffice[0];
+          const fetchedState = postOffice.State.trim();
+          const fetchedCity = postOffice.District.trim();
+
           setFormData(prev => ({
             ...prev,
-            state: postOffice.State,
-            city: postOffice.District // usually acts as city
+            state: fetchedState,
+            city: fetchedCity 
           }));
-          fetchCitiesForState(postOffice.State);
+          fetchCitiesForState(fetchedState);
+        } else {
+          throw new Error('Invalid or unsupported pincode from postalpincode API');
         }
       } catch (error) {
-        console.error("Error fetching pincode details", error);
+        // Fallback to Zippopotam API if PostalPincode API fails or returns error
+        try {
+          const altRes = await fetch(`https://api.zippopotam.us/IN/${newValue}`);
+          if (altRes.ok) {
+            const altData = await altRes.json();
+            if (altData && altData.places && altData.places.length > 0) {
+              const place = altData.places[0];
+              const fetchedState = place.state.trim();
+              const fetchedCity = place['place name'].trim();
+              setFormData(prev => ({
+                ...prev,
+                state: fetchedState,
+                city: fetchedCity
+              }));
+              fetchCitiesForState(fetchedState);
+            }
+          }
+        } catch (e) {
+          console.error("Zippopotam fallback failed", e);
+        }
       }
+      return;
     }
 
     if (name === 'state') {
@@ -189,17 +218,25 @@ const EducationSupport = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl font-bold text-gray-900 mb-6"
+              className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
             >
-              Education Support Program
+              Empowering Education for Every Dream
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl text-gray-600 max-w-xl mx-auto md:mx-0"
+              className="text-lg text-gray-600 max-w-xl mx-auto md:mx-0 mb-4"
             >
-              Apply for financial, legal, or specialized educational support through Pathsarthi Trust.
+              At Pathsarthi Trust, we believe that no student should be held back due to lack of resources or guidance. Whether you aim to build a career in finance, law, or any specialized field, we are here to support your journey.
+            </motion.p>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-lg font-semibold text-indigo-600 max-w-xl mx-auto md:mx-0"
+            >
+              Apply today and take the first step toward your future.
             </motion.p>
           </div>
           <motion.div 
@@ -210,6 +247,51 @@ const EducationSupport = () => {
           >
              <img src="/Forms.gif" alt="Educational Support Form" className="w-56 md:w-72 h-auto mix-blend-multiply" />
           </motion.div>
+        </div>
+      </div>
+
+      {/* About the Program & What We Offer */}
+      <div className="max-w-4xl mx-auto px-4 py-8 w-full z-10">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 mb-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center md:text-left">What is the Education Support Program?</h2>
+          <p className="text-gray-600 mb-4">The Pathsarthi Education Support Program is designed to help deserving students gain access to quality education, mentorship, and financial or legal guidance.</p>
+          <p className="text-gray-600 font-semibold mb-2">We aim to:</p>
+          <ul className="list-disc pl-5 mb-6 text-gray-600 space-y-2">
+            <li>Support students facing financial challenges</li>
+            <li>Guide students in choosing the right career path</li>
+            <li>Provide access to resources for professional growth</li>
+            <li>Encourage talent across all domains</li>
+          </ul>
+          <p className="text-indigo-600 font-semibold italic border-l-4 border-indigo-600 pl-4 py-2">
+            Our mission is simple — your potential should never be limited by your circumstances.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center md:text-left">Our Areas of Support</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-indigo-50 p-6 rounded-lg border border-indigo-100 flex flex-col h-full">
+              <div className="text-indigo-600 mb-4">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <h3 className="font-bold text-lg mb-2 text-gray-800">Financial Assistance</h3>
+              <p className="text-gray-600 text-sm flex-grow">Support for tuition fees, study materials, and academic expenses.</p>
+            </div>
+            <div className="bg-blue-50 p-6 rounded-lg border border-blue-100 flex flex-col h-full">
+              <div className="text-blue-600 mb-4">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+              </div>
+              <h3 className="font-bold text-lg mb-2 text-gray-800">Legal Education Guidance</h3>
+              <p className="text-gray-600 text-sm flex-grow">Mentorship and direction for students interested in pursuing law careers.</p>
+            </div>
+            <div className="bg-teal-50 p-6 rounded-lg border border-teal-100 flex flex-col h-full">
+              <div className="text-teal-600 mb-4">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              </div>
+              <h3 className="font-bold text-lg mb-2 text-gray-800">Other Specialized Fields</h3>
+              <p className="text-gray-600 text-sm flex-grow">Custom support based on your chosen career path and requirements.</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -228,19 +310,40 @@ const EducationSupport = () => {
                 animate={{ scale: 1 }}
                 className="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6"
               >
-                <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                <span className="text-5xl">🎉</span>
               </motion.div>
               <h2 className="text-3xl font-bold text-gray-800 mb-4">Application Submitted Successfully!</h2>
-              <p className="text-gray-600 mb-8 max-w-md mx-auto">Our team will review your application and contact you soon. Thank you for reaching out to Pathsarthi Trust.</p>
+              <p className="text-gray-600 mb-2 max-w-md mx-auto text-lg">Thank you for applying to the Pathsarthi Education Support Program.</p>
+              <p className="text-gray-600 mb-8 max-w-md mx-auto">Our team will review your application and contact you shortly.</p>
+              <p className="text-indigo-600 font-bold text-lg border-t-2 border-indigo-100 pt-6 mb-8 max-w-sm mx-auto">Keep working towards your dreams — we’re with you.</p>
               <button 
                 onClick={() => setIsSuccess(false)}
-                className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-md"
+                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition shadow-md"
               >
                 Submit Another Application
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-10">
+              {/* Form Intro & Guidelines */}
+              <div className="bg-blue-50/50 p-6 md:p-8 rounded-lg border border-blue-100 mb-8">
+                 <h2 className="text-2xl font-bold text-gray-800 mb-2">Apply for Support</h2>
+                 <p className="text-gray-600 mb-5">Fill out the form below with accurate details. Our team carefully reviews every application to ensure support reaches those who truly need it.</p>
+                 <p className="text-indigo-600 font-medium text-sm mb-6 pb-6 border-b border-blue-200">Make sure all information is correct before submitting.</p>
+                 
+                 <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                   <svg className="w-5 h-5 text-indigo-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                   Application Guidelines
+                 </h3>
+                 <ul className="list-disc list-inside text-gray-700 space-y-2 text-sm pl-2">
+                   <li>Provide genuine and accurate information</li>
+                   <li>Upload a clear passport-size photograph</li>
+                   <li>Clearly mention your desired education field</li>
+                   <li>Ensure your contact details are active</li>
+                   <li className="text-red-500 font-medium list-none flex items-center mt-3"><span className="mr-2">⚠️</span> Applications with incomplete information may not be considered</li>
+                 </ul>
+              </div>
+
               {/* Personal Details Section */}
               <div>
                 <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200 flex items-center">
@@ -463,6 +566,10 @@ const EducationSupport = () => {
                       {indianStates.map((s, i) => (
                         <option key={i} value={s}>{s}</option>
                       ))}
+                      {/* Fallback option if autofilled state spelling doesn't match list exactly */}
+                      {formData.state && !indianStates.includes(formData.state) && (
+                        <option value={formData.state}>{formData.state}</option>
+                      )}
                     </select>
                     {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state}</p>}
                   </div>
@@ -480,6 +587,10 @@ const EducationSupport = () => {
                         {cities.map((c, i) => (
                           <option key={i} value={c}>{c}</option>
                         ))}
+                        {/* Fallback option if autofilled city isn't in fetched cities dropdown */}
+                        {formData.city && !cities.includes(formData.city) && (
+                          <option value={formData.city}>{formData.city}</option>
+                        )}
                       </select>
                     ) : (
                       <input 
@@ -623,20 +734,35 @@ const EducationSupport = () => {
               </div>
 
               {/* Terms and Submit */}
-              <div className="pt-4 border-t border-gray-100">
-                <div className="flex items-start mb-6">
-                  <div className="flex items-center h-5">
-                    <input 
-                      id="agreeTerms" 
-                      name="agreeTerms" 
-                      type="checkbox" 
-                      checked={formData.agreeTerms}
-                      onChange={handleChange}
-                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="agreeTerms" className={`font-medium ${errors.agreeTerms ? 'text-red-500' : 'text-gray-700'}`}>I agree to the terms and conditions of Pathsarthi Trust *</label>
+              <div className="pt-8 border-t border-gray-200">
+                <div className="mb-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                  <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                    <span className="text-red-500 mr-2 text-xl">⚠️</span> Terms & Conditions
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-3 font-medium">By submitting this application:</p>
+                  <ul className="list-disc list-inside text-sm text-gray-600 space-y-2 mb-5 pl-1">
+                    <li>You confirm that all provided information is true</li>
+                    <li>You agree that the trust may verify your details</li>
+                    <li>Selection is based on eligibility and availability of resources</li>
+                    <li>The decision of Pathsarthi Trust will be final</li>
+                  </ul>
+
+                  <div className="flex items-start mt-4 pt-4 border-t border-gray-200">
+                    <div className="flex items-center h-5 mt-0.5">
+                      <input 
+                        id="agreeTerms" 
+                        name="agreeTerms" 
+                        type="checkbox" 
+                        checked={formData.agreeTerms}
+                        onChange={handleChange}
+                        className="w-5 h-5 border border-gray-300 rounded bg-white focus:ring-2 focus:ring-indigo-500 text-indigo-600 cursor-pointer"
+                      />
+                    </div>
+                    <div className="ml-3 text-sm">
+                      <label htmlFor="agreeTerms" className={`font-semibold cursor-pointer select-none ${errors.agreeTerms ? 'text-red-500' : 'text-gray-800'}`}>
+                        I agree to all the terms and conditions above *
+                      </label>
+                    </div>
                   </div>
                 </div>
 
@@ -663,15 +789,37 @@ const EducationSupport = () => {
         </motion.div>
 
         {/* Credibility Section */}
-        <div className="mt-12 text-center text-gray-500 flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-12">
+        <div className="mt-4 text-center text-gray-500 flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-12 mb-12">
           <div className="flex items-center">
-            <svg className="w-8 h-8 text-yellow-400 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-            <span className="font-semibold text-gray-700">1000+ students supported</span>
+            <svg className="w-8 h-8 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+            <span className="font-semibold text-gray-700 tracking-wide uppercase text-sm">1000+ students supported</span>
           </div>
           <div className="w-1.5 h-1.5 bg-gray-300 rounded-full hidden md:block"></div>
           <div className="flex items-center">
-            <svg className="w-8 h-8 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-            <span className="font-semibold text-gray-700">Trusted by community</span>
+            <svg className="w-8 h-8 text-indigo-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            <span className="font-semibold text-gray-700 tracking-wide uppercase text-sm">Trusted by community</span>
+          </div>
+        </div>
+
+        {/* Footer Info Area */}
+        <div className="bg-indigo-600 text-white rounded-lg p-8 md:p-12 text-center max-w-4xl mx-auto shadow-sm">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">A Small Step Today, A Big Future Tomorrow</h2>
+          <p className="text-indigo-100 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">Pathsarthi Trust has supported hundreds of students in achieving their dreams. You could be next.</p>
+          
+          <div className="border-t border-indigo-400/50 pt-8 mt-4">
+            <h3 className="text-xl font-bold mb-4">Need Help?</h3>
+            <p className="text-indigo-100 mb-8 max-w-xl mx-auto">If you have any questions or face any issues while applying, feel free to reach out to us.</p>
+            
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-12">
+              <div className="flex items-center bg-indigo-700/50 px-6 py-3 rounded-full">
+                <svg className="w-5 h-5 mr-3 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <span className="font-medium tracking-wide">support@pathsarthi.in</span>
+              </div>
+              <div className="flex items-center bg-indigo-700/50 px-6 py-3 rounded-full">
+                <svg className="w-5 h-5 mr-3 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                <span className="font-medium tracking-wide">+91-XXXXXXXXXX</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
