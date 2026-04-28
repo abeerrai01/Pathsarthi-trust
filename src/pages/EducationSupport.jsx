@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../config/firebase";
+import emailjs from '@emailjs/browser';
 
 const indianStates = [
   "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
@@ -286,6 +287,29 @@ const EducationSupport = () => {
           createdAt: new Date(),
         });
         
+        const templateParams = {
+          first_name: formData.firstName,
+          middle_name: formData.middleName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          state: formData.state,
+          city: formData.city,
+          support_type: formData.supportType,
+          education_details: formData.educationDetails
+        };
+
+        try {
+          await emailjs.send(
+            import.meta.env.VITE_EMAILJS_SERVICE_ID || "YOUR_SERVICE_ID",
+            import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "YOUR_TEMPLATE_ID",
+            templateParams,
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "YOUR_PUBLIC_KEY"
+          );
+        } catch (emailError) {
+          console.error("Failed to send email confirmation:", emailError);
+        }
+
         setIsSuccess(true);
         // clear form
         setFormData({

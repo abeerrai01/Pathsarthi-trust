@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import emailjs from '@emailjs/browser';
 import { GraduationCap, CheckCircle, XCircle, Clock, Trash2, Mail, Phone, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -26,11 +27,32 @@ const AdminEducation = () => {
     return () => unsub();
   }, []);
 
-  const handleUpdateStatus = async (id, newStatus) => {
+  const handleUpdateStatus = async (app, newStatus) => {
     try {
-      await updateDoc(doc(db, 'applications', id), {
+      await updateDoc(doc(db, 'applications', app.id), {
         status: newStatus
       });
+
+      if (newStatus === 'approved') {
+        try {
+          await emailjs.send(
+            import.meta.env.VITE_EMAILJS_SERVICE_ID || "service_aj9ohf7",
+            import.meta.env.VITE_EMAILJS_APPROVAL_TEMPLATE_ID || "YOUR_APPROVAL_TEMPLATE_ID", // Add this to your .env file
+            {
+              first_name: app.firstName,
+              last_name: app.lastName,
+              email: app.email,
+              support_type: app.supportType,
+              education_details: app.educationDetails
+            },
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "0qpshPwH1REx-2KTB"
+          );
+          alert("Approval email sent ✅");
+        } catch (err) {
+          console.error("Email sending error:", err);
+          alert("Status updated, but approval email failed to send.");
+        }
+      }
     } catch (err) {
       console.error(err);
       alert('Failed to update status.');
@@ -165,10 +187,10 @@ const AdminEducation = () => {
                   <div className="flex items-center justify-between gap-2 mt-auto">
                     {app.status === 'pending' ? (
                       <>
-                        <button onClick={() => handleUpdateStatus(app.id, 'rejected')} className="flex-1 py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 font-bold text-red-600 bg-red-50 hover:bg-red-100 transition-colors">
+                        <button onClick={() => handleUpdateStatus(app, 'rejected')} className="flex-1 py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 font-bold text-red-600 bg-red-50 hover:bg-red-100 transition-colors">
                           <XCircle size={18} /> Reject
                         </button>
-                        <button onClick={() => handleUpdateStatus(app.id, 'approved')} className="flex-1 py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 font-bold text-green-600 bg-green-50 hover:bg-green-100 transition-colors">
+                        <button onClick={() => handleUpdateStatus(app, 'approved')} className="flex-1 py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 font-bold text-green-600 bg-green-50 hover:bg-green-100 transition-colors">
                           <CheckCircle size={18} /> Approve
                         </button>
                       </>
@@ -179,7 +201,7 @@ const AdminEducation = () => {
                           {app.status === 'approved' ? 'Approved' : 'Rejected'}
                         </div>
                         <div className="flex gap-2">
-                          <button onClick={() => handleUpdateStatus(app.id, 'pending')} className="p-2 rounded-xl text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition-colors tooltip tooltip-top" data-tip="Move to Pending">
+                          <button onClick={() => handleUpdateStatus(app, 'pending')} className="p-2 rounded-xl text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition-colors tooltip tooltip-top" data-tip="Move to Pending">
                             <Clock size={20} />
                           </button>
                           <button onClick={() => handleDelete(app.id)} className="p-2 rounded-xl text-slate-400 bg-slate-50 hover:text-red-600 hover:bg-red-50 transition-colors">
