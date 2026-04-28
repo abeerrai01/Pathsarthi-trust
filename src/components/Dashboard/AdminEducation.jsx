@@ -34,22 +34,26 @@ const AdminEducation = () => {
       });
 
       if (newStatus === 'approved') {
+        const templateParams = {
+          to_email: app.email, // Added for EmailJS recipient mapping
+          first_name: app.firstName,
+          last_name: app.lastName,
+          email: app.email,
+          support_type: app.supportType,
+          education_details: app.educationDetails
+        };
         try {
-          await emailjs.send(
+          console.log("Admin Approval: Attempting to send email with params:", templateParams);
+          const res = await emailjs.send(
             import.meta.env.VITE_EMAILJS_SERVICE_ID || "service_aj9ohf7",
-            import.meta.env.VITE_EMAILJS_APPROVAL_TEMPLATE_ID || "YOUR_APPROVAL_TEMPLATE_ID", // Add this to your .env file
-            {
-              first_name: app.firstName,
-              last_name: app.lastName,
-              email: app.email,
-              support_type: app.supportType,
-              education_details: app.educationDetails
-            },
+            import.meta.env.VITE_EMAILJS_APPROVAL_TEMPLATE_ID || "template_3r073je",
+            templateParams,
             import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "0qpshPwH1REx-2KTB"
           );
+          console.log("EmailJS Approval SUCCESS ✅", res);
           alert("Approval email sent ✅");
         } catch (err) {
-          console.error("Email sending error:", err);
+          console.error("EmailJS Approval ERROR ❌", err);
           alert("Status updated, but approval email failed to send.");
         }
       }

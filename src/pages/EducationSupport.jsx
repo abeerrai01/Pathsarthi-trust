@@ -288,6 +288,7 @@ const EducationSupport = () => {
         });
         
         const templateParams = {
+          to_email: formData.email, // Added for EmailJS recipient mapping
           first_name: formData.firstName,
           middle_name: formData.middleName,
           last_name: formData.lastName,
@@ -300,14 +301,16 @@ const EducationSupport = () => {
         };
 
         try {
-          await emailjs.send(
-            import.meta.env.VITE_EMAILJS_SERVICE_ID || "YOUR_SERVICE_ID",
-            import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "YOUR_TEMPLATE_ID",
+          console.log("Attempting to send email with params:", templateParams);
+          const res = await emailjs.send(
+            import.meta.env.VITE_EMAILJS_SERVICE_ID || "service_aj9ohf7",
+            import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "template_au9g1mv",
             templateParams,
-            import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "YOUR_PUBLIC_KEY"
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "0qpshPwH1REx-2KTB"
           );
+          console.log("EmailJS SUCCESS ✅", res);
         } catch (emailError) {
-          console.error("Failed to send email confirmation:", emailError);
+          console.error("EmailJS ERROR ❌", emailError);
         }
 
         setIsSuccess(true);
