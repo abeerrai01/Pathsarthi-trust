@@ -1,34 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { db } from '../config/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const TrustMembers = () => {
-  const members = [
-    { name: 'Ravi Prakash Rai', gender: 'Male', designation: 'Chairman', joinedDate: '2022-02-23', image: '/Chairman.jpg' },
-    { name: 'Om Prakash Rai', gender: 'Male', designation: 'Accountant', joinedDate: '2022-02-23' },
-    { name: 'Arun Kumar Singh', gender: 'Male', designation: 'Secretary', joinedDate: '2022-02-23', image: '/Arun Kumar.jpg' },
-    { name: 'Rupesh Kumar Chauhan', gender: 'Male', designation: 'Vice-President', joinedDate: '2022-06-27' },
-    { name: 'Sanjay Sharma', gender: 'Male', designation: 'District President', joinedDate: '2024-10-01' },
-    { name: 'Srinivas Rai', gender: 'Male', designation: 'State President', district: 'Manali', state: 'Himachal Pradesh', joinedDate: '2024-06-01', image: '/Srinavas.jpg' },
-    { name: 'Rajeev Bishnoi', gender: 'Male', designation: 'State Coordinator', joinedDate: '2025-01-22', image: '/Rajeev.jpg' },
-    { name: 'Satya Prakash Rai', gender: 'Male', designation: 'Member', joinedDate: '2022-07-14' },
-    { name: 'Mridul Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
-    { name: 'Priyansh Manas Rai', gender: 'Male', designation: 'Co-Secretary', joinedDate: '2022-07-14' },
-    { name: 'Abeer Rai', gender: 'Male', designation: 'Technical Director', joinedDate: '2025-04-01', image: '/abeer.jpg' },
-    { name: 'Shreyansh Rai', gender: 'Male', designation: 'Internship Coordinator', joinedDate: '2025-07-01', image: '/Shreyansh.jpg' },
-    { name: 'Mehair Tripathi', gender: 'Male', designation: 'Trustee', joinedDate: '2025-06-01' },
-    { name: 'Swechha Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2023-01-01', image: '/Swechha.jpg' },
-    { name: 'Pramila Rai', gender: 'Female', designation: 'Trustee', joinedDate: '2025-04-01', image: '/Pramila.jpg' },
-    { name: 'Deepansh Manas Rai', gender: 'Male', designation: 'Trustee', joinedDate: '2023-01-01' },
-  ];
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Remove custom sorting, just use members as is
-  const sortedMembers = members;
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, 'board_of_trustees'));
+        const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setMembers(fetched);
+      } catch (err) {
+        console.error("Error fetching board of trustees:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMembers();
+  }, []);
 
-  // Function to format date
-  const formatDate = (dateString) => {
+  const formatDate = (dateValue) => {
+    if (!dateValue) return 'N/A';
+    if (dateValue.toDate) {
+      return dateValue.toDate().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-IN', options);
+    return new Date(dateValue).toLocaleDateString('en-IN', options);
   };
 
   // Function to get initials for avatar
@@ -60,7 +60,12 @@ const TrustMembers = () => {
 
         {/* Members Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {sortedMembers.map((member, index) => (
+          {loading ? (
+            <div className="col-span-full text-center text-gray-500 py-10">Loading members...</div>
+          ) : members.length === 0 ? (
+            <div className="col-span-full text-center text-gray-500 py-10">No trust members found.</div>
+          ) : (
+            members.map((member, index) => (
             <motion.div
               key={member.name}
               initial={{ opacity: 0, y: 20 }}
@@ -99,12 +104,12 @@ const TrustMembers = () => {
                     {member.gender}
                   </div>
                   <div className="text-sm text-gray-600">
-                    Member since {formatDate(member.joinedDate)}
+                    Member since {formatDate(member.joinedDate || member.createdAt)}
                   </div>
                 </div>
               </div>
             </motion.div>
-          ))}
+          )))}
         </div>
       {/* Profile Modal */}
       {selectedMember && (
@@ -129,7 +134,7 @@ const TrustMembers = () => {
               <h2 className="text-2xl font-bold mb-2">{selectedMember.name}</h2>
               <div className="text-indigo-600 font-bold mb-1">{selectedMember.designation}</div>
               <div className="text-gray-600 mb-2">{selectedMember.gender}</div>
-              <div className="text-gray-600 mb-2">Member since {formatDate(selectedMember.joinedDate)}</div>
+              <div className="text-gray-600 mb-2">Member since {formatDate(selectedMember.joinedDate || selectedMember.createdAt)}</div>
               {selectedMember.fatherName && (
                 <div className="mb-1"><span className="font-semibold">Father's Name:</span> {selectedMember.fatherName}</div>
               )}

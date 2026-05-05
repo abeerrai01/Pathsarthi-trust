@@ -1,23 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { db } from '../config/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 const Legal = () => {
-  const members = [
-    { name: 'Adv.Gurbachan Singh Chawla', gender: 'Male', designation: 'Tax', joinedDate: '2025-07-08', image: '/GURBACHAN SINGH CHAWLA.jpg', fatherName: 'Satnam Singh Chawla', address: 'L/2A, Rampur Garden, Near Agarsen Park, Bareilly', email: 'therajachawla@gmail.com', mobile: '98970 00001', modalImage: '/GURBACHAN SINGH CHAWLA. 1jpg.jpg' },
-    { name: 'Adv. Paramveer Singh', gender: 'Male', designation: 'Criminal', joinedDate: '2025-07-08', image: '/Paramveer singh.jpg', address: 'Baghpat, Uttar Pradesh', mobile: '9758933155' }
-  ];
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const formatDate = (dateString) => {
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const q = query(collection(db, 'advisory_volunteers'), where('type', '==', 'Legal'));
+        const snapshot = await getDocs(q);
+        const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setMembers(fetched);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMembers();
+  }, []);
+
+  const formatDate = (dateValue) => {
+    if (!dateValue) return 'N/A';
+    if (dateValue.toDate) {
+      return dateValue.toDate().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-IN', options);
+    return new Date(dateValue).toLocaleDateString('en-IN', options);
   };
 
   const getInitials = (name) => {
+    if (!name) return 'U';
     return name
       .split(' ')
       .map(word => word[0])
       .join('')
-      .toUpperCase();
+      .toUpperCase()
+      .substring(0, 2);
   };
 
   const [selectedMember, setSelectedMember] = useState(null);
@@ -37,7 +59,12 @@ const Legal = () => {
           </p>
         </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {members.map((member, index) => (
+          {loading ? (
+            <div className="col-span-full text-center text-gray-500 py-10">Loading members...</div>
+          ) : members.length === 0 ? (
+            <div className="col-span-full text-center text-gray-500 py-10">No legal advisory volunteers found.</div>
+          ) : (
+            members.map((member, index) => (
             <motion.div
               key={member.name}
               initial={{ opacity: 0, y: 20 }}
@@ -67,18 +94,20 @@ const Legal = () => {
                     {member.name}
                   </h3>
                   <div className="text-indigo-600 font-bold mb-2">
-                    {member.designation}
+                    {member.role || member.designation}
                   </div>
-                  <div className="text-sm text-gray-500 mb-2">
-                    {member.gender}
-                  </div>
+                  {(member.gender) && (
+                    <div className="text-sm text-gray-500 mb-2">
+                      {member.gender}
+                    </div>
+                  )}
                   <div className="text-sm text-gray-600">
-                    Member since {formatDate(member.joinedDate)}
+                    Member since {formatDate(member.joinedDate || member.createdAt)}
                   </div>
                 </div>
               </div>
             </motion.div>
-          ))}
+          )))}
         </div>
         {selectedMember && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50" onClick={e => { if (e.target === e.currentTarget) setSelectedMember(null); }}>
@@ -100,9 +129,9 @@ const Legal = () => {
                   />
                 )}
                 <h2 className="text-2xl font-bold mb-2">{selectedMember.name}</h2>
-                <div className="text-indigo-600 font-bold mb-1">{selectedMember.designation}</div>
-                <div className="text-gray-600 mb-2">{selectedMember.gender}</div>
-                <div className="text-gray-600 mb-2">Member since {formatDate(selectedMember.joinedDate)}</div>
+                <div className="text-indigo-600 font-bold mb-1">{selectedMember.role || selectedMember.designation}</div>
+                {selectedMember.gender && <div className="text-gray-600 mb-2">{selectedMember.gender}</div>}
+                <div className="text-gray-600 mb-2">Member since {formatDate(selectedMember.joinedDate || selectedMember.createdAt)}</div>
                 {selectedMember.fatherName && (
                   <div className="mb-1"><span className="font-semibold">Father's Name:</span> {selectedMember.fatherName}</div>
                 )}

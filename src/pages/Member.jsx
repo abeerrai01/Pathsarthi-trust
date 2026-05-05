@@ -1,57 +1,43 @@
-import React, { useState } from 'react';
-
-const members = [
-  { name: 'Sameer Sharma', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Sameer Sharma.jpg' },
-  { name: 'Pawan Thakur', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
-  { name: 'Amrit Agrawal', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
-  { name: 'Vikas Mathur', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
-  { name: 'Bhag Singh', gender: 'Male', district: 'Bijnor', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01', image: '/Bhag Singh.jpg' },
-  { name: 'Neeraj Gupta', gender: 'Male', district: 'Bareilly', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01' },
-  { name: 'Neeraj Chaturvedi', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01' },
-  { name: 'Sanjeev Rastogi', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', designation: 'Member', joinedDate: '2023-01-01', image: '/Sanjeev Rastogi.jpg' },
-  { name: 'Jatadhari Rai', gender: 'Male', district: 'Jaunpur', state: 'Uttar Pradesh' },
-  { name: 'Manoj Sinha', gender: 'Male', district: 'Noida', state: 'Uttar Pradesh' },
-  { name: 'Shailendra Singh', gender: 'Male', district: 'Chandausi', state: 'Uttar Pradesh' },
-  { name: 'Gaurav Kathuriya', gender: 'Male', district: 'Delhi', state: 'Delhi' },
-  { name: 'Sanjay Rai', gender: 'Male', district: 'Ghaziabad', state: 'Uttar Pradesh', image: '/Sanjay rai.jpg' },
-  { name: 'Sanjay Rai', gender: 'Male', district: 'Mumbai', state: 'Maharashtra' },
-  { name: 'Pradeep Rai', gender: 'Male', district: 'Azamgarh', state: 'Uttar Pradesh' },
-  { name: 'Navneet Kumar Saxena', gender: 'Male', district: 'Rampur', state: 'Uttar Pradesh' },
-  { name: 'Rajendra Prasad Singh', gender: 'Male', district: 'Varanasi', state: 'Uttar Pradesh' },
-  { name: 'Madan Singh Negi', gender: 'Male', district: 'Noida', state: 'Uttar Pradesh' },
-  { name: 'Nathi Singh Bartwal', gender: 'Male', district: 'Noida', state: 'Uttar Pradesh' },
-  { name: 'Yashu Sharma', gender: 'Male', district: 'Guna', state: 'Madhya Pradesh' },
-  { name: 'Anil Kumar Sharma', gender: 'Male', district: 'Guna', state: 'Madhya Pradesh' },
-  { name: 'Rajendra Kumar Dhingra', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
-  { name: 'Kailash Chandra Sharma', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh' },
-  { name: 'Parminder Sharma', gender: 'Male', district: 'Ludhiana', state: 'Punjab' },
-  { name: 'Amit Kumar Shukla', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/amit kumar.jpg' },
-  { name: 'Varun', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/varun.jpg' },
-  { name: 'Pradeep Kumar', gender: 'Male', district: 'Barielly', state: 'Uttar Pradesh', image: '/pradeep.jpg' },
-  // New member
-  { name: 'Sachin Mittal', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/sachin mittal.jpg' },
-  { name: 'Anil Kumar Gupta', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Anil.jpg' },
-  { name: 'Ayush Kumar Singh', gender: 'Male', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Ayush.jpg' },
-  { name: 'Seema Singh', gender: 'Female', district: 'Moradabad', state: 'Uttar Pradesh', image: '/Seema Singh.jpg' },
-];
-
-const sortedMembers = members.slice().sort((a, b) => a.name.localeCompare(b.name));
+import React, { useState, useEffect } from 'react';
+import { db } from '../config/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 function getInitials(name) {
+  if (!name) return 'U';
   return name
     .split(' ')
     .map(word => word[0])
     .join('')
-    .toUpperCase();
+    .toUpperCase()
+    .substring(0, 2);
 }
 
 const Member = () => {
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedState, setSelectedState] = useState('');
 
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, 'members'));
+        const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setMembers(fetched);
+      } catch (err) {
+        console.error("Error fetching members:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMembers();
+  }, []);
+
+  const sortedMembers = members.slice().sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
   // Get unique districts and states for filter dropdowns
-  const districts = Array.from(new Set(members.map(m => m.district))).sort();
-  const states = Array.from(new Set(members.map(m => m.state))).sort();
+  const districts = Array.from(new Set(members.map(m => m.district).filter(Boolean))).sort();
+  const states = Array.from(new Set(members.map(m => m.state).filter(Boolean))).sort();
 
   // Filter logic
   const filteredMembers = sortedMembers.filter(member => {
@@ -99,23 +85,33 @@ const Member = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredMembers.map((member, idx) => (
-                <tr key={idx} className="hover:bg-gray-100">
-                  <td className="py-2 px-4 border-b">
-                    {member.image ? (
-                      <img src={member.image} alt={member.name} className="h-12 w-12 rounded-full object-cover" />
-                    ) : (
-                      <div className={`h-12 w-12 rounded-full flex items-center justify-center text-lg font-bold text-white ${member.gender === 'Female' ? 'bg-pink-500' : 'bg-indigo-500'}`}>
-                        {getInitials(member.name)}
-                      </div>
-                    )}
-                  </td>
-                  <td className="py-2 px-4 border-b">{member.name}</td>
-                  <td className="py-2 px-4 border-b">{member.gender}</td>
-                  <td className="py-2 px-4 border-b">{member.district}</td>
-                  <td className="py-2 px-4 border-b">{member.state}</td>
+              {loading ? (
+                <tr>
+                  <td colSpan="5" className="py-8 text-center text-gray-500">Loading members...</td>
                 </tr>
-              ))}
+              ) : filteredMembers.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="py-8 text-center text-gray-500">No members found.</td>
+                </tr>
+              ) : (
+                filteredMembers.map((member, idx) => (
+                  <tr key={idx} className="hover:bg-gray-100">
+                    <td className="py-2 px-4 border-b">
+                      {member.image ? (
+                        <img src={member.image} alt={member.name} className="h-12 w-12 rounded-full object-cover" />
+                      ) : (
+                        <div className={`h-12 w-12 rounded-full flex items-center justify-center text-lg font-bold text-white ${member.gender === 'Female' ? 'bg-pink-500' : 'bg-indigo-500'}`}>
+                          {getInitials(member.name)}
+                        </div>
+                      )}
+                    </td>
+                    <td className="py-2 px-4 border-b">{member.name}</td>
+                    <td className="py-2 px-4 border-b">{member.gender}</td>
+                    <td className="py-2 px-4 border-b">{member.district}</td>
+                    <td className="py-2 px-4 border-b">{member.state}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
