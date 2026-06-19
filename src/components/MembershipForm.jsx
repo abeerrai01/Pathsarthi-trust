@@ -159,94 +159,125 @@ const MembershipForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#fffaf8] py-8 px-2">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-8 mx-auto">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-[#ff7300]">Become a Pathsarthi Member</h2>
-        {toast && (
-          <div className={`mb-4 px-4 py-2 rounded text-center text-white ${toast.type === 'error' ? 'bg-red-500' : toast.type === 'success' ? 'bg-green-600' : 'bg-indigo-500'}`}>{toast.msg}</div>
-        )}
-        {step === 'form' && (
-          <form onSubmit={handleFormSubmit} className="space-y-4">
-            <div className="flex flex-col md:flex-row gap-2">
-              <input name="firstName" value={form.firstName} onChange={handleChange} required placeholder="First Name*" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-              <input name="middleName" value={form.middleName} onChange={handleChange} placeholder="Middle Name" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-              <input name="lastName" value={form.lastName} onChange={handleChange} required placeholder="Last Name*" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-            </div>
-            <div className="flex gap-2">
-              <input name="age" value={form.age} onChange={handleChange} required placeholder="Age*" type="number" min="1" className="input input-bordered flex-1 px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-              <select name="gender" value={form.gender} onChange={handleChange} required className="input input-bordered flex-1 px-4 py-2 rounded border border-gray-300 focus:border-orange-400">
-                <option value="">Gender*</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div className="flex gap-2">
-              <input name="city" value={form.city} onChange={handleChange} required placeholder="City*" className="input input-bordered flex-1 px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-              <input name="state" value={form.state} onChange={handleChange} required placeholder="State*" className="input input-bordered flex-1 px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-            </div>
-            <input name="email" value={form.email} onChange={handleChange} required placeholder="Email ID*" type="email" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-            <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-            <input name="aadhaar" value={form.aadhaar} onChange={handleChange} required placeholder="Aadhaar Card Number*" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-slate-50 to-indigo-50 py-12 px-4 sm:px-6">
+      <div className="w-full max-w-xl bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-10 mx-auto border border-orange-100/50 flex flex-col">
+        {/* Brand Header with centered Logo-2 */}
+        <div className="flex flex-col items-center mb-8">
+          <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-24 h-auto mb-4 object-contain" />
+          <h2 className="text-2xl md:text-3xl font-black text-center text-[#ff7300] tracking-tight">Become a Pathsarthi Member</h2>
+          <p className="text-xs text-gray-400 font-bold mt-1.5 uppercase tracking-widest">Hope • Heal • Humanity</p>
+        </div>
 
-            {/* Profile Photo Upload Field */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
-                <User className="w-4 h-4 text-[#ff7300]" />
-                Profile Photo (Optional)
-              </label>
-              <div className="relative border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:border-orange-400 transition-colors bg-gray-50 flex flex-col items-center justify-center cursor-pointer">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-                <UploadCloud className="w-6 h-6 text-gray-400 mb-1" />
-                {photoPreview ? (
-                  <div className="flex items-center gap-2 mt-1">
-                    <img src={photoPreview} alt="Preview" className="w-10 h-10 rounded-full object-cover border-2 border-orange-400 shadow-sm" />
-                    <span className="text-xs text-gray-600 font-medium truncate max-w-[200px]">{photoFile?.name}</span>
-                  </div>
-                ) : (
-                  <>
-                    <span className="text-xs text-gray-500 font-semibold">Click to upload your profile photo</span>
-                    <span className="text-[10px] text-gray-400">PNG, JPG, WEBP</span>
-                  </>
-                )}
+        {toast && (
+          <div className={`mb-6 px-4 py-3 rounded-xl text-center text-sm font-semibold text-white shadow-md ${toast.type === 'error' ? 'bg-red-500' : toast.type === 'success' ? 'bg-green-600' : 'bg-indigo-500'}`}>
+            {toast.msg}
+          </div>
+        )}
+
+        {step === 'form' && (
+          <form onSubmit={handleFormSubmit} className="space-y-6">
+            <div className="space-y-4">
+              {/* Personal Details Group */}
+              <div className="space-y-3">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Personal Details</label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <input name="firstName" value={form.firstName} onChange={handleChange} required placeholder="First Name*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                  <input name="middleName" value={form.middleName} onChange={handleChange} placeholder="Middle Name" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                  <input name="lastName" value={form.lastName} onChange={handleChange} required placeholder="Last Name*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                </div>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <input name="age" value={form.age} onChange={handleChange} required placeholder="Age*" type="number" min="1" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                  <select name="gender" value={form.gender} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white">
+                    <option value="">Gender*</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Contact & Verification Group */}
+              <div className="space-y-3 pt-2">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Contact & Verification</label>
+                <input name="email" value={form.email} onChange={handleChange} required placeholder="Email ID*" type="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                <input name="aadhaar" value={form.aadhaar} onChange={handleChange} required placeholder="Aadhaar Card Number*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+              </div>
+
+              {/* Location Details Group */}
+              <div className="space-y-3 pt-2">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Location Details</label>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <input name="city" value={form.city} onChange={handleChange} required placeholder="City*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                  <input name="state" value={form.state} onChange={handleChange} required placeholder="State*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                </div>
+              </div>
+
+              {/* Profile Photo Upload Field */}
+              <div className="flex flex-col gap-1.5 pt-2">
+                <label className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
+                  <User className="w-4 h-4 text-[#ff7300]" />
+                  Profile Photo (Optional)
+                </label>
+                <div className="relative border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:border-orange-400 transition-colors bg-gray-50 flex flex-col items-center justify-center cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <UploadCloud className="w-6 h-6 text-gray-400 mb-1" />
+                  {photoPreview ? (
+                    <div className="flex items-center gap-2 mt-1">
+                      <img src={photoPreview} alt="Preview" className="w-10 h-10 rounded-full object-cover border-2 border-orange-400 shadow-sm" />
+                      <span className="text-xs text-gray-600 font-medium truncate max-w-[200px]">{photoFile?.name}</span>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="text-xs text-gray-500 font-semibold">Click to upload your profile photo</span>
+                      <span className="text-[10px] text-gray-400">PNG, JPG, WEBP</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
 
-            <button type="submit" className="w-full bg-[#ff7300] text-white font-semibold py-2 rounded-lg hover:bg-orange-600 transition disabled:opacity-50" disabled={loading}>
-              {loading ? (photoFile ? 'Uploading photo...' : 'Processing...') : 'Proceed to Payment'}
+            <button type="submit" className="w-full bg-[#ff7300] hover:bg-indigo-600 text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md hover:shadow-indigo-200 hover:-translate-y-0.5 transform active:translate-y-0 disabled:opacity-50 flex items-center justify-center gap-2 text-base" disabled={loading}>
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  {photoFile ? 'Uploading photo...' : 'Processing...'}
+                </>
+              ) : 'Proceed to Payment'}
             </button>
           </form>
         )}
+
         {step === 'payment' && (
           <div className="flex flex-col items-center gap-6">
             <div className="text-center text-lg font-semibold text-green-700">Please complete the payment to activate your membership.</div>
             
-            <div className="w-full bg-slate-50 border border-slate-100 rounded-xl p-4 space-y-2">
-              <div className="flex justify-between border-b pb-2 text-sm text-gray-600">
+            <div className="w-full bg-slate-50 border border-slate-100 rounded-xl p-5 space-y-3">
+              <div className="flex justify-between border-b pb-2.5 text-sm text-gray-600">
                 <span>Applicant Name</span>
                 <span className="font-semibold text-gray-900">{form.firstName} {form.lastName}</span>
               </div>
-              <div className="flex justify-between border-b pb-2 text-sm text-gray-600">
+              <div className="flex justify-between border-b pb-2.5 text-sm text-gray-600">
                 <span>Email Address</span>
                 <span className="font-semibold text-gray-900">{form.email}</span>
               </div>
-              <div className="flex justify-between border-b pb-2 text-sm text-gray-600">
+              <div className="flex justify-between border-b pb-2.5 text-sm text-gray-600">
                 <span>Phone Number</span>
                 <span className="font-semibold text-gray-900">{form.phone}</span>
               </div>
-              <div className="flex justify-between pt-2 text-base font-bold text-gray-800">
+              <div className="flex justify-between pt-2.5 text-base font-bold text-gray-800">
                 <span>Membership Fee</span>
-                <span className="text-[#ff7300]">₹100</span>
+                <span className="text-[#ff7300] text-lg">₹100</span>
               </div>
             </div>
 
             <button 
-              className="w-full bg-[#ff7300] hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md flex items-center justify-center gap-2 disabled:opacity-50 text-base" 
+              className="w-full bg-[#ff7300] hover:bg-indigo-600 text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md hover:shadow-indigo-200 hover:-translate-y-0.5 transform active:translate-y-0 flex items-center justify-center gap-2 disabled:opacity-50 text-base" 
               disabled={loading} 
               onClick={handlePayWithRazorpay}
             >
@@ -259,10 +290,17 @@ const MembershipForm = () => {
             </button>
           </div>
         )}
+
         {step === 'done' && (
-          <div className="flex flex-col items-center gap-6">
-            <div className="text-2xl text-green-700 font-bold text-center">✅ Payment Successful!</div>
-            <div className="text-center text-lg">Thank you for becoming a Pathsarthi Member.<br />Your Payment ID: <span className="font-mono text-blue-700">{paymentId}</span></div>
+          <div className="flex flex-col items-center gap-6 py-6 text-center">
+            <div className="text-3xl text-green-600 font-black animate-bounce-slow">✅ Payment Successful!</div>
+            <div className="text-slate-600 font-medium">
+              Thank you for becoming a Pathsarthi Member.<br />
+              Your Membership Payment ID:
+              <div className="font-mono text-indigo-600 font-bold bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2 mt-3 select-all text-lg shadow-sm">
+                {paymentId}
+              </div>
+            </div>
           </div>
         )}
       </div>
