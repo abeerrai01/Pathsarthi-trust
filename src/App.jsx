@@ -34,7 +34,6 @@ import { logVisit } from './utils/logVisit';
 import MediaFeed from './components/MediaFeed';
 import PhotoPage from './components/PhotoPage';
 import MembershipForm from './components/MembershipForm';
-import AdSenseScript from './components/AdSenseScript';
 import SplashScreen from './components/SplashScreen';
 import Chatbot from './components/Chatbot';
 import ScrollToTop from './components/ScrollToTop';
@@ -194,7 +193,6 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
-      <AdSenseScript />
       <AnimatePresence mode="wait">
         {loading && (
           <SplashScreen key="splash" finishLoading={() => setLoading(false)} />

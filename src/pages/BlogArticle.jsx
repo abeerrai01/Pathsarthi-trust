@@ -199,17 +199,6 @@ export default function BlogPost() {
         <div className="font-bold text-xl md:text-2xl text-center mb-4 text-orange-600 drop-shadow-sm">{firstLine}</div>
         <div className="space-y-6">
           {paragraphs.map((para, idx) => {
-            // Insert AdSense after the second paragraph
-            const adCode = (
-              <div key="adsense-ad" className="flex justify-center my-6">
-                <ins className="adsbygoogle"
-                  style={{ display: 'block', textAlign: 'center' }}
-                  data-ad-layout="in-article"
-                  data-ad-format="fluid"
-                  data-ad-client="ca-pub-7309815339615980"
-                  data-ad-slot="9098694967"></ins>
-              </div>
-            );
             let node = null;
             if (para.includes('Dali, the rescue dog')) {
               node = (
@@ -229,10 +218,6 @@ export default function BlogPost() {
                   {para}
                 </p>
               );
-            }
-            // Render ad after the second paragraph
-            if (idx === 1) {
-              return [node, adCode];
             }
             return node;
           })}
@@ -269,14 +254,7 @@ export default function BlogPost() {
     );
   }
 
-  // AdSense script loader
-  React.useEffect(() => {
-    if (window.adsbygoogle && document.querySelector('.adsbygoogle')) {
-      try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (e) {}
-    }
-  }, []);
+
 
   return (
     <article className="max-w-2xl mx-auto py-16 px-4" itemScope itemType="https://schema.org/BlogPosting">
