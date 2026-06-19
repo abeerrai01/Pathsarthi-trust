@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { auth, db } from '../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -33,6 +33,62 @@ const MembershipForm = () => {
 
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+
+  // Load Razorpay script on mount
+  useEffect(() => {
+    if (!window.Razorpay) {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  const handlePayWithRazorpay = () => {
+    if (!window.Razorpay) {
+      showToast("Razorpay payment gateway is loading. Please wait a moment.", "error");
+      return;
+    }
+
+    const options = {
+      key: "rzp_live_lrTbKMU5YpM6UD", // live Razorpay key
+      amount: 100 * 100, // ₹100 in paise
+      currency: "INR",
+      name: "Path Sarthi Trust",
+      description: "Membership Registration",
+      image: "https://www.pathsarthi.in/logo.png",
+      handler: async function (response) {
+        setLoading(true);
+        try {
+          const generatedId = response.razorpay_payment_id;
+          await addDoc(collection(db, "memberships"), {
+            ...form,
+            paymentId: generatedId,
+            createdAt: new Date(),
+            status: 'completed'
+          });
+          setPaymentId(generatedId);
+          setStep('done');
+        } catch (error) {
+          console.error(error);
+          showToast('Failed to save registration. Please contact support.', 'error');
+        } finally {
+          setLoading(false);
+        }
+      },
+      prefill: {
+        name: `${form.firstName} ${form.lastName}`,
+        email: form.email,
+        contact: form.phone,
+      },
+      theme: {
+        color: "#ff7300",
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
 
   // Photo change handler
   const handlePhotoChange = e => {
@@ -168,42 +224,39 @@ const MembershipForm = () => {
         )}
         {step === 'payment' && (
           <div className="flex flex-col items-center gap-6">
-            <div className="text-center text-lg font-semibold text-green-700">Please pay the membership fee to complete your application.</div>
-            {/* Optionally, add GooglePayManualFlow or payment instructions here */}
-            <p className="text-center text-sm text-gray-700">
-              Payment Instructions:
-              <br />
-              - You can pay via Google Pay or UPI.
-              <br />
-              - For Google Pay, scan the QR code or enter the UPI ID.
-              <br />
-              - For UPI, you can use any UPI app (like BHIM, PhonePe, Google Pay, etc.) and enter the UPI ID: <span className="font-mono text-blue-700">your_upi_id@bank</span>
-              <br />
-              - The amount to pay is ₹500.
-              <br />
-              - Please ensure you enter the correct UPI ID and amount.
-              <br />
-              - Once payment is successful, please click the "Complete Payment" button below.
-            </p>
-            <button className="w-full bg-[#ff7300] text-white font-semibold py-2 rounded-lg hover:bg-orange-600 transition disabled:opacity-50" disabled={loading} onClick={async () => {
-              setLoading(true);
-              try {
-                const generatedId = 'MEMB-' + Math.floor(Math.random() * 1000000);
-                await addDoc(collection(db, "memberships"), {
-                  ...form,
-                  paymentId: generatedId,
-                  createdAt: new Date(),
-                  status: 'pending'
-                });
-                setPaymentId(generatedId);
-                setStep('done');
-              } catch (error) {
-                console.error(error);
-                showToast('Failed to process. Please try again.', 'error');
-              } finally {
-                setLoading(false);
-              }
-            }}>{loading ? 'Reconciling...' : 'Complete Payment'}</button>
+            <div className="text-center text-lg font-semibold text-green-700">Please complete the payment to activate your membership.</div>
+            
+            <div className="w-full bg-slate-50 border border-slate-100 rounded-xl p-4 space-y-2">
+              <div className="flex justify-between border-b pb-2 text-sm text-gray-600">
+                <span>Applicant Name</span>
+                <span className="font-semibold text-gray-900">{form.firstName} {form.lastName}</span>
+              </div>
+              <div className="flex justify-between border-b pb-2 text-sm text-gray-600">
+                <span>Email Address</span>
+                <span className="font-semibold text-gray-900">{form.email}</span>
+              </div>
+              <div className="flex justify-between border-b pb-2 text-sm text-gray-600">
+                <span>Phone Number</span>
+                <span className="font-semibold text-gray-900">{form.phone}</span>
+              </div>
+              <div className="flex justify-between pt-2 text-base font-bold text-gray-800">
+                <span>Membership Fee</span>
+                <span className="text-[#ff7300]">₹100</span>
+              </div>
+            </div>
+
+            <button 
+              className="w-full bg-[#ff7300] hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md flex items-center justify-center gap-2 disabled:opacity-50 text-base" 
+              disabled={loading} 
+              onClick={handlePayWithRazorpay}
+            >
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Processing...
+                </>
+              ) : 'Pay ₹100 & Complete Registration'}
+            </button>
           </div>
         )}
         {step === 'done' && (
