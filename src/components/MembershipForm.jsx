@@ -51,7 +51,7 @@ const MembershipForm = () => {
     }
 
     const options = {
-      key: "rzp_live_lrTbKMU5YpM6UD", // live Razorpay key
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_lrTbKMU5YpM6UD",
       amount: 100 * 100, // ₹100 in paise
       currency: "INR",
       name: "Path Sarthi Trust",

@@ -20,7 +20,7 @@ const RazorpayButton = ({ amount, name = "Anonymous", onSuccess }) => {
     }
 
     const options = {
-      key: "rzp_live_lrTbKMU5YpM6UD", // Updated to your live Razorpay key
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_lrTbKMU5YpM6UD",
       amount: amount * 100,
       currency: "INR",
       name: "Path Sarthi Trust",
