@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import RazorpayButton from '../components/RazorpayButton';
-import PaymentModal from '../components/PaymentModal';
-import PaymentButtons from '../components/PaymentButtons';
-import GooglePayManualFlow from '../components/GooglePayManualFlow';
 
 const SponsorNotebooks = () => {
   const [quantity, setQuantity] = useState(1);
   const [name, setName] = useState('');
   const [thankYou, setThankYou] = useState(false);
-  const [showQRModal, setShowQRModal] = useState(false);
   const pricePerNotebook = 25;
 
   const handleQuantityChange = (e) => {
@@ -110,32 +106,9 @@ const SponsorNotebooks = () => {
                   <p className="text-gray-600 mb-2">Price per notebook: ₹{pricePerNotebook}</p>
                   <p className="text-2xl font-bold text-indigo-600">Total: ₹{quantity * pricePerNotebook}</p>
                 </div>
-                <div className="space-y-4">
+                <div className="mt-6">
                   <RazorpayButton amount={quantity * pricePerNotebook} name={name || 'Anonymous'} onSuccess={handleSuccess} />
-                  <GooglePayManualFlow amount={quantity * pricePerNotebook} />
-                  <button
-                    type="button"
-                    className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                    onClick={() => setShowQRModal(true)}
-                  >
-                    Pay with QR code / Mobile Number (Faster, No Extra Charges)
-                  </button>
                 </div>
-                <PaymentModal open={showQRModal} onClose={() => setShowQRModal(false)}>
-                  <div className="flex flex-col items-center">
-                    <img src="/Qr-code-3.jpg" alt="QR Code" className="h-48 w-48 object-contain rounded mb-4" />
-                    <div className="mb-2 text-center">
-                      <div className="font-semibold">UPI ID: <span className="font-mono">8958421200m@pnb</span></div>
-                      <div className="font-semibold">Mobile: <span className="font-mono">8958421200</span></div>
-                    </div>
-                    <ol className="text-left text-gray-700 mb-2 list-decimal pl-5">
-                      <li>Scan the QR code above or download and scan using any payment app.</li>
-                      <li>Or, copy the mobile number and pay via your UPI/payment app.</li>
-                      <li>Complete the payment.</li>
-                    </ol>
-                    <div className="text-xs text-gray-500 mt-2">No extra charges. Fastest way to pay!</div>
-                  </div>
-                </PaymentModal>
               </>
             ) : (
               <div className="bg-green-50 p-6 rounded shadow text-center">
