@@ -5,7 +5,6 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { 
   Building2, 
   CheckCircle2, 
-  BriefcaseHandshake,
   TrendingUp,
   FileCheck2,
   ShieldCheck,
