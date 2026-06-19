@@ -69,10 +69,10 @@ const Navbar = () => {
         { to: '/about', label: 'About Us' },
         { to: '/social-media', label: 'Social Media' },
         { to: '/join-us', label: 'Join Us' },
-        { to: '/feedback', label: 'Feedback' },
-        { to: '/membership', label: 'Membership' },
+        { to: '/feedback', label: 'Feedback' }
       ]
     },
+    { to: '/membership', label: 'Membership' },
     { to: '/education-support', label: 'Education Support Program' },
     { to: '/internship', label: 'Internship' },
     { to: '/blog', label: 'Blog' },

@@ -209,6 +209,23 @@ const Home = () => {
               <div className="text-gray-600">Interns</div>
             </div>
           </div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="mt-16 text-center max-w-2xl mx-auto bg-gradient-to-r from-orange-50 to-indigo-50 p-8 rounded-3xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+          >
+            <h3 className="text-2xl font-bold text-slate-800 mb-3">Join Our Journey of Change</h3>
+            <p className="text-slate-600 mb-6 font-medium">Become an official member of Path Sarthi Trust and help support our educational, healthcare, and welfare initiatives.</p>
+            <Link
+              to="/membership"
+              className="inline-flex items-center gap-2 bg-[#ff7300] hover:bg-indigo-600 text-white font-bold px-8 py-4 rounded-xl transition duration-300 shadow-md hover:shadow-indigo-200 hover:-translate-y-0.5 transform active:translate-y-0 text-lg"
+            >
+              🤝 Become a Member
+            </Link>
+          </motion.div>
         </div>
       </section>
 
