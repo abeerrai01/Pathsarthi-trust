@@ -277,7 +277,7 @@ const MembershipForm = () => {
             </div>
 
             {/* Compact man and cow image */}
-            <img src="/man and cow.png" alt="Pathsarthi Support" className="w-full max-h-28 object-cover rounded-2xl border border-slate-100 shadow-sm" />
+            <img src="/man and cow.png" alt="Pathsarthi Support" className="w-full h-auto rounded-2xl border border-slate-100 shadow-sm" />
 
             <button 
               className="w-full bg-[#ff7300] hover:bg-indigo-600 text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md hover:shadow-indigo-200 hover:-translate-y-0.5 transform active:translate-y-0 flex items-center justify-center gap-2 disabled:opacity-50 text-base" 
