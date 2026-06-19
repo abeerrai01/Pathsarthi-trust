@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { auth, db } from '../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { uploadToCloudinary } from '../utils/cloudinary';
+import { UploadCloud, User } from 'lucide-react';
 // Remove import RazorpayButton from './RazorpayButton';
 
 const RAZORPAY_KEY = process.env.REACT_APP_RAZORPAY_KEY_ID;
@@ -17,6 +19,8 @@ const initialForm = {
   email: '',
   phone: '',
   aadhaar: '',
+  profilePhotoUrl: '',
+  image: '',
 };
 
 const MembershipForm = () => {
@@ -26,6 +30,18 @@ const MembershipForm = () => {
   // No OTP, no recaptcha
   const [toast, setToast] = useState(null);
   const [paymentId, setPaymentId] = useState('');
+
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+
+  // Photo change handler
+  const handlePhotoChange = e => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setPhotoFile(file);
+      setPhotoPreview(URL.createObjectURL(file));
+    }
+  };
 
   // Toast helper
   const showToast = (msg, type = 'info') => {
@@ -64,11 +80,26 @@ const MembershipForm = () => {
     return true;
   };
 
-  // On form submit, go to payment step
-  const handleFormSubmit = e => {
+  // On form submit, upload photo to Cloudinary if selected, then go to payment step
+  const handleFormSubmit = async e => {
     e.preventDefault();
     if (!validateForm()) return;
-    setStep('payment');
+
+    setLoading(true);
+    try {
+      let uploadedUrl = '';
+      if (photoFile) {
+        const result = await uploadToCloudinary(photoFile);
+        uploadedUrl = result.imageUrl;
+      }
+      setForm(f => ({ ...f, profilePhotoUrl: uploadedUrl, image: uploadedUrl }));
+      setStep('payment');
+    } catch (error) {
+      console.error(error);
+      showToast('Failed to upload profile photo. Please try again.', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -101,7 +132,38 @@ const MembershipForm = () => {
             <input name="email" value={form.email} onChange={handleChange} required placeholder="Email ID*" type="email" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
             <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
             <input name="aadhaar" value={form.aadhaar} onChange={handleChange} required placeholder="Aadhaar Card Number*" className="input input-bordered w-full px-4 py-2 rounded border border-gray-300 focus:border-orange-400" />
-            <button type="submit" className="w-full bg-[#ff7300] text-white font-semibold py-2 rounded-lg hover:bg-orange-600 transition" disabled={loading}>{loading ? 'Processing...' : 'Proceed to Payment'}</button>
+
+            {/* Profile Photo Upload Field */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
+                <User className="w-4 h-4 text-[#ff7300]" />
+                Profile Photo (Optional)
+              </label>
+              <div className="relative border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:border-orange-400 transition-colors bg-gray-50 flex flex-col items-center justify-center cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <UploadCloud className="w-6 h-6 text-gray-400 mb-1" />
+                {photoPreview ? (
+                  <div className="flex items-center gap-2 mt-1">
+                    <img src={photoPreview} alt="Preview" className="w-10 h-10 rounded-full object-cover border-2 border-orange-400 shadow-sm" />
+                    <span className="text-xs text-gray-600 font-medium truncate max-w-[200px]">{photoFile?.name}</span>
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-xs text-gray-500 font-semibold">Click to upload your profile photo</span>
+                    <span className="text-[10px] text-gray-400">PNG, JPG, WEBP</span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <button type="submit" className="w-full bg-[#ff7300] text-white font-semibold py-2 rounded-lg hover:bg-orange-600 transition disabled:opacity-50" disabled={loading}>
+              {loading ? (photoFile ? 'Uploading photo...' : 'Processing...') : 'Proceed to Payment'}
+            </button>
           </form>
         )}
         {step === 'payment' && (
