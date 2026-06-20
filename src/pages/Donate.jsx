@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import RazorpayButton from '../components/RazorpayButton';
+import UPIPaymentModal from '../components/UPIPaymentModal';
 
 const Donate = () => {
   const [selectedAmount, setSelectedAmount] = useState('500');
   const [customAmount, setCustomAmount] = useState('');
   const [name, setName] = useState('');
   const [thankYou, setThankYou] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [isQrDonation, setIsQrDonation] = useState(false);
 
   const donationAmounts = [
     { value: '500', label: '₹500' },
@@ -60,6 +63,11 @@ const Donate = () => {
   };
 
   const handleSuccess = () => {
+    setThankYou(true);
+  };
+
+  const handleQRSuccess = async () => {
+    setIsQrDonation(true);
     setThankYou(true);
   };
 
@@ -135,16 +143,39 @@ const Donate = () => {
                       />
                     </div>
                   </div>
-                  <div className="mt-6">
+                  <div className="mt-6 space-y-4">
                     <RazorpayButton amount={getAmount()} name={name || 'Anonymous'} onSuccess={handleSuccess} />
+                    
+                    <div className="relative flex py-2 items-center">
+                      <div className="flex-grow border-t border-gray-200"></div>
+                      <span className="flex-shrink mx-4 text-gray-400 text-sm font-semibold">OR</span>
+                      <div className="flex-grow border-t border-gray-200"></div>
+                    </div>
+                    
+                    <button
+                      type="button"
+                      onClick={() => setShowQRModal(true)}
+                      className="w-full bg-indigo-600 text-white px-6 py-3.5 rounded-lg font-semibold shadow-lg hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                      </svg>
+                      Pay via UPI QR Code
+                    </button>
                   </div>
                 </>
               ) : (
                 <div className="bg-green-50 p-6 rounded shadow text-center">
                   <h2 className="text-xl font-semibold text-green-800 mb-4">Thank You, {name || 'Donor'}! 🙏</h2>
-                  <p className="text-gray-700 mb-2">
-                    Your generous donation has been successfully received. We are deeply grateful for your support towards Path Sarthi Trust and our mission to bring positive change in society.
-                  </p>
+                  {isQrDonation ? (
+                    <p className="text-orange-700 bg-orange-50 border border-orange-100 rounded-lg p-3 text-sm font-semibold mb-4 text-left">
+                      ⚠️ Please ensure you have sent your payment screenshot to <span className="font-black text-[#ff7300]">8958421200</span> so our administrators can verify and process it shortly.
+                    </p>
+                  ) : (
+                    <p className="text-gray-700 mb-2">
+                      Your generous donation has been successfully received. We are deeply grateful for your support towards Path Sarthi Trust and our mission to bring positive change in society.
+                    </p>
+                  )}
                   <p className="text-gray-700 mb-4">
                     With your contribution, we can reach more children, uplift more families, and create a better future.
                   </p>
@@ -212,6 +243,13 @@ const Donate = () => {
           </motion.div>
         </div>
       </div>
+      <UPIPaymentModal
+        isOpen={showQRModal}
+        onClose={() => setShowQRModal(false)}
+        amount={getAmount()}
+        name={name || 'Anonymous'}
+        onSuccess={handleQRSuccess}
+      />
     </div>
   );
 };

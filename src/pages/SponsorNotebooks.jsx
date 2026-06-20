@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import RazorpayButton from '../components/RazorpayButton';
+import UPIPaymentModal from '../components/UPIPaymentModal';
 
 const SponsorNotebooks = () => {
   const [quantity, setQuantity] = useState(1);
   const [name, setName] = useState('');
   const [thankYou, setThankYou] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [isQrSponsorship, setIsQrSponsorship] = useState(false);
   const pricePerNotebook = 25;
 
   const handleQuantityChange = (e) => {
@@ -26,6 +29,11 @@ const SponsorNotebooks = () => {
   };
 
   const handleSuccess = () => {
+    setThankYou(true);
+  };
+
+  const handleQRSuccess = async () => {
+    setIsQrSponsorship(true);
     setThankYou(true);
   };
 
@@ -106,16 +114,39 @@ const SponsorNotebooks = () => {
                   <p className="text-gray-600 mb-2">Price per notebook: ₹{pricePerNotebook}</p>
                   <p className="text-2xl font-bold text-indigo-600">Total: ₹{quantity * pricePerNotebook}</p>
                 </div>
-                <div className="mt-6">
+                <div className="mt-6 space-y-4">
                   <RazorpayButton amount={quantity * pricePerNotebook} name={name || 'Anonymous'} onSuccess={handleSuccess} />
+                  
+                  <div className="relative flex py-2 items-center">
+                    <div className="flex-grow border-t border-gray-200"></div>
+                    <span className="flex-shrink mx-4 text-gray-400 text-sm font-semibold">OR</span>
+                    <div className="flex-grow border-t border-gray-200"></div>
+                  </div>
+                  
+                  <button
+                    type="button"
+                    onClick={() => setShowQRModal(true)}
+                    className="w-full bg-indigo-600 text-white px-6 py-3.5 rounded-lg font-semibold shadow-lg hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                    </svg>
+                    Pay via UPI QR Code
+                  </button>
                 </div>
               </>
             ) : (
               <div className="bg-green-50 p-6 rounded shadow text-center">
                 <h2 className="text-xl font-semibold text-green-800 mb-4">Thank You, {name || 'Donor'}! 🙏</h2>
-                <p className="text-gray-700 mb-2">
-                  Your sponsorship has been received. Thank you for helping children get the tools they need to learn and grow!
-                </p>
+                {isQrSponsorship ? (
+                  <p className="text-orange-700 bg-orange-50 border border-orange-100 rounded-lg p-3 text-sm font-semibold mb-4 text-left">
+                    ⚠️ Please ensure you have sent your payment screenshot to <span className="font-black text-[#ff7300]">8958421200</span> so our administrators can verify and process it shortly.
+                  </p>
+                ) : (
+                  <p className="text-gray-700 mb-2">
+                    Your sponsorship has been received. Thank you for helping children get the tools they need to learn and grow!
+                  </p>
+                )}
                 <p className="text-gray-700 mb-4">
                   Every notebook you sponsor brings a child closer to their dreams.
                 </p>
@@ -156,6 +187,13 @@ const SponsorNotebooks = () => {
           </div>
         </motion.div>
       </div>
+      <UPIPaymentModal
+        isOpen={showQRModal}
+        onClose={() => setShowQRModal(false)}
+        amount={quantity * pricePerNotebook}
+        name={name || 'Anonymous'}
+        onSuccess={handleQRSuccess}
+      />
     </div>
   );
 };

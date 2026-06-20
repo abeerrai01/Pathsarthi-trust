@@ -68,7 +68,7 @@ const AdminMemberships = () => {
         : member.status !== 'completed';
 
     // Search Filter
-    const fullName = `${member.firstName || ''} ${member.middleName || ''} ${member.lastName || ''}`.toLowerCase();
+    const fullName = (member.fullName || `${member.firstName || ''} ${member.middleName || ''} ${member.lastName || ''}`).toLowerCase();
     const matchesSearch = 
       fullName.includes(searchTerm.toLowerCase()) ||
       (member.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -178,8 +178,10 @@ const AdminMemberships = () => {
             </motion.div>
           ) : (
             filteredMemberships.map(member => {
-              const fullName = `${member.firstName || ''} ${member.middleName ? member.middleName + ' ' : ''}${member.lastName || ''}`;
-              const initials = `${(member.firstName || 'U')[0]}${(member.lastName || '')[0] || ''}`.toUpperCase();
+              const fullName = member.fullName || `${member.firstName || ''} ${member.middleName ? member.middleName + ' ' : ''}${member.lastName || ''}`;
+              const initials = member.fullName 
+                ? member.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+                : `${(member.firstName || 'U')[0]}${(member.lastName || '')[0] || ''}`.toUpperCase();
               const isPaid = member.status === 'completed';
 
               return (

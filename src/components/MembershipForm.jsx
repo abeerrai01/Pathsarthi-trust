@@ -3,7 +3,7 @@ import { auth, db } from '../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { collection, addDoc, doc, updateDoc, query, where, getDocs } from 'firebase/firestore';
 import { uploadToCloudinary } from '../utils/cloudinary';
-import { UploadCloud, User } from 'lucide-react';
+import { UploadCloud, User, QrCode, Copy, Check } from 'lucide-react';
 // Remove import RazorpayButton from './RazorpayButton';
 
 const RAZORPAY_KEY = process.env.REACT_APP_RAZORPAY_KEY_ID;
@@ -19,9 +19,7 @@ const indianStates = [
 ];
 
 const initialForm = {
-  firstName: '',
-  middleName: '',
-  lastName: '',
+  fullName: '',
   dob: '',
   age: '',
   gender: '',
@@ -73,6 +71,49 @@ const MembershipForm = () => {
   const [cities, setCities] = useState([]);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+
+  const [paymentMethod, setPaymentMethod] = useState('razorpay'); // razorpay | upi_qr
+  const [isQRPayment, setIsQRPayment] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handlePayManualUPI = async (e) => {
+    if (e) e.preventDefault();
+    setLoading(true);
+    try {
+      const manualUpiId = "QR_CODE_MANUAL";
+      if (createdDocId) {
+        await updateDoc(doc(db, "memberships", createdDocId), {
+          paymentId: manualUpiId,
+          status: 'pending' // remains pending for manual verification
+        });
+      } else {
+        await addDoc(collection(db, "memberships"), {
+          ...form,
+          paymentId: manualUpiId,
+          createdAt: new Date(),
+          status: 'pending'
+        });
+      }
+      setPaymentId(manualUpiId);
+      setIsQRPayment(true);
+      setStep('done');
+    } catch (error) {
+      console.error(error);
+      showToast('Failed to save payment details. Please try again.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCopyUPI = async () => {
+    try {
+      await navigator.clipboard.writeText("8958421200m@pnb");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy UPI ID', err);
+    }
+  };
 
   // Load Razorpay script on mount
   useEffect(() => {
@@ -156,7 +197,7 @@ const MembershipForm = () => {
         }
       },
       prefill: {
-        name: `${form.firstName} ${form.lastName}`,
+        name: form.fullName,
         email: form.email,
         contact: form.phone,
       },
@@ -253,7 +294,7 @@ const MembershipForm = () => {
 
   // Validate form
   const validateForm = () => {
-    if (!form.firstName || !form.lastName || !form.dob || !form.gender || !form.city || !form.state || !form.email || !form.phone || !form.aadhaar || !form.pincode) {
+    if (!form.fullName || !form.dob || !form.gender || !form.city || !form.state || !form.email || !form.phone || !form.aadhaar || !form.pincode) {
       showToast('Please fill all required fields.', 'error');
       return false;
     }
@@ -399,11 +440,7 @@ const MembershipForm = () => {
               {/* Personal Details Group */}
               <div className="space-y-3">
                 <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Personal Details</label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                  <input name="firstName" value={form.firstName} onChange={handleChange} required placeholder="First Name*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
-                  <input name="middleName" value={form.middleName} onChange={handleChange} placeholder="Middle Name" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
-                  <input name="lastName" value={form.lastName} onChange={handleChange} required placeholder="Last Name*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
-                </div>
+                <input name="fullName" value={form.fullName} onChange={handleChange} required placeholder="Full Name*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div className="flex flex-col gap-1 w-full">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Date of Birth*</label>
@@ -567,7 +604,7 @@ const MembershipForm = () => {
             <div className="w-full bg-slate-50 border border-slate-100 rounded-xl p-5 space-y-3">
               <div className="flex justify-between border-b pb-2.5 text-sm text-gray-600">
                 <span>Applicant Name</span>
-                <span className="font-semibold text-gray-900">{form.firstName} {form.lastName}</span>
+                <span className="font-semibold text-gray-900">{form.fullName}</span>
               </div>
               <div className="flex justify-between border-b pb-2.5 text-sm text-gray-600">
                 <span>Email Address</span>
@@ -583,18 +620,90 @@ const MembershipForm = () => {
               </div>
             </div>
 
-            <button 
-              className="w-full bg-[#ff7300] hover:bg-indigo-600 text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md hover:shadow-indigo-200 hover:-translate-y-0.5 transform active:translate-y-0 flex items-center justify-center gap-2 disabled:opacity-50 text-base" 
-              disabled={loading} 
-              onClick={handlePayWithRazorpay}
-            >
-              {loading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Processing...
-                </>
-              ) : 'Pay ₹100 & Complete Registration'}
-            </button>
+            {/* Payment Method Selector */}
+            <div className="w-full grid grid-cols-2 gap-3 p-1.5 bg-slate-100 rounded-xl">
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('razorpay')}
+                className={`py-2 px-3 rounded-lg text-sm font-bold transition-all ${
+                  paymentMethod === 'razorpay'
+                    ? 'bg-white text-slate-800 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Razorpay (Instant)
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('upi_qr')}
+                className={`py-2 px-3 rounded-lg text-sm font-bold transition-all ${
+                  paymentMethod === 'upi_qr'
+                    ? 'bg-white text-slate-800 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                UPI QR Code (Manual)
+              </button>
+            </div>
+
+            {paymentMethod === 'razorpay' ? (
+              <button 
+                className="w-full bg-[#ff7300] hover:bg-indigo-600 text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md hover:shadow-indigo-200 hover:-translate-y-0.5 transform active:translate-y-0 flex items-center justify-center gap-2 disabled:opacity-50 text-base" 
+                disabled={loading} 
+                onClick={handlePayWithRazorpay}
+              >
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Processing...
+                  </>
+                ) : 'Pay ₹100 & Complete Registration'}
+              </button>
+            ) : (
+              <form onSubmit={handlePayManualUPI} className="w-full space-y-4">
+                <div className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                  <img
+                    src="/Qr-code-3.jpg"
+                    alt="UPI QR Code"
+                    className="w-44 h-44 object-contain rounded-xl shadow-sm border border-white"
+                  />
+                  <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">Pathsarthi Trust</p>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">UPI ID</label>
+                  <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-4 py-2">
+                    <span className="font-mono text-xs font-bold text-slate-700">8958421200m@pnb</span>
+                    <button
+                      type="button"
+                      onClick={handleCopyUPI}
+                      className="text-[#ff7300] p-1 rounded-lg hover:bg-orange-50 transition-colors"
+                    >
+                      {copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3.5 text-[11px] text-indigo-900 leading-relaxed font-semibold">
+                  Scan QR (or copy UPI ID) to pay ₹100.
+                  <br /><br />
+                  Please <span className="font-bold text-indigo-700">send the payment screenshot</span> to our trust number: <span className="font-bold text-[#ff7300]">8958421200</span>.
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-[#ff7300] hover:bg-indigo-600 text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md hover:shadow-indigo-200 hover:-translate-y-0.5 transform active:translate-y-0 flex items-center justify-center gap-2 text-base disabled:opacity-50"
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Processing...
+                    </>
+                  ) : 'I Have Paid & Sent Screenshot'}
+                </button>
+              </form>
+            )}
           </div>
         )}
 
@@ -603,29 +712,44 @@ const MembershipForm = () => {
 
           return (
             <div className="flex flex-col items-center gap-6 py-6 text-center">
-              <div className="text-3xl text-green-600 font-black animate-bounce-slow">✅ Payment Successful!</div>
+              {isQRPayment ? (
+                <div className="text-2xl text-orange-500 font-black animate-bounce-slow">📝 Registration Submitted!</div>
+              ) : (
+                <div className="text-3xl text-green-600 font-black animate-bounce-slow">✅ Payment Successful!</div>
+              )}
+              
               <div className="text-slate-600 font-medium w-full">
-                Thank you for becoming a Pathsarthi Member.<br />
-                Your Membership Payment ID:
-                <div className="font-mono text-indigo-600 font-bold bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2 mt-3 select-all text-lg shadow-sm mb-6">
-                  {paymentId}
-                </div>
-                
-                <div className="p-5 bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-100 rounded-2xl text-slate-700 text-sm shadow-sm max-w-sm mx-auto">
-                  <p className="font-black text-[#ff7300] mb-2 uppercase tracking-wider text-xs">📅 Membership Validity</p>
-                  <div className="flex flex-col gap-1.5 items-center justify-center my-3 bg-white/80 py-3 px-4 rounded-xl border border-orange-100/80">
-                    <div className="flex justify-between w-full text-xs text-slate-400 font-bold uppercase tracking-wider">
-                      <span>From</span>
-                      <span>To</span>
+                {isQRPayment ? (
+                  <>
+                    Thank you for applying to become a Pathsarthi Member.<br />
+                    <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-xl text-xs text-yellow-800 my-4 font-semibold max-w-sm mx-auto">
+                      ⚠️ Please ensure you have sent your payment screenshot to <span className="font-black text-[#ff7300]">8958421200</span>. Our administrators will verify the payment and activate your membership shortly.
                     </div>
-                    <div className="flex justify-between items-center w-full gap-2 text-sm font-bold text-slate-800">
-                      <span>{fromStr}</span>
-                      <span className="text-[#ff7300]">➔</span>
-                      <span>{toStr}</span>
+                  </>
+                ) : (
+                  <>
+                    Thank you for becoming a Pathsarthi Member.<br />
+                    Your Membership Payment ID:
+                    <div className="font-mono text-indigo-600 font-bold bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2 mt-3 select-all text-lg shadow-sm mb-6">
+                      {paymentId}
                     </div>
-                  </div>
-                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">Valid for exactly 1 year</p>
-                </div>
+                    <div className="p-5 bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-100 rounded-2xl text-slate-700 text-sm shadow-sm max-w-sm mx-auto">
+                      <p className="font-black text-[#ff7300] mb-2 uppercase tracking-wider text-xs">📅 Membership Validity</p>
+                      <div className="flex flex-col gap-1.5 items-center justify-center my-3 bg-white/80 py-3 px-4 rounded-xl border border-orange-100/80">
+                        <div className="flex justify-between w-full text-xs text-slate-400 font-bold uppercase tracking-wider">
+                          <span>From</span>
+                          <span>To</span>
+                        </div>
+                        <div className="flex justify-between items-center w-full gap-2 text-sm font-bold text-slate-800">
+                          <span>{fromStr}</span>
+                          <span className="text-[#ff7300]">➔</span>
+                          <span>{toStr}</span>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">Valid for exactly 1 year</p>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           );
