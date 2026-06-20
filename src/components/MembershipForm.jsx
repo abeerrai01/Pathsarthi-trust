@@ -8,19 +8,43 @@ import { UploadCloud, User } from 'lucide-react';
 
 const RAZORPAY_KEY = process.env.REACT_APP_RAZORPAY_KEY_ID;
 
+const indianStates = [
+  "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
+  "Chandigarh", "Chhattisgarh", "Dadra and Nagar Haveli", "Daman and Diu", "Delhi", 
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", 
+  "Karnataka", "Kerala", "Ladakh", "Lakshadweep", "Madhya Pradesh", "Maharashtra", 
+  "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Puducherry", "Punjab", 
+  "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", 
+  "Uttarakhand", "West Bengal"
+];
+
 const initialForm = {
   firstName: '',
   middleName: '',
   lastName: '',
+  dob: '',
   age: '',
   gender: '',
   city: '',
   state: '',
+  pincode: '',
   email: '',
   phone: '',
   aadhaar: '',
   profilePhotoUrl: '',
   image: '',
+};
+
+const calculateAge = (dobString) => {
+  if (!dobString) return '';
+  const today = new Date();
+  const birthDate = new Date(dobString);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age >= 0 ? age.toString() : '';
 };
 
 const MembershipForm = () => {
@@ -34,6 +58,7 @@ const MembershipForm = () => {
 
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [cities, setCities] = useState([]);
 
   // Load Razorpay script on mount
   useEffect(() => {
@@ -44,6 +69,25 @@ const MembershipForm = () => {
       document.body.appendChild(script);
     }
   }, []);
+
+  const fetchCitiesForState = async (stateName) => {
+    try {
+      const response = await fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ country: "India", state: stateName })
+      });
+      const data = await response.json();
+      if (!data.error && data.data) {
+        setCities(data.data);
+      } else {
+        setCities([]);
+      }
+    } catch (err) {
+      console.error("Failed to fetch cities", err);
+      setCities([]);
+    }
+  };
 
   const handlePayWithRazorpay = () => {
     if (!window.Razorpay) {
@@ -114,14 +158,74 @@ const MembershipForm = () => {
   };
 
   // Form change handler
-  const handleChange = e => {
+  const handleChange = async e => {
     const { name, value } = e.target;
-    setForm(f => ({ ...f, [name]: value }));
+    let newValue = value;
+
+    if (name === 'pincode') {
+      newValue = newValue.replace(/\D/g, '').slice(0, 6);
+    }
+
+    if (name === 'dob') {
+      const calculatedAge = calculateAge(newValue);
+      setForm(f => ({ ...f, dob: newValue, age: calculatedAge }));
+      return;
+    }
+
+    setForm(f => ({ ...f, [name]: newValue }));
+
+    if (name === 'pincode' && newValue.length === 6) {
+      try {
+        const response = await fetch(`https://api.postalpincode.in/pincode/${newValue}`);
+        const data = await response.json();
+        if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length > 0) {
+          const postOffice = data[0].PostOffice[0];
+          const fetchedState = postOffice.State.trim();
+          const fetchedCity = postOffice.District.trim();
+
+          setForm(prev => ({
+            ...prev,
+            state: fetchedState,
+            city: fetchedCity 
+          }));
+          fetchCitiesForState(fetchedState);
+        } else {
+          throw new Error('Invalid pincode');
+        }
+      } catch (error) {
+        // Fallback to Zippopotam API
+        try {
+          const altRes = await fetch(`https://api.zippopotam.us/IN/${newValue}`);
+          if (altRes.ok) {
+            const altData = await altRes.json();
+            if (altData && altData.places && altData.places.length > 0) {
+              const place = altData.places[0];
+              const fetchedState = place.state.trim();
+              const fetchedCity = place['place name'].trim();
+              setForm(prev => ({
+                ...prev,
+                state: fetchedState,
+                city: fetchedCity
+              }));
+              fetchCitiesForState(fetchedState);
+            }
+          }
+        } catch (e) {
+          console.error("Pincode API failed", e);
+        }
+      }
+      return;
+    }
+
+    if (name === 'state') {
+      fetchCitiesForState(newValue);
+      setForm(prev => ({ ...prev, city: '' }));
+    }
   };
 
   // Validate form
   const validateForm = () => {
-    if (!form.firstName || !form.lastName || !form.age || !form.gender || !form.city || !form.state || !form.email || !form.phone || !form.aadhaar) {
+    if (!form.firstName || !form.lastName || !form.dob || !form.gender || !form.city || !form.state || !form.email || !form.phone || !form.aadhaar || !form.pincode) {
       showToast('Please fill all required fields.', 'error');
       return false;
     }
@@ -138,7 +242,7 @@ const MembershipForm = () => {
       return false;
     }
     if (isNaN(Number(form.age)) || Number(form.age) < 1) {
-      showToast('Enter a valid age.', 'error');
+      showToast('Please select a valid Date of Birth.', 'error');
       return false;
     }
     return true;
@@ -208,14 +312,20 @@ const MembershipForm = () => {
                   <input name="middleName" value={form.middleName} onChange={handleChange} placeholder="Middle Name" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
                   <input name="lastName" value={form.lastName} onChange={handleChange} required placeholder="Last Name*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
                 </div>
-                <div className="grid grid-cols-2 gap-2.5">
-                  <input name="age" value={form.age} onChange={handleChange} required placeholder="Age*" type="number" min="1" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
-                  <select name="gender" value={form.gender} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white">
-                    <option value="">Gender*</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="flex flex-col gap-1 w-full">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Date of Birth*</label>
+                    <input name="dob" value={form.dob} onChange={handleChange} required type="date" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white" />
+                  </div>
+                  <div className="flex flex-col gap-1 w-full">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Gender*</label>
+                    <select name="gender" value={form.gender} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white h-[46px]">
+                      <option value="">Gender*</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -225,14 +335,60 @@ const MembershipForm = () => {
                 <input name="email" value={form.email} onChange={handleChange} required placeholder="Email ID*" type="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
                 <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
                 <input name="aadhaar" value={form.aadhaar} onChange={handleChange} required placeholder="Aadhaar Card Number*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                <input name="pincode" value={form.pincode} onChange={handleChange} required placeholder="Pincode*" maxLength="6" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
               </div>
 
               {/* Location Details Group */}
               <div className="space-y-3 pt-2">
                 <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Location Details</label>
-                <div className="grid grid-cols-2 gap-2.5">
-                  <input name="city" value={form.city} onChange={handleChange} required placeholder="City*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
-                  <input name="state" value={form.state} onChange={handleChange} required placeholder="State*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="flex flex-col gap-1 w-full">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">State*</label>
+                    <select 
+                      name="state" 
+                      value={form.state} 
+                      onChange={handleChange} 
+                      required 
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white h-[46px]"
+                    >
+                      <option value="">Select State</option>
+                      {indianStates.map((s, i) => (
+                        <option key={i} value={s}>{s}</option>
+                      ))}
+                      {form.state && !indianStates.includes(form.state) && (
+                        <option value={form.state}>{form.state}</option>
+                      )}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1 w-full">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">City/District*</label>
+                    {cities.length > 0 ? (
+                      <select 
+                        name="city" 
+                        value={form.city} 
+                        onChange={handleChange} 
+                        required 
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white h-[46px]"
+                      >
+                        <option value="">Select City</option>
+                        {cities.map((c, i) => (
+                          <option key={i} value={c}>{c}</option>
+                        ))}
+                        {form.city && !cities.includes(form.city) && (
+                          <option value={form.city}>{form.city}</option>
+                        )}
+                      </select>
+                    ) : (
+                      <input 
+                        name="city" 
+                        value={form.city} 
+                        onChange={handleChange} 
+                        required 
+                        placeholder="City*" 
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm h-[46px]" 
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
 
