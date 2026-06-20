@@ -154,6 +154,7 @@ const MembershipForm = () => {
   // Toast helper
   const showToast = (msg, type = 'info') => {
     setToast({ msg, type });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     setTimeout(() => setToast(null), 3500);
   };
 
