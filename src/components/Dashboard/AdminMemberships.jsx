@@ -31,11 +31,17 @@ const AdminMemberships = () => {
     return () => unsub();
   }, []);
 
-  const handleUpdateStatus = async (id, newStatus) => {
+  const handleUpdateStatus = async (id, newStatus, currentMember) => {
     try {
-      await updateDoc(doc(db, 'memberships', id), {
-        status: newStatus
-      });
+      const updateData = { status: newStatus };
+      if (newStatus === 'completed' && !currentMember.validFrom) {
+        const validFrom = new Date();
+        const validTo = new Date();
+        validTo.setFullYear(validFrom.getFullYear() + 1);
+        updateData.validFrom = validFrom;
+        updateData.validTo = validTo;
+      }
+      await updateDoc(doc(db, 'memberships', id), updateData);
     } catch (err) {
       console.error(err);
       alert('Failed to update status.');
@@ -94,6 +100,21 @@ const AdminMemberships = () => {
       return dateValue.toDate().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
     }
     return new Date(dateValue).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  const getValidityString = (member) => {
+    let fromVal = member.validFrom || member.createdAt;
+    if (!fromVal) return 'N/A';
+    
+    let toVal = member.validTo;
+    if (!toVal) {
+      const fromDate = fromVal.toDate ? fromVal.toDate() : new Date(fromVal);
+      const toDate = new Date(fromDate);
+      toDate.setFullYear(fromDate.getFullYear() + 1);
+      toVal = toDate;
+    }
+    
+    return `${formatDate(fromVal)} - ${formatDate(toVal)}`;
   };
 
   return (
@@ -206,6 +227,12 @@ const AdminMemberships = () => {
                           <span>Payment ID:</span>
                           <span className="font-mono bg-white px-1.5 py-0.5 rounded border border-slate-200 text-slate-700 select-all truncate max-w-[150px]">{member.paymentId || 'N/A'}</span>
                         </div>
+                        {isPaid && (
+                          <div className="flex justify-between">
+                            <span>Validity:</span>
+                            <span className="font-semibold text-slate-700">{getValidityString(member)}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -218,7 +245,7 @@ const AdminMemberships = () => {
                       <div className="flex gap-2">
                         {isPaid ? (
                           <button 
-                            onClick={() => handleUpdateStatus(member.id, 'pending')} 
+                            onClick={() => handleUpdateStatus(member.id, 'pending', member)} 
                             className="px-3 py-1.5 rounded-xl text-xs font-bold text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition-colors border border-yellow-100"
                             title="Mark as Pending"
                           >
@@ -226,7 +253,7 @@ const AdminMemberships = () => {
                           </button>
                         ) : (
                           <button 
-                            onClick={() => handleUpdateStatus(member.id, 'completed')} 
+                            onClick={() => handleUpdateStatus(member.id, 'completed', member)} 
                             className="px-3 py-1.5 rounded-xl text-xs font-bold text-green-700 bg-green-50 hover:bg-green-100 transition-colors border border-green-100"
                             title="Mark as Completed"
                           >

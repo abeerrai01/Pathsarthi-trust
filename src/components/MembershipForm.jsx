@@ -47,6 +47,18 @@ const calculateAge = (dobString) => {
   return age >= 0 ? age.toString() : '';
 };
 
+const calculateValidityDates = () => {
+  const today = new Date();
+  const nextYear = new Date();
+  nextYear.setFullYear(today.getFullYear() + 1);
+  
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  const fromStr = today.toLocaleDateString('en-IN', options);
+  const toStr = nextYear.toLocaleDateString('en-IN', options);
+  
+  return { from: fromStr, to: toStr };
+};
+
 const MembershipForm = () => {
   const [form, setForm] = useState(initialForm);
   const [step, setStep] = useState('form'); // form | payment | done
@@ -71,6 +83,11 @@ const MembershipForm = () => {
       document.body.appendChild(script);
     }
   }, []);
+
+  // Scroll to top on step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
 
   const fetchCitiesForState = async (stateName) => {
     try {
@@ -108,17 +125,25 @@ const MembershipForm = () => {
         setLoading(true);
         try {
           const generatedId = response.razorpay_payment_id;
+          const validFrom = new Date();
+          const validTo = new Date();
+          validTo.setFullYear(validFrom.getFullYear() + 1);
+
           if (createdDocId) {
             await updateDoc(doc(db, "memberships", createdDocId), {
               paymentId: generatedId,
-              status: 'completed'
+              status: 'completed',
+              validFrom: validFrom,
+              validTo: validTo
             });
           } else {
             await addDoc(collection(db, "memberships"), {
               ...form,
               paymentId: generatedId,
               createdAt: new Date(),
-              status: 'completed'
+              status: 'completed',
+              validFrom: validFrom,
+              validTo: validTo
             });
           }
           setPaymentId(generatedId);
@@ -459,6 +484,19 @@ const MembershipForm = () => {
                 </div>
               </div>
 
+              {/* Membership Validity Display */}
+              {(() => {
+                const { from, to } = calculateValidityDates();
+                return (
+                  <div className="p-4 bg-orange-50/50 border border-orange-100 rounded-xl text-slate-700 text-xs shadow-sm flex flex-col gap-1">
+                    <span className="font-black text-[#ff7300] uppercase tracking-wider text-[10px]">📅 Membership Validity Period</span>
+                    <p className="font-semibold text-slate-600">
+                      Your membership will be active from <span className="font-extrabold text-slate-800">{from}</span> to <span className="font-extrabold text-slate-800">{to}</span> (Valid for 1 year).
+                    </p>
+                  </div>
+                );
+              })()}
+
               {/* Profile Photo Upload Field */}
               <div className="flex flex-col gap-1.5 pt-2">
                 <label className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
@@ -560,18 +598,38 @@ const MembershipForm = () => {
           </div>
         )}
 
-        {step === 'done' && (
-          <div className="flex flex-col items-center gap-6 py-6 text-center">
-            <div className="text-3xl text-green-600 font-black animate-bounce-slow">✅ Payment Successful!</div>
-            <div className="text-slate-600 font-medium">
-              Thank you for becoming a Pathsarthi Member.<br />
-              Your Membership Payment ID:
-              <div className="font-mono text-indigo-600 font-bold bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2 mt-3 select-all text-lg shadow-sm">
-                {paymentId}
+        {step === 'done' && (() => {
+          const { from: fromStr, to: toStr } = calculateValidityDates();
+
+          return (
+            <div className="flex flex-col items-center gap-6 py-6 text-center">
+              <div className="text-3xl text-green-600 font-black animate-bounce-slow">✅ Payment Successful!</div>
+              <div className="text-slate-600 font-medium w-full">
+                Thank you for becoming a Pathsarthi Member.<br />
+                Your Membership Payment ID:
+                <div className="font-mono text-indigo-600 font-bold bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2 mt-3 select-all text-lg shadow-sm mb-6">
+                  {paymentId}
+                </div>
+                
+                <div className="p-5 bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-100 rounded-2xl text-slate-700 text-sm shadow-sm max-w-sm mx-auto">
+                  <p className="font-black text-[#ff7300] mb-2 uppercase tracking-wider text-xs">📅 Membership Validity</p>
+                  <div className="flex flex-col gap-1.5 items-center justify-center my-3 bg-white/80 py-3 px-4 rounded-xl border border-orange-100/80">
+                    <div className="flex justify-between w-full text-xs text-slate-400 font-bold uppercase tracking-wider">
+                      <span>From</span>
+                      <span>To</span>
+                    </div>
+                    <div className="flex justify-between items-center w-full gap-2 text-sm font-bold text-slate-800">
+                      <span>{fromStr}</span>
+                      <span className="text-[#ff7300]">➔</span>
+                      <span>{toStr}</span>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">Valid for exactly 1 year</p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* Terms and Conditions Modal */}
