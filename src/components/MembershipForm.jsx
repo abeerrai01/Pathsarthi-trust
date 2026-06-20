@@ -59,6 +59,8 @@ const MembershipForm = () => {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [cities, setCities] = useState([]);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   // Load Razorpay script on mount
   useEffect(() => {
@@ -244,6 +246,10 @@ const MembershipForm = () => {
     }
     if (isNaN(Number(form.age)) || Number(form.age) < 1) {
       showToast('Please select a valid Date of Birth.', 'error');
+      return false;
+    }
+    if (!agreeTerms) {
+      showToast('You must agree to the Terms and Conditions to proceed.', 'error');
       return false;
     }
     return true;
@@ -482,6 +488,29 @@ const MembershipForm = () => {
               </div>
             </div>
 
+            {/* Terms and Conditions Checkbox */}
+            <div className="flex items-start gap-2.5 pt-2 mb-4">
+              <input
+                id="agreeTerms"
+                type="checkbox"
+                checked={agreeTerms}
+                onChange={e => setAgreeTerms(e.target.checked)}
+                className="mt-1 w-4.5 h-4.5 rounded text-[#ff7300] focus:ring-orange-500 border-slate-300 cursor-pointer accent-[#ff7300]"
+                required
+              />
+              <label htmlFor="agreeTerms" className="text-xs text-slate-500 font-semibold cursor-pointer select-none leading-relaxed">
+                I agree to the{" "}
+                <button
+                  type="button"
+                  onClick={() => setShowTermsModal(true)}
+                  className="text-[#ff7300] hover:text-indigo-600 underline font-bold focus:outline-none"
+                >
+                  Membership Terms & Conditions
+                </button>{" "}
+                of PathSarthi Trust.
+              </label>
+            </div>
+
             <button type="submit" className="w-full bg-[#ff7300] hover:bg-indigo-600 text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md hover:shadow-indigo-200 hover:-translate-y-0.5 transform active:translate-y-0 disabled:opacity-50 flex items-center justify-center gap-2 text-base" disabled={loading}>
               {loading ? (
                 <>
@@ -544,6 +573,210 @@ const MembershipForm = () => {
           </div>
         )}
       </div>
+
+      {/* Terms and Conditions Modal */}
+      {showTermsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col border border-slate-100 animate-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="text-lg font-black text-slate-800">Membership Terms & Conditions</h3>
+              <button
+                onClick={() => setShowTermsModal(false)}
+                className="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-50 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body (Scrollable) */}
+            <div className="p-6 overflow-y-auto space-y-4 text-sm text-slate-600 leading-relaxed custom-scrollbar">
+              <p className="font-bold text-slate-700">Effective Date: June 2026<br />Website: PathSarthi Trust</p>
+              <p>Welcome to PathSarthi Trust. By applying for and accepting membership, you agree to the following Terms and Conditions.</p>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">1. Membership Purpose</h4>
+              <p>PathSarthi Trust is a non-profit organization committed to creating positive social impact through initiatives in education, healthcare, child welfare, women empowerment, environmental awareness, and community development.</p>
+              <p>Membership is intended for individuals who wish to actively support and participate in the Trust's mission and activities.</p>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">2. Eligibility</h4>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Any individual aged 18 years or above may apply for membership.</li>
+                <li>Applicants must provide accurate and complete information during registration.</li>
+                <li>PathSarthi Trust reserves the right to approve, reject, suspend, or terminate any membership application at its discretion.</li>
+              </ul>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">3. Membership Validity</h4>
+              <p className="font-semibold text-slate-700">One-Year Membership</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Membership is valid for one (1) year only from the date of approval.</li>
+                <li>Membership will automatically expire after the completion of the one-year period.</li>
+                <li>Members may apply for renewal subject to the Trust's policies applicable at that time.</li>
+                <li>The Trust is under no obligation to automatically renew membership.</li>
+              </ul>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">4. Membership Benefits</h4>
+              <p>Registered members may be eligible for the following benefits:</p>
+              
+              <p className="font-semibold text-slate-700 mt-2">Official Membership Benefits</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Digital Membership Certificate.</li>
+                <li>Unique Membership ID.</li>
+                <li>Membership Recognition within the Trust community.</li>
+              </ul>
+
+              <p className="font-semibold text-slate-700 mt-2">Community & Networking Benefits</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Exclusive access to the official PathSarthi Members WhatsApp Community.</li>
+                <li>Networking opportunities with volunteers, professionals, educators, healthcare workers, and social impact leaders.</li>
+                <li>Participation in community discussions and social initiatives.</li>
+              </ul>
+
+              <p className="font-semibold text-slate-700 mt-2">Events & Participation</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Priority access to volunteering opportunities.</li>
+                <li>Invitations to Trust events, workshops, awareness campaigns, health camps, donation drives, and community outreach programs.</li>
+                <li>Eligibility to attend the Annual Members Meet organized by the Trust.</li>
+              </ul>
+
+              <p className="font-semibold text-slate-700 mt-2">Leadership & Growth Opportunities</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Opportunity to lead or coordinate Trust initiatives.</li>
+                <li>Opportunity to represent PathSarthi Trust in approved activities.</li>
+                <li>Eligibility for internship and project opportunities offered by the Trust, subject to availability.</li>
+              </ul>
+
+              <p className="font-semibold text-slate-700 mt-2">Recognition & Rewards</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Volunteer Ranking & Rewards Program based on contribution, participation, leadership, and impact.</li>
+                <li>Appreciation Certificates for outstanding service.</li>
+                <li>Recognition during Trust events and programs.</li>
+                <li>Featured Member recognition on the Trust website and social media platforms.</li>
+              </ul>
+
+              <p className="font-semibold text-slate-700 mt-2">Career & Academic Support</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Community Service Hours Verification.</li>
+                <li>Volunteer Experience Certificate (subject to participation requirements).</li>
+                <li>Recommendation Letters for active and exceptional members, subject to evaluation by the Trust.</li>
+                <li>Documentation of volunteer contributions for educational and professional purposes.</li>
+              </ul>
+
+              <p className="font-semibold text-slate-700 mt-2">Communication & Updates</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Regular newsletters and project updates.</li>
+                <li>Information regarding upcoming campaigns, events, and volunteering opportunities.</li>
+                <li>Annual impact reports and organizational updates.</li>
+              </ul>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">5. Member Responsibilities</h4>
+              <p>Members agree to:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Support the mission and values of PathSarthi Trust.</li>
+                <li>Act respectfully toward beneficiaries, volunteers, staff, and fellow members.</li>
+                <li>Maintain ethical conduct during all Trust activities.</li>
+                <li>Follow all applicable laws and regulations.</li>
+                <li>Protect the reputation and interests of the Trust.</li>
+                <li>Use membership privileges responsibly.</li>
+              </ul>
+              <p className="mt-2 font-semibold">Members must not:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Misrepresent themselves as employees, directors, or authorized spokespersons of the Trust unless officially designated.</li>
+                <li>Use the Trust's name, logo, or branding without written permission.</li>
+                <li>Engage in any activity that may harm the Trust, its beneficiaries, volunteers, partners, or reputation.</li>
+              </ul>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">6. Volunteer Activities</h4>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Participation in volunteer activities is voluntary.</li>
+                <li>The Trust may assign responsibilities based on project requirements and member suitability.</li>
+                <li>Participation in any activity does not create an employment relationship with the Trust.</li>
+                <li>The Trust may modify, postpone, or cancel activities at any time.</li>
+              </ul>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">7. Membership Fees & Donations</h4>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Any membership fee, if applicable, is non-refundable unless otherwise specified by the Trust.</li>
+                <li>Donations made to the Trust are voluntary and non-refundable.</li>
+                <li>Membership does not entitle a member to any financial benefit, profit-sharing, salary, or ownership interest in the Trust.</li>
+              </ul>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">8. Privacy & Data Protection</h4>
+              <p>By registering for membership, you consent to the collection and use of your information for:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Membership administration.</li>
+                <li>Volunteer management.</li>
+                <li>Event participation.</li>
+                <li>Communication regarding Trust activities.</li>
+                <li>Legal and regulatory compliance.</li>
+              </ul>
+              <p>PathSarthi Trust will take reasonable measures to protect personal information and will not sell personal data to third parties.</p>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">9. Communication Consent</h4>
+              <p>Members agree to receive:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Membership-related notifications.</li>
+                <li>Event invitations.</li>
+                <li>Volunteer opportunities.</li>
+                <li>Newsletters and impact reports.</li>
+                <li>Communications through email, phone, SMS, WhatsApp, or other official channels.</li>
+              </ul>
+              <p>Members may opt out of non-essential communications at any time.</p>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">10. Suspension & Termination</h4>
+              <p>The Trust may suspend or terminate membership if:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>False information is provided.</li>
+                <li>These Terms and Conditions are violated.</li>
+                <li>A member engages in misconduct or unethical behavior.</li>
+                <li>A member's actions negatively affect the Trust's operations, reputation, beneficiaries, or stakeholders.</li>
+              </ul>
+              <p>Upon termination or expiry, all membership rights and benefits shall cease immediately.</p>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">11. Intellectual Property</h4>
+              <p>All content, logos, trademarks, photographs, publications, and materials belonging to PathSarthi Trust remain the property of the Trust.</p>
+              <p>Members may not reproduce, distribute, or use Trust materials without prior written permission.</p>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">12. Limitation of Liability</h4>
+              <p>PathSarthi Trust shall not be liable for any direct, indirect, incidental, special, or consequential damages arising from participation in Trust activities, except where required by applicable law.</p>
+              <p>Members participate in activities at their own discretion and responsibility.</p>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">13. Amendments</h4>
+              <p>PathSarthi Trust reserves the right to amend these Terms and Conditions at any time.</p>
+              <p>Updated Terms and Conditions shall become effective immediately upon publication on the Trust website.</p>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">14. Governing Law</h4>
+              <p>These Terms and Conditions shall be governed by and interpreted in accordance with the laws of India.</p>
+              <p>Any disputes arising from membership shall be subject to the jurisdiction of the competent courts in India.</p>
+
+              <h4 className="font-black text-slate-800 mt-4 text-base">15. Declaration</h4>
+              <p>By submitting the Membership Form, I confirm that:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>I have read and understood these Terms and Conditions.</li>
+                <li>I agree to abide by the rules and policies of PathSarthi Trust.</li>
+                <li>The information provided by me is accurate and complete.</li>
+                <li>I understand that my membership is valid for one (1) year only and may require renewal upon expiry.</li>
+                <li>I acknowledge that membership does not guarantee employment, financial benefits, or leadership positions within the Trust.</li>
+              </ul>
+              <p className="text-center font-bold mt-4 text-slate-800 font-sans">Together, we strive to create a better future through Hope, Heal & Humanity. ❤️🤝🌍</p>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50 rounded-b-3xl">
+              <button
+                onClick={() => {
+                  setAgreeTerms(true);
+                  setShowTermsModal(false);
+                }}
+                className="px-5 py-2.5 bg-[#ff7300] hover:bg-[#e06500] text-white font-bold rounded-xl text-sm transition-colors"
+              >
+                Accept & Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
