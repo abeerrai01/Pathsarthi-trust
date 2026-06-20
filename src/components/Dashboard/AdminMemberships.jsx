@@ -245,23 +245,6 @@ const AdminMemberships = () => {
                         {isPaid ? 'Paid' : 'Pending'}
                       </div>
                       <div className="flex gap-2">
-                        {isPaid ? (
-                          <button 
-                            onClick={() => handleUpdateStatus(member.id, 'pending', member)} 
-                            className="px-3 py-1.5 rounded-xl text-xs font-bold text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition-colors border border-yellow-100"
-                            title="Mark as Pending"
-                          >
-                            Mark Pending
-                          </button>
-                        ) : (
-                          <button 
-                            onClick={() => handleUpdateStatus(member.id, 'completed', member)} 
-                            className="px-3 py-1.5 rounded-xl text-xs font-bold text-green-700 bg-green-50 hover:bg-green-100 transition-colors border border-green-100"
-                            title="Mark as Completed"
-                          >
-                            Mark Paid
-                          </button>
-                        )}
                         <button 
                           onClick={() => handleDelete(member.id)} 
                           className="p-2 rounded-xl text-slate-400 bg-slate-50 hover:text-red-600 hover:bg-red-50 transition-colors border border-transparent hover:border-red-100"
