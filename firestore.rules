@@ -84,7 +84,7 @@ service cloud.firestore {
     match /internship_applications/{docId} { allow create: if true; allow read, write: if request.auth != null; }
     match /feedbacks/{docId} { allow create: if true; allow read, write: if request.auth != null; }
     match /contest_entries/{docId} { allow create: if true; allow read, write: if request.auth != null; }
-    match /memberships/{docId} { allow create, read: if true; allow write: if request.auth != null; }
+    match /memberships/{docId} { allow create, read, update: if true; allow delete: if request.auth != null; }
 
     // =========================
     // 📊 ANALYTICS (OPEN)

@@ -72,6 +72,13 @@ const MembershipForm = () => {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
 
+  const createdDocIdRef = useRef('');
+  const formRef = useRef(form);
+
+  useEffect(() => {
+    formRef.current = form;
+  }, [form]);
+
   const [paymentMethod, setPaymentMethod] = useState('razorpay'); // razorpay | upi_qr
   const [isQRPayment, setIsQRPayment] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -81,14 +88,15 @@ const MembershipForm = () => {
     setLoading(true);
     try {
       const manualUpiId = "QR_CODE_MANUAL";
-      if (createdDocId) {
-        await updateDoc(doc(db, "memberships", createdDocId), {
+      const docId = createdDocIdRef.current || createdDocId;
+      if (docId) {
+        await updateDoc(doc(db, "memberships", docId), {
           paymentId: manualUpiId,
           status: 'pending' // remains pending for manual verification
         });
       } else {
         await addDoc(collection(db, "memberships"), {
-          ...form,
+          ...formRef.current,
           paymentId: manualUpiId,
           createdAt: new Date(),
           status: 'pending'
@@ -170,8 +178,9 @@ const MembershipForm = () => {
           const validTo = new Date();
           validTo.setFullYear(validFrom.getFullYear() + 1);
 
-          if (createdDocId) {
-            await updateDoc(doc(db, "memberships", createdDocId), {
+          const docId = createdDocIdRef.current || createdDocId;
+          if (docId) {
+            await updateDoc(doc(db, "memberships", docId), {
               paymentId: generatedId,
               status: 'completed',
               validFrom: validFrom,
@@ -179,7 +188,7 @@ const MembershipForm = () => {
             });
           } else {
             await addDoc(collection(db, "memberships"), {
-              ...form,
+              ...formRef.current,
               paymentId: generatedId,
               createdAt: new Date(),
               status: 'completed',
@@ -381,6 +390,7 @@ const MembershipForm = () => {
 
           setForm(updatedForm);
           setCreatedDocId(existingDoc.id);
+          createdDocIdRef.current = existingDoc.id;
           setStep('payment');
           setLoading(false);
           return;
@@ -409,6 +419,7 @@ const MembershipForm = () => {
 
       setForm(updatedForm);
       setCreatedDocId(docRef.id);
+      createdDocIdRef.current = docRef.id;
       setStep('payment');
     } catch (error) {
       console.error(error);
