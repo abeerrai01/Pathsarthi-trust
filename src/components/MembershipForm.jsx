@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { auth, db } from '../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, query, where, getDocs } from 'firebase/firestore';
 import { uploadToCloudinary } from '../utils/cloudinary';
 import { UploadCloud, User } from 'lucide-react';
 // Remove import RazorpayButton from './RazorpayButton';
@@ -255,6 +255,66 @@ const MembershipForm = () => {
 
     setLoading(true);
     try {
+      // 1. Check if user already exists in memberships
+      const membershipsRef = collection(db, "memberships");
+      
+      // Query by email
+      const qEmail = query(membershipsRef, where("email", "==", form.email));
+      const emailSnap = await getDocs(qEmail);
+
+      // Query by phone
+      const qPhone = query(membershipsRef, where("phone", "==", form.phone));
+      const phoneSnap = await getDocs(qPhone);
+
+      // Query by aadhaar
+      const qAadhaar = query(membershipsRef, where("aadhaar", "==", form.aadhaar));
+      const aadhaarSnap = await getDocs(qAadhaar);
+
+      let existingDoc = null;
+
+      if (!emailSnap.empty) {
+        existingDoc = { id: emailSnap.docs[0].id, ...emailSnap.docs[0].data() };
+      } else if (!phoneSnap.empty) {
+        existingDoc = { id: phoneSnap.docs[0].id, ...phoneSnap.docs[0].data() };
+      } else if (!aadhaarSnap.empty) {
+        existingDoc = { id: aadhaarSnap.docs[0].id, ...aadhaarSnap.docs[0].data() };
+      }
+
+      if (existingDoc) {
+        if (existingDoc.status === 'completed') {
+          showToast('This user is already a registered Pathsarthi Member.', 'error');
+          setLoading(false);
+          return;
+        } else {
+          // It's a pending application, redirect to payment page
+          showToast('Found your pending application. Updating details and redirecting to payment...', 'info');
+          
+          let uploadedUrl = existingDoc.profilePhotoUrl || '';
+          if (photoFile) {
+            const result = await uploadToCloudinary(photoFile);
+            uploadedUrl = result.imageUrl;
+          }
+
+          const updatedForm = {
+            ...form,
+            profilePhotoUrl: uploadedUrl,
+            image: uploadedUrl,
+          };
+
+          await updateDoc(doc(db, "memberships", existingDoc.id), {
+            ...updatedForm,
+            createdAt: new Date() // update timestamp to now
+          });
+
+          setForm(updatedForm);
+          setCreatedDocId(existingDoc.id);
+          setStep('payment');
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 2. If user doesn't exist, proceed with new registration
       let uploadedUrl = '';
       if (photoFile) {
         const result = await uploadToCloudinary(photoFile);
