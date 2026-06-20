@@ -453,13 +453,15 @@ const MembershipForm = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-slate-50 to-indigo-50 py-12 px-4 sm:px-6">
-      <div className="w-full max-w-xl bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-10 mx-auto border border-orange-100/50 flex flex-col">
+      <div className={`w-full transition-all duration-500 bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-10 mx-auto border border-orange-100/50 flex flex-col ${step === 'done' ? 'max-w-4xl' : 'max-w-xl'}`}>
         {/* Brand Header with centered Logo-2 */}
-        <div className="flex flex-col items-center mb-8">
-          <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-24 h-auto mb-4 object-contain" />
-          <h2 className="text-2xl md:text-3xl font-black text-center text-[#ff7300] tracking-tight">Become a Pathsarthi Member</h2>
-          <p className="text-xs text-gray-400 font-bold mt-1.5 uppercase tracking-widest">Hope • Heal • Humanity</p>
-        </div>
+        {step !== 'done' && (
+          <div className="flex flex-col items-center mb-8">
+            <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-24 h-auto mb-4 object-contain" />
+            <h2 className="text-2xl md:text-3xl font-black text-center text-[#ff7300] tracking-tight">Become a Pathsarthi Member</h2>
+            <p className="text-xs text-gray-400 font-bold mt-1.5 uppercase tracking-widest">Hope • Heal • Humanity</p>
+          </div>
+        )}
 
         {toast && (
           <div className={`mb-6 px-4 py-3 rounded-xl text-center text-sm font-semibold text-white shadow-md ${toast.type === 'error' ? 'bg-red-500' : toast.type === 'success' ? 'bg-green-600' : 'bg-indigo-500'}`}>
@@ -772,46 +774,176 @@ const MembershipForm = () => {
           const { from: fromStr, to: toStr } = calculateValidityDates();
 
           return (
-            <div className="flex flex-col items-center gap-6 py-6 text-center">
-              {isQRPayment ? (
-                <div className="text-2xl text-orange-500 font-black animate-bounce-slow">📝 Registration Submitted!</div>
-              ) : (
-                <div className="text-3xl text-green-600 font-black animate-bounce-slow">✅ Payment Successful!</div>
-              )}
+            <div className="flex flex-col gap-8 py-4 animate-in fade-in duration-500">
               
-              <div className="text-slate-600 font-medium w-full">
-                {isQRPayment ? (
-                  <>
-                    Thank you for applying to become a Pathsarthi Member.<br />
-                    <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-xl text-xs text-yellow-800 my-4 font-semibold max-w-sm mx-auto">
-                      ⚠️ Your payment screenshot has been uploaded. Please ensure you also send the screenshot to our trust number <span className="font-black text-[#ff7300]">8958421200</span> via WhatsApp for verification. Our administrators will activate your membership shortly.
+              {/* Header inside the Success Screen */}
+              <div className="flex flex-col md:flex-row items-center justify-between border-b border-slate-100 pb-6 gap-4">
+                <div className="flex items-center gap-3">
+                  <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-16 h-auto object-contain" />
+                  <div>
+                    <h2 className="text-xl font-black text-[#ff7300] tracking-tight">Pathsarthi Trust</h2>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Hope • Heal • Humanity</p>
+                  </div>
+                </div>
+                <div>
+                  {isQRPayment ? (
+                    <span className="px-4 py-2 bg-orange-50 text-orange-600 rounded-full text-xs font-black uppercase tracking-wider border border-orange-100 flex items-center gap-1.5 shadow-sm">
+                      <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                      Registration Staged
+                    </span>
+                  ) : (
+                    <span className="px-4 py-2 bg-green-50 text-green-600 rounded-full text-xs font-black uppercase tracking-wider border border-green-100 flex items-center gap-1.5 shadow-sm">
+                      <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                      Payment Successful
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Split Content Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                
+                {/* Left Column: Video & Real World Stats */}
+                <div className="space-y-6">
+                  {/* Video Player */}
+                  <div className="relative rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-black aspect-video flex items-center justify-center group hover:shadow-xl transition-all duration-300">
+                    <video 
+                      src="/IMG_7027.MP4" 
+                      className="w-full h-full object-cover" 
+                      autoPlay 
+                      loop 
+                      muted 
+                      playsInline 
+                      controls
+                    />
+                  </div>
+
+                  {/* Real World Impact of 100rs */}
+                  <div className="bg-gradient-to-br from-orange-50/70 to-indigo-50/50 rounded-2xl p-6 border border-orange-100/50 shadow-sm space-y-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">📊</span>
+                      <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wider">How ₹100 Drives Real Change</h3>
                     </div>
-                  </>
-                ) : (
-                  <>
-                    Thank you for becoming a Pathsarthi Member.<br />
-                    Your Membership Payment ID:
-                    <div className="font-mono text-indigo-600 font-bold bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2 mt-3 select-all text-lg shadow-sm mb-6">
-                      {paymentId}
-                    </div>
-                    <div className="p-5 bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-100 rounded-2xl text-slate-700 text-sm shadow-sm max-w-sm mx-auto">
-                      <p className="font-black text-[#ff7300] mb-2 uppercase tracking-wider text-xs">📅 Membership Validity</p>
-                      <div className="flex flex-col gap-1.5 items-center justify-center my-3 bg-white/80 py-3 px-4 rounded-xl border border-orange-100/80">
-                        <div className="flex justify-between w-full text-xs text-slate-400 font-bold uppercase tracking-wider">
-                          <span>From</span>
-                          <span>To</span>
-                        </div>
-                        <div className="flex justify-between items-center w-full gap-2 text-sm font-bold text-slate-800">
-                          <span>{fromStr}</span>
-                          <span className="text-[#ff7300]">➔</span>
-                          <span>{toStr}</span>
+                    
+                    <p className="text-xs font-medium text-slate-500 leading-relaxed">
+                      In a developing nation like India, small contributions compile to solve mammoth-sized challenges. Non-Governmental Organizations (NGOs) and community groups work on-ground to bridge crucial gaps. Your ₹100 membership fee does not just verify your account—it funds immediate local relief:
+                    </p>
+
+                    <div className="grid grid-cols-1 gap-3 pt-2">
+                      <div className="flex items-start gap-3 bg-white/80 p-3 rounded-xl border border-orange-50 shadow-sm">
+                        <span className="text-lg bg-orange-100 p-2 rounded-lg leading-none">🎒</span>
+                        <div className="space-y-0.5">
+                          <h4 className="text-xs font-black text-slate-800">Childhood Education</h4>
+                          <p className="text-[11px] font-semibold text-slate-500">Buys 5 school notebooks & stationery kits for underprivileged children to prevent them from dropping out.</p>
                         </div>
                       </div>
-                      <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">Valid for exactly 1 year</p>
+
+                      <div className="flex items-start gap-3 bg-white/80 p-3 rounded-xl border border-orange-50 shadow-sm">
+                        <span className="text-lg bg-indigo-100 p-2 rounded-lg leading-none">🍲</span>
+                        <div className="space-y-0.5">
+                          <h4 className="text-xs font-black text-slate-800">Zero Hunger Initiative</h4>
+                          <p className="text-[11px] font-semibold text-slate-500">Provides 3 wholesome, hot mid-day meals to street kids, securing their basic nutritional needs.</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 bg-white/80 p-3 rounded-xl border border-orange-50 shadow-sm">
+                        <span className="text-lg bg-pink-100 p-2 rounded-lg leading-none">🏥</span>
+                        <div className="space-y-0.5">
+                          <h4 className="text-xs font-black text-slate-800">Health & Hygiene</h4>
+                          <p className="text-[11px] font-semibold text-slate-500">Supports basic sanitary hygiene pads and clean drinking water kits for families in slum clusters.</p>
+                        </div>
+                      </div>
                     </div>
-                  </>
-                )}
+
+                    <div className="pt-2 text-center">
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Pathsarthi Trust • Transforming Lives Together</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column: User Profile & Details */}
+                <div className="space-y-6">
+                  
+                  {/* Thank You Card */}
+                  <div className="flex flex-col items-center text-center p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                    {photoPreview || form.profilePhotoUrl ? (
+                      <img 
+                        src={photoPreview || form.profilePhotoUrl} 
+                        alt="Member Profile" 
+                        className="w-24 h-24 rounded-full border-4 border-orange-400 shadow-md object-cover mb-4 animate-in zoom-in duration-300"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-[#ff7300] text-white flex items-center justify-center font-bold text-3xl shadow-md border-4 border-orange-100 mb-4 animate-in zoom-in duration-300">
+                        {form.fullName ? form.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'PS'}
+                      </div>
+                    )}
+                    <h3 className="text-xl font-black text-slate-800 leading-snug">Welcome to the Family! ❤️</h3>
+                    <p className="text-sm font-bold text-[#ff7300] mt-1">{form.fullName}</p>
+                    <p className="text-xs font-semibold text-slate-500 mt-3 leading-relaxed">
+                      Dear <span className="font-bold text-slate-700">{form.fullName}</span>, we are extremely honored to have you as a registered member of Pathsarthi Trust. You are now a <strong>Pathsarthi</strong>—a charioteer guiding social change. Your contribution helps us sustain on-ground service.
+                    </p>
+                  </div>
+
+                  {/* Membership Info Card */}
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 space-y-3.5 shadow-sm">
+                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b pb-2 border-slate-200">Membership Details</h4>
+                    
+                    <div className="flex justify-between text-xs font-semibold text-slate-500">
+                      <span>Email</span>
+                      <span className="font-bold text-slate-800">{form.email}</span>
+                    </div>
+
+                    <div className="flex justify-between text-xs font-semibold text-slate-500">
+                      <span>Phone</span>
+                      <span className="font-bold text-slate-800">{form.phone}</span>
+                    </div>
+
+                    <div className="flex justify-between text-xs font-semibold text-slate-500">
+                      <span>Aadhaar</span>
+                      <span className="font-bold text-slate-800 font-mono">
+                        {form.aadhaar ? `XXXX-XXXX-${form.aadhaar.slice(-4)}` : 'N/A'}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between text-xs font-semibold text-slate-500">
+                      <span>Validity Range</span>
+                      <span className="font-bold text-slate-800 text-[10px] bg-white px-2 py-0.5 rounded border border-slate-200 shadow-sm">
+                        {fromStr} - {toStr}
+                      </span>
+                    </div>
+
+                    {isQRPayment ? (
+                      <div className="pt-2">
+                        <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-3 text-left text-[11px] text-yellow-800 font-semibold space-y-1.5">
+                          <p className="font-black text-amber-800 uppercase tracking-wider text-[9px] flex items-center gap-1">
+                            ⚠️ Screenshot Verification Required
+                          </p>
+                          <p>
+                            Your payment screenshot has been uploaded. Please ensure you also send it to our trust number <span className="font-black text-[#ff7300]">8958421200</span> via WhatsApp to expedite admin activation.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex justify-between items-center text-xs font-semibold text-slate-500 border-t pt-3.5 border-slate-200">
+                        <span>Payment ID</span>
+                        <span className="font-mono bg-white px-2 py-0.5 rounded border border-slate-200 text-[#ff7300] font-black select-all max-w-[170px] truncate shadow-sm">
+                          {paymentId}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Return Button */}
+                  <button 
+                    onClick={() => window.location.href = "/"}
+                    className="w-full bg-[#ff7300] hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md flex items-center justify-center gap-2 text-sm uppercase tracking-wider"
+                  >
+                    Go Back to Home
+                  </button>
+
+                </div>
               </div>
+
             </div>
           );
         })()}
