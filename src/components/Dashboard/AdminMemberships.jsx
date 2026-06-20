@@ -24,6 +24,9 @@ const AdminMemberships = () => {
       });
       setMemberships(list);
       setLoading(false);
+    }, (error) => {
+      console.error("Error reading memberships collection:", error);
+      setLoading(false);
     });
     return () => unsub();
   }, []);

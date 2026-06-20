@@ -37,6 +37,7 @@ import MembershipForm from './components/MembershipForm';
 import SplashScreen from './components/SplashScreen';
 import Chatbot from './components/Chatbot';
 import ScrollToTop from './components/ScrollToTop';
+import ProtectedRoute from './components/ProtectedRoute';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
 const CertificateList = lazy(() => import('./components/Dashboard/CertificateList'));
 import VerifyCertificate from './pages/VerifyCertificate';
@@ -228,7 +229,11 @@ function App() {
                 <Route path="/member" element={<Member />} />
                 <Route path="/join-us" element={<JoinUs />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/admin-dashboard" element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } />
                 <Route path="/developer" element={<Developer />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<TermsAndConditions />} />
@@ -244,14 +249,18 @@ function App() {
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/admin/certificates" element={
-                  <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Certificate Generator...</div>}>
-                    <CertificateGenerator />
-                  </Suspense>
+                  <ProtectedRoute>
+                    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Certificate Generator...</div>}>
+                      <CertificateGenerator />
+                    </Suspense>
+                  </ProtectedRoute>
                 } />
                 <Route path="/admin/certificates-list" element={
-                  <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Certificate List...</div>}>
-                    <CertificateList />
-                  </Suspense>
+                  <ProtectedRoute>
+                    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading Certificate List...</div>}>
+                      <CertificateList />
+                    </Suspense>
+                  </ProtectedRoute>
                 } />
                 <Route path="/verify/:name" element={<VerifyCertificate />} />
                 <Route path="/membership" element={<MembershipForm />} />

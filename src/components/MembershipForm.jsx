@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { auth, db } from '../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { uploadToCloudinary } from '../utils/cloudinary';
 import { UploadCloud, User } from 'lucide-react';
 // Remove import RazorpayButton from './RazorpayButton';
@@ -30,6 +30,7 @@ const MembershipForm = () => {
   // No OTP, no recaptcha
   const [toast, setToast] = useState(null);
   const [paymentId, setPaymentId] = useState('');
+  const [createdDocId, setCreatedDocId] = useState('');
 
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -61,12 +62,19 @@ const MembershipForm = () => {
         setLoading(true);
         try {
           const generatedId = response.razorpay_payment_id;
-          await addDoc(collection(db, "memberships"), {
-            ...form,
-            paymentId: generatedId,
-            createdAt: new Date(),
-            status: 'completed'
-          });
+          if (createdDocId) {
+            await updateDoc(doc(db, "memberships", createdDocId), {
+              paymentId: generatedId,
+              status: 'completed'
+            });
+          } else {
+            await addDoc(collection(db, "memberships"), {
+              ...form,
+              paymentId: generatedId,
+              createdAt: new Date(),
+              status: 'completed'
+            });
+          }
           setPaymentId(generatedId);
           setStep('done');
         } catch (error) {
@@ -148,11 +156,26 @@ const MembershipForm = () => {
         const result = await uploadToCloudinary(photoFile);
         uploadedUrl = result.imageUrl;
       }
-      setForm(f => ({ ...f, profilePhotoUrl: uploadedUrl, image: uploadedUrl }));
+      const updatedForm = {
+        ...form,
+        profilePhotoUrl: uploadedUrl,
+        image: uploadedUrl,
+      };
+
+      // Save pending registration in Firestore
+      const docRef = await addDoc(collection(db, "memberships"), {
+        ...updatedForm,
+        paymentId: '',
+        createdAt: new Date(),
+        status: 'pending'
+      });
+
+      setForm(updatedForm);
+      setCreatedDocId(docRef.id);
       setStep('payment');
     } catch (error) {
       console.error(error);
-      showToast('Failed to upload profile photo. Please try again.', 'error');
+      showToast('Failed to upload profile photo or save application. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
