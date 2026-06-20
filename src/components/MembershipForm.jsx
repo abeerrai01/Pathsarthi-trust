@@ -809,12 +809,9 @@ const MembershipForm = () => {
                   <div className="relative rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-black aspect-video flex items-center justify-center group hover:shadow-xl transition-all duration-300">
                     <video 
                       src="/IMG_7027.MP4" 
-                      className="w-full h-full object-cover" 
+                      className="w-full h-full object-cover pointer-events-none" 
                       autoPlay 
-                      loop 
-                      muted 
                       playsInline 
-                      controls
                     />
                   </div>
 
