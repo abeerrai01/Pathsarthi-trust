@@ -9,6 +9,7 @@ const AdminMemberships = () => {
   const [filter, setFilter] = useState('All'); // All | Completed | Pending
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [selectedScreenshot, setSelectedScreenshot] = useState(null);
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'memberships'), (snapshot) => {
@@ -251,6 +252,15 @@ const AdminMemberships = () => {
                         {isPaid ? 'Paid' : 'Pending'}
                       </div>
                       <div className="flex gap-2">
+                        {member.paymentScreenshotUrl && (
+                          <button
+                            onClick={() => setSelectedScreenshot(member.paymentScreenshotUrl)}
+                            className="px-3 py-1.5 rounded-xl text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 transition-colors flex items-center gap-1"
+                            title="View Payment Screenshot"
+                          >
+                            View Screenshot
+                          </button>
+                        )}
                         <button 
                           onClick={() => handleDelete(member.id)} 
                           className="p-2 rounded-xl text-slate-400 bg-slate-50 hover:text-red-600 hover:bg-red-50 transition-colors border border-transparent hover:border-red-100"
@@ -267,6 +277,41 @@ const AdminMemberships = () => {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Screenshot Preview Modal */}
+      {selectedScreenshot && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full flex flex-col border border-slate-100 animate-in zoom-in-95 duration-200 overflow-hidden">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-orange-50 to-indigo-50">
+              <h3 className="text-lg font-black text-slate-800">Payment Screenshot</h3>
+              <button
+                onClick={() => setSelectedScreenshot(null)}
+                className="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-white transition-colors shadow-sm border border-slate-100"
+              >
+                <XCircle size={20} />
+              </button>
+            </div>
+            {/* Modal Body */}
+            <div className="p-6 flex items-center justify-center bg-slate-50 max-h-[70vh] overflow-y-auto">
+              <img 
+                src={selectedScreenshot} 
+                alt="Payment Screenshot" 
+                className="max-w-full h-auto rounded-2xl shadow-md border border-slate-200 object-contain"
+              />
+            </div>
+            {/* Modal Footer */}
+            <div className="px-6 py-4 border-t border-slate-100 flex justify-end bg-white">
+              <button
+                onClick={() => setSelectedScreenshot(null)}
+                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl text-sm transition-colors shadow animate-in fade-in duration-200"
+              >
+                Close Preview
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

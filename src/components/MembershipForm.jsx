@@ -82,24 +82,46 @@ const MembershipForm = () => {
   const [paymentMethod, setPaymentMethod] = useState('razorpay'); // razorpay | upi_qr
   const [isQRPayment, setIsQRPayment] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [screenshotFile, setScreenshotFile] = useState(null);
+  const [screenshotPreview, setScreenshotPreview] = useState(null);
+
+  const handleScreenshotChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setScreenshotFile(file);
+      setScreenshotPreview(URL.createObjectURL(file));
+    }
+  };
 
   const handlePayManualUPI = async (e) => {
     if (e) e.preventDefault();
+    if (!screenshotFile) {
+      showToast('Please upload a screenshot of your payment.', 'error');
+      return;
+    }
     setLoading(true);
     try {
+      let uploadedScreenshotUrl = '';
+      if (screenshotFile) {
+        const uploadRes = await uploadToCloudinary(screenshotFile);
+        uploadedScreenshotUrl = uploadRes.imageUrl;
+      }
+
       const manualUpiId = "QR_CODE_MANUAL";
       const docId = createdDocIdRef.current || createdDocId;
       if (docId) {
         await updateDoc(doc(db, "memberships", docId), {
           paymentId: manualUpiId,
-          status: 'pending' // remains pending for manual verification
+          status: 'pending', // remains pending for manual verification
+          paymentScreenshotUrl: uploadedScreenshotUrl
         });
       } else {
         await addDoc(collection(db, "memberships"), {
           ...formRef.current,
           paymentId: manualUpiId,
           createdAt: new Date(),
-          status: 'pending'
+          status: 'pending',
+          paymentScreenshotUrl: uploadedScreenshotUrl
         });
       }
       setPaymentId(manualUpiId);
@@ -701,6 +723,34 @@ const MembershipForm = () => {
                   Please <span className="font-bold text-indigo-700">send the payment screenshot</span> to our trust number: <span className="font-bold text-[#ff7300]">8958421200</span>.
                 </div>
 
+                {/* Payment Screenshot Upload Field */}
+                <div className="flex flex-col gap-1.5 pt-2">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">
+                    Upload Payment Screenshot*
+                  </label>
+                  <div className="relative border-2 border-dashed border-slate-350 hover:border-orange-400 rounded-xl p-4 text-center transition-colors bg-slate-50/50 flex flex-col items-center justify-center cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleScreenshotChange}
+                      required
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <UploadCloud className="w-6 h-6 text-slate-400 mb-1" />
+                    {screenshotPreview ? (
+                      <div className="flex items-center gap-2 mt-1">
+                        <img src={screenshotPreview} alt="Screenshot Preview" className="w-10 h-10 rounded object-cover border border-orange-400 shadow-sm" />
+                        <span className="text-xs text-slate-600 font-semibold truncate max-w-[200px]">{screenshotFile?.name}</span>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-xs text-slate-600 font-semibold">Click to upload payment screenshot</span>
+                        <span className="text-[10px] text-slate-400">PNG, JPG, WEBP</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
                 <button
                   type="submit"
                   disabled={loading}
@@ -734,7 +784,7 @@ const MembershipForm = () => {
                   <>
                     Thank you for applying to become a Pathsarthi Member.<br />
                     <div className="p-4 bg-yellow-50 border border-yellow-100 rounded-xl text-xs text-yellow-800 my-4 font-semibold max-w-sm mx-auto">
-                      ⚠️ Please ensure you have sent your payment screenshot to <span className="font-black text-[#ff7300]">8958421200</span>. Our administrators will verify the payment and activate your membership shortly.
+                      ⚠️ Your payment screenshot has been uploaded. Please ensure you also send the screenshot to our trust number <span className="font-black text-[#ff7300]">8958421200</span> via WhatsApp for verification. Our administrators will activate your membership shortly.
                     </div>
                   </>
                 ) : (
