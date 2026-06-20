@@ -59,13 +59,19 @@ const AdminMemberships = () => {
     }
   };
 
+  const isPaidMember = (member) => {
+    if (!member || !member.status) return false;
+    const s = member.status.trim().toLowerCase();
+    return s === 'completed' || s === 'paid';
+  };
+
   const filteredMemberships = memberships.filter(member => {
     // Status Filter
     const matchesStatus = filter === 'All' 
       ? true 
       : filter === 'Completed' 
-        ? member.status === 'completed'
-        : member.status !== 'completed';
+        ? isPaidMember(member)
+        : !isPaidMember(member);
 
     // Search Filter
     const fullName = (member.fullName || `${member.firstName || ''} ${member.middleName || ''} ${member.lastName || ''}`).toLowerCase();
@@ -90,8 +96,8 @@ const AdminMemberships = () => {
 
   const counts = {
     all: memberships.length,
-    completed: memberships.filter(m => m.status === 'completed').length,
-    pending: memberships.filter(m => m.status !== 'completed').length,
+    completed: memberships.filter(m => isPaidMember(m)).length,
+    pending: memberships.filter(m => !isPaidMember(m)).length,
   };
 
   const formatDate = (dateValue) => {
@@ -182,7 +188,7 @@ const AdminMemberships = () => {
               const initials = member.fullName 
                 ? member.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
                 : `${(member.firstName || 'U')[0]}${(member.lastName || '')[0] || ''}`.toUpperCase();
-              const isPaid = member.status === 'completed';
+              const isPaid = isPaidMember(member);
 
               return (
                 <motion.div 
