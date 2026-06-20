@@ -26,7 +26,7 @@ export default function PaymentButtons({ amount = 200, name = 'Anonymous', onSuc
       return;
     }
     const options = {
-      key: "rzp_live_lrTbKMU5YpM6UD",
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_lrTbKMU5YpM6UD",
       amount: amount * 100,
       currency: "INR",
       name: "Path Sarthi Trust",
