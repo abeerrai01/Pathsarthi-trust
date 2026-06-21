@@ -225,7 +225,12 @@ const AdminMemberships = () => {
                       <div className="flex gap-2 items-center min-w-0"><Mail size={15} className="shrink-0 text-slate-400" /> <a href={`mailto:${member.email}`} className="truncate hover:text-indigo-600 hover:underline">{member.email}</a></div>
                       <div className="flex gap-2 items-center"><Phone size={15} className="shrink-0 text-slate-400" /> <a href={`tel:${member.phone}`} className="hover:text-indigo-600 hover:underline">{member.phone}</a></div>
                       <div className="flex gap-2 items-center"><MapPin size={15} className="shrink-0 text-slate-400" /> <span className="truncate">{member.city}, {member.state}</span></div>
-                      <div className="flex gap-2 items-center"><ShieldCheck size={15} className="shrink-0 text-slate-400" /> <span>Aadhaar: <span className="font-mono">{member.aadhaar}</span></span></div>
+                      {member.aadhaar && (
+                        <div className="flex gap-2 items-center">
+                          <ShieldCheck size={15} className="shrink-0 text-slate-400" />
+                          <span>Aadhaar: <span className="font-mono">{member.aadhaar}</span></span>
+                        </div>
+                      )}
                       
                       <div className="pt-2.5 mt-2.5 border-t border-slate-200 text-xs flex flex-col gap-1 text-slate-500">
                         <div className="flex justify-between">

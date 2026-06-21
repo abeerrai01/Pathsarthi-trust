@@ -28,7 +28,6 @@ const initialForm = {
   pincode: '',
   email: '',
   phone: '',
-  aadhaar: '',
   profilePhotoUrl: '',
   image: '',
 };
@@ -325,16 +324,12 @@ const MembershipForm = () => {
 
   // Validate form
   const validateForm = () => {
-    if (!form.fullName || !form.dob || !form.gender || !form.city || !form.state || !form.email || !form.phone || !form.aadhaar || !form.pincode) {
+    if (!form.fullName || !form.dob || !form.gender || !form.city || !form.state || !form.email || !form.phone || !form.pincode) {
       showToast('Please fill all required fields.', 'error');
       return false;
     }
     if (!/^\d{10}$/.test(form.phone)) {
       showToast('Enter a valid 10-digit phone number.', 'error');
-      return false;
-    }
-    if (!/^\d{12}$/.test(form.aadhaar)) {
-      showToast('Enter a valid 12-digit Aadhaar number.', 'error');
       return false;
     }
     if (!/^\S+@\S+\.\S+$/.test(form.email)) {
@@ -370,18 +365,12 @@ const MembershipForm = () => {
       const qPhone = query(membershipsRef, where("phone", "==", form.phone));
       const phoneSnap = await getDocs(qPhone);
 
-      // Query by aadhaar
-      const qAadhaar = query(membershipsRef, where("aadhaar", "==", form.aadhaar));
-      const aadhaarSnap = await getDocs(qAadhaar);
-
       let existingDoc = null;
 
       if (!emailSnap.empty) {
         existingDoc = { id: emailSnap.docs[0].id, ...emailSnap.docs[0].data() };
       } else if (!phoneSnap.empty) {
         existingDoc = { id: phoneSnap.docs[0].id, ...phoneSnap.docs[0].data() };
-      } else if (!aadhaarSnap.empty) {
-        existingDoc = { id: aadhaarSnap.docs[0].id, ...aadhaarSnap.docs[0].data() };
       }
 
       if (existingDoc) {
@@ -498,7 +487,6 @@ const MembershipForm = () => {
                 <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Contact & Verification</label>
                 <input name="email" value={form.email} onChange={handleChange} required placeholder="Email ID*" type="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
                 <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
-                <input name="aadhaar" value={form.aadhaar} onChange={handleChange} required placeholder="Aadhaar Card Number*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
                 <input name="pincode" value={form.pincode} onChange={handleChange} required placeholder="Pincode*" maxLength="6" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
               </div>
 
@@ -893,13 +881,6 @@ const MembershipForm = () => {
                     <div className="flex justify-between text-xs font-semibold text-slate-500">
                       <span>Phone</span>
                       <span className="font-bold text-slate-800">{form.phone}</span>
-                    </div>
-
-                    <div className="flex justify-between text-xs font-semibold text-slate-500">
-                      <span>Aadhaar</span>
-                      <span className="font-bold text-slate-800 font-mono">
-                        {form.aadhaar ? `XXXX-XXXX-${form.aadhaar.slice(-4)}` : 'N/A'}
-                      </span>
                     </div>
 
                     <div className="flex justify-between text-xs font-semibold text-slate-500">
