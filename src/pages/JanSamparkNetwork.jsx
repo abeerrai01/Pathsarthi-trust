@@ -18,7 +18,8 @@ const JanSamparkNetwork = () => {
         const fetched = [];
         snapshot.forEach(doc => {
           const data = doc.data();
-          if (data.status === 'completed' || data.status === 'paid') {
+          const s = (data.status || '').trim().toLowerCase();
+          if (s === 'completed' || s === 'paid') {
             fetched.push({ id: doc.id, ...data });
           }
         });
@@ -47,7 +48,13 @@ const JanSamparkNetwork = () => {
     ? Array.from(new Set(members.map(m => m.city).filter(Boolean))).sort()
     : Array.from(new Set(members.filter(m => m.state === selectedState).map(m => m.city).filter(Boolean))).sort();
 
-  const allReferences = Array.from(new Set(members.map(m => m.reference).filter(Boolean))).sort();
+  // Extract first name for reference grouping
+  const getFirstName = (name) => {
+    if (!name) return '';
+    return name.trim().split(' ')[0];
+  };
+
+  const allReferences = Array.from(new Set(members.map(m => getFirstName(m.reference)).filter(Boolean))).sort();
 
   // Reset district if it's no longer available for the selected state
   useEffect(() => {
@@ -59,7 +66,7 @@ const JanSamparkNetwork = () => {
   const filteredMembers = members.filter(m => {
     const matchState = selectedState === 'All' || m.state === selectedState;
     const matchDistrict = selectedDistrict === 'All' || m.city === selectedDistrict;
-    const matchReference = selectedReference === 'All' || m.reference === selectedReference;
+    const matchReference = selectedReference === 'All' || getFirstName(m.reference) === selectedReference;
     return matchState && matchDistrict && matchReference;
   });
 
@@ -248,7 +255,7 @@ const JanSamparkNetwork = () => {
                       
                       <div className="text-xs font-jakarta font-bold bg-[#F8FAFC] border-2 border-[#1E293B] rounded-lg shadow-sm py-2 px-3 w-full text-[#1E293B] mt-auto uppercase tracking-wider flex justify-between items-center">
                         <span className="text-slate-500">Ref:</span> 
-                        <span className="text-[#8B5CF6] truncate ml-2 max-w-[120px]">{member.reference || 'Direct'}</span>
+                        <span className="font-bold font-outfit truncate">{getFirstName(member.reference) || 'None'}</span>
                       </div>
                     </div>
                   </motion.div>
