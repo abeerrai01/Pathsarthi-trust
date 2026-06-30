@@ -210,7 +210,7 @@ const JanSamparkNetwork = () => {
             <div className="w-24 h-24 bg-[#F1F5F9] border-2 border-[#1E293B] rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
               <Users size={40} className="text-[#1E293B]" />
             </div>
-            <h3 className="text-3xl font-outfit font-extrabold text-[#1E293B]">No members found</h3>
+            <h3 className="text-3xl font-outfit font-extrabold text-[#1E293B]">No donors found</h3>
             <p className="text-lg font-medium text-slate-500 mt-2">Try selecting a different filter above.</p>
           </div>
         ) : (
@@ -243,7 +243,7 @@ const JanSamparkNetwork = () => {
                       
                       <div className="flex items-center gap-1.5 text-xs font-jakarta font-bold text-[#1E293B] bg-[#FBBF24] border-2 border-[#1E293B] shadow-sm rounded-full px-3 py-1 mb-5 uppercase tracking-wide">
                         <Briefcase size={12} strokeWidth={3} />
-                        {member.employment || 'Member'}
+                        {member.employment || 'Donor'}
                       </div>
 
                       <div className="w-full border-t-2 border-dashed border-slate-200 mb-4"></div>
