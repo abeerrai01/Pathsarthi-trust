@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { db } from '../config/firebase';
 import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
-import { Check } from 'lucide-react';
+import { Check, Users } from 'lucide-react';
 
 const indianStates = [
   "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
@@ -237,7 +237,7 @@ const JanSampark = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-orange-50 py-12 px-4 sm:px-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-orange-50 py-12 px-4 sm:px-6">
       <div className={`w-full transition-all duration-500 bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-10 mx-auto border border-indigo-100/50 flex flex-col ${step === 'done' ? 'max-w-3xl' : 'max-w-xl'}`}>
         
         {step !== 'done' && (
@@ -458,6 +458,16 @@ const JanSampark = () => {
           </div>
         )}
       </div>
+
+      {/* Community Redirect Button */}
+      {step !== 'done' && (
+        <div className="mt-8 text-center animate-in slide-in-from-bottom-4 duration-500">
+          <p className="text-slate-500 mb-3 font-medium text-sm">Already connected or want to see who joined?</p>
+          <a href="/jan-sampark-network" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-700 font-bold rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all border border-indigo-100">
+            <Users size={18} /> View Our Community
+          </a>
+        </div>
+      )}
     </div>
   );
 };
