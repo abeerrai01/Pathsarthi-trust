@@ -237,20 +237,23 @@ const JanSampark = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-orange-50 py-16 px-4 sm:px-6 overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-paper py-16 px-4 sm:px-6 overflow-hidden font-patrick">
       
-      <div className={`w-full relative transition-all duration-500 bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl px-8 pb-8 pt-20 md:px-10 md:pb-10 md:pt-28 mx-auto border border-indigo-100/50 flex flex-col mt-28 md:mt-32 ${step === 'done' ? 'max-w-3xl' : 'max-w-xl'}`}>
+      <div className={`w-full relative transition-all duration-500 bg-white wobbly-md shadow-hard px-8 pb-8 pt-20 md:px-10 md:pb-10 md:pt-28 mx-auto border-[3px] border-[#2d2d2d] flex flex-col mt-28 md:mt-32 ${step === 'done' ? 'max-w-3xl' : 'max-w-xl'}`}>
         
+        {/* Tape Decoration */}
+        <div className="tape-strip"></div>
+
         {/* Engaging Overlay Illustration */}
-        <div className="absolute -top-32 md:-top-40 left-1/2 transform -translate-x-1/2 w-72 md:w-96 h-auto z-20 drop-shadow-[0_20px_20px_rgba(79,70,229,0.15)] animate-in fade-in slide-in-from-bottom-8 zoom-in-95 duration-1000">
-          <img src="/Team spirit-cuate.png" alt="Team Spirit" className="w-full h-full object-contain hover:-translate-y-2 hover:scale-105 transition-all duration-500" />
+        <div className="absolute -top-32 md:-top-40 left-1/2 transform -translate-x-1/2 w-72 md:w-96 h-auto z-20 drop-shadow-[4px_4px_0_#2d2d2d] animate-in fade-in slide-in-from-bottom-8 zoom-in-95 duration-1000 -rotate-2">
+          <img src="/Team spirit-cuate.png" alt="Team Spirit" className="w-full h-full object-contain hover:-translate-y-2 hover:rotate-1 transition-all duration-500" />
         </div>
 
         {step !== 'done' && (
           <div className="flex flex-col items-center mb-8 relative z-10">
             <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-16 h-auto mb-4 object-contain opacity-90" />
-            <h2 className="text-2xl md:text-3xl font-black text-center text-indigo-700 tracking-tight">Jan Sampark Abhiyan</h2>
-            <p className="text-xs text-gray-500 font-bold mt-1.5 uppercase tracking-widest">Connect • Grow • Impact</p>
+            <h2 className="text-4xl md:text-5xl font-kalam font-bold text-center text-[#2d2d2d] tracking-tight rotate-1">Jan Sampark Abhiyan</h2>
+            <p className="text-sm font-patrick font-bold mt-2 uppercase tracking-widest text-[#2d2d2d] underline decoration-dashed underline-offset-4 decoration-[#ff4d4d] -rotate-1">Connect • Grow • Impact</p>
           </div>
         )}
 
@@ -265,24 +268,24 @@ const JanSampark = () => {
             <div className="space-y-4">
               {/* Personal Details Group */}
               <div className="space-y-3">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Personal Details</label>
-                <input name="fullName" value={form.fullName} onChange={handleChange} required placeholder="Full Name*" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                <label className="text-xl font-kalam font-bold text-[#2d2d2d] block mb-2 -rotate-1">Personal Details</label>
+                <input name="fullName" value={form.fullName} onChange={handleChange} required placeholder="Full Name*" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg" />
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Mobile Number*</label>
-                    <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" maxLength="10" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                    <label className="text-lg font-patrick font-bold text-[#2d2d2d] px-1">Mobile Number*</label>
+                    <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" maxLength="10" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg" />
                   </div>
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Date of Birth*</label>
-                    <input name="dob" value={form.dob} onChange={handleChange} required type="date" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white" />
+                    <label className="text-lg font-patrick font-bold text-[#2d2d2d] px-1">Date of Birth*</label>
+                    <input name="dob" value={form.dob} onChange={handleChange} required type="date" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all text-[#2d2d2d] bg-white font-bold text-lg" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Gender*</label>
-                    <select name="gender" value={form.gender} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white h-[46px]">
+                    <label className="text-lg font-patrick font-bold text-[#2d2d2d] px-1">Gender*</label>
+                    <select name="gender" value={form.gender} onChange={handleChange} required className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all text-[#2d2d2d] bg-white font-bold text-lg h-[50px]">
                       <option value="">Select Gender*</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -290,8 +293,8 @@ const JanSampark = () => {
                     </select>
                   </div>
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Employment Status*</label>
-                    <select name="employment" value={form.employment} onChange={handleChange} required className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white h-[46px]">
+                    <label className="text-lg font-patrick font-bold text-[#2d2d2d] px-1">Employment Status*</label>
+                    <select name="employment" value={form.employment} onChange={handleChange} required className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all text-[#2d2d2d] bg-white font-bold text-lg h-[50px]">
                       <option value="">Select Employment*</option>
                       <option value="Student">Student</option>
                       <option value="Job">Job</option>
@@ -304,20 +307,20 @@ const JanSampark = () => {
 
               {/* Location Details Group */}
               <div className="space-y-3 pt-2">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Location Details</label>
+                <label className="text-xl font-kalam font-bold text-[#2d2d2d] block mb-2 rotate-1">Location Details</label>
                 <div className="flex flex-col gap-1 w-full">
-                  <input name="pincode" value={form.pincode} onChange={handleChange} required placeholder="Pincode*" maxLength="6" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                  <input name="pincode" value={form.pincode} onChange={handleChange} required placeholder="Pincode*" maxLength="6" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg" />
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">State*</label>
+                    <label className="text-lg font-patrick font-bold text-[#2d2d2d] px-1">State*</label>
                     <select 
                       name="state" 
                       value={form.state} 
                       onChange={handleChange} 
                       required 
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white h-[46px]"
+                      className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all text-[#2d2d2d] bg-white font-bold text-lg h-[50px]"
                     >
                       <option value="">Select State</option>
                       {indianStates.map((s, i) => (
@@ -329,14 +332,14 @@ const JanSampark = () => {
                     </select>
                   </div>
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">District/City*</label>
+                    <label className="text-lg font-patrick font-bold text-[#2d2d2d] px-1">District/City*</label>
                     {cities.length > 0 ? (
                       <select 
                         name="city" 
                         value={form.city} 
                         onChange={handleChange} 
                         required 
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all text-slate-800 font-semibold text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white h-[46px]"
+                        className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all text-[#2d2d2d] bg-white font-bold text-lg h-[50px]"
                       >
                         <option value="">Select District</option>
                         {cities.map((c, i) => (
@@ -353,7 +356,7 @@ const JanSampark = () => {
                         onChange={handleChange} 
                         required 
                         placeholder="District/City*" 
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm h-[46px]" 
+                        className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg h-[50px]" 
                       />
                     )}
                   </div>
@@ -362,8 +365,8 @@ const JanSampark = () => {
 
               {/* Reference Group */}
               <div className="space-y-3 pt-2">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Reference</label>
-                <input name="reference" value={form.reference} onChange={handleChange} placeholder="Referred By (Optional)" type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+                <label className="text-xl font-kalam font-bold text-[#2d2d2d] block mb-2 -rotate-1">Reference</label>
+                <input name="reference" value={form.reference} onChange={handleChange} placeholder="Referred By (Optional)" type="text" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg" />
               </div>
 
             </div>
@@ -375,18 +378,18 @@ const JanSampark = () => {
                 type="checkbox"
                 checked={agreeTerms}
                 onChange={e => setAgreeTerms(e.target.checked)}
-                className="mt-1 w-4.5 h-4.5 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 cursor-pointer accent-indigo-600"
+                className="mt-1.5 w-5 h-5 rounded border-2 border-[#2d2d2d] text-[#ff4d4d] focus:ring-0 cursor-pointer accent-[#ff4d4d]"
                 required
               />
-              <label htmlFor="agreeTerms" className="text-xs text-slate-500 font-semibold cursor-pointer select-none leading-relaxed">
+              <label htmlFor="agreeTerms" className="text-lg text-[#2d2d2d] font-bold cursor-pointer select-none leading-tight">
                 I agree to the Terms & Conditions of PathSarthi Trust's Jan Sampark program.
               </label>
             </div>
 
-            <button type="submit" className="w-full bg-indigo-600 hover:bg-[#ff7300] text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md hover:shadow-orange-200 hover:-translate-y-0.5 transform active:translate-y-0 disabled:opacity-50 flex items-center justify-center gap-2 text-base" disabled={loading}>
+            <button type="submit" className="w-full wobbly-sm bg-white border-[3px] border-[#2d2d2d] text-[#2d2d2d] font-patrick font-bold text-2xl py-3 shadow-hard shadow-hard-hover shadow-hard-active transition-all disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-[#ff7300] hover:text-white" disabled={loading}>
               {loading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-[3px] border-[#2d2d2d] border-t-transparent rounded-full animate-spin"></div>
                   Processing...
                 </>
               ) : 'Proceed to Payment'}
@@ -418,13 +421,13 @@ const JanSampark = () => {
             </div>
 
             <button 
-              className="w-full bg-indigo-600 hover:bg-[#ff7300] text-white font-bold py-3.5 rounded-xl transition duration-300 shadow-md hover:shadow-orange-200 hover:-translate-y-0.5 transform active:translate-y-0 flex items-center justify-center gap-2 disabled:opacity-50 text-base" 
+              className="w-full wobbly-sm bg-white border-[3px] border-[#2d2d2d] text-[#2d2d2d] font-patrick font-bold text-2xl py-3 shadow-hard shadow-hard-hover shadow-hard-active transition-all disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-[#ff7300] hover:text-white" 
               disabled={loading} 
               onClick={handlePayWithRazorpay}
             >
               {loading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-[3px] border-[#2d2d2d] border-t-transparent rounded-full animate-spin"></div>
                   Processing...
                 </>
               ) : 'Pay ₹5 & Complete Registration'}
@@ -468,9 +471,9 @@ const JanSampark = () => {
       {/* Community Redirect Button */}
       {step !== 'done' && (
         <div className="mt-8 text-center animate-in slide-in-from-bottom-4 duration-500">
-          <p className="text-slate-500 mb-3 font-medium text-sm">Already connected or want to see who joined?</p>
-          <a href="/jan-sampark-network" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-700 font-bold rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all border border-indigo-100">
-            <Users size={18} /> View Our Community
+          <p className="text-[#2d2d2d] mb-3 font-patrick font-bold text-lg">Already connected or want to see who joined?</p>
+          <a href="/jan-sampark-network" className="inline-flex items-center gap-2 px-6 py-3 bg-white border-[3px] border-[#2d2d2d] text-[#2d2d2d] font-patrick font-bold text-xl wobbly-sm shadow-hard shadow-hard-hover shadow-hard-active transition-all hover:bg-[#ff4d4d] hover:text-white -rotate-1">
+            <Users size={22} /> View Our Community
           </a>
         </div>
       )}

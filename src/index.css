@@ -45,5 +45,81 @@
   .animate-slide-up {
     animation: slide-up 0.5s ease-out forwards;
   }
+
+  /* --- Hand-Drawn Design System Tokens --- */
+  
+  .font-kalam {
+    font-family: 'Kalam', cursive;
+  }
+  
+  .font-patrick {
+    font-family: 'Patrick Hand', cursive;
+  }
+
+  .bg-paper {
+    background-color: #fdfbf7;
+    background-image: radial-gradient(#e5e0d8 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+  }
+
+  /* Wobbly Radii */
+  .wobbly {
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px !important;
+  }
+  .wobbly-md {
+    border-radius: 125px 15px 125px 15px / 15px 125px 15px 125px !important;
+  }
+  .wobbly-sm {
+    border-radius: 45px 15px 45px 15px / 15px 45px 15px 45px !important;
+  }
+  .wobbly-input {
+    border-radius: 20px 8px 15px 8px / 8px 15px 8px 20px !important;
+  }
+  
+  /* Hard Offset Shadows */
+  .shadow-hard {
+    box-shadow: 4px 4px 0px 0px #2d2d2d !important;
+  }
+  .shadow-hard-hover:hover {
+    box-shadow: 2px 2px 0px 0px #2d2d2d !important;
+    transform: translate(2px, 2px);
+  }
+  .shadow-hard-active:active {
+    box-shadow: 0px 0px 0px 0px #2d2d2d !important;
+    transform: translate(4px, 4px);
+  }
+  .shadow-hard-lg {
+    box-shadow: 8px 8px 0px 0px #2d2d2d !important;
+  }
+  .shadow-hard-orange {
+    box-shadow: 4px 4px 0px 0px #ff7300 !important;
+  }
+
+  /* Decorative Overlay Patterns */
+  .tape-strip {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 80px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    z-index: 10;
+  }
+
+  .thumbtack {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    background-color: #ff4d4d;
+    border-radius: 50%;
+    border: 2px solid #2d2d2d;
+    box-shadow: 2px 2px 0px 0px rgba(45,45,45,0.4);
+    z-index: 10;
+  }
 }
 

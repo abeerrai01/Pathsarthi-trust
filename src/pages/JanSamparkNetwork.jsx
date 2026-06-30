@@ -79,22 +79,21 @@ const JanSamparkNetwork = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pb-20">
+    <div className="min-h-screen bg-paper font-patrick pb-20 overflow-hidden">
       
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-indigo-700 via-blue-800 to-indigo-900 text-white py-16 md:py-24 px-4 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-[100px] opacity-20"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-overlay filter blur-[80px] opacity-30"></div>
+      <div className="pt-28 pb-16 md:pt-36 md:pb-24 px-4 relative overflow-hidden flex flex-col items-center">
+        {/* Engaging Overlay Illustration (Optional but fun) */}
         
         <div className="max-w-6xl mx-auto relative z-10 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <span className="inline-block px-4 py-1.5 bg-indigo-500/30 border border-indigo-400/30 rounded-full text-indigo-100 font-bold text-xs uppercase tracking-widest mb-6 backdrop-blur-sm">
+            <span className="inline-block px-4 py-1.5 bg-[#fff9c4] border-[3px] border-[#2d2d2d] wobbly-sm text-[#2d2d2d] font-bold text-lg uppercase tracking-widest mb-6 shadow-[2px_2px_0_#2d2d2d] rotate-2">
               Community Hub
             </span>
-            <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight tracking-tight">
-              Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-300">Community</span>
+            <h1 className="text-5xl md:text-7xl font-kalam font-bold mb-6 leading-tight tracking-tight text-[#2d2d2d] -rotate-1">
+              Our <span className="text-[#ff4d4d] underline decoration-dashed underline-offset-8">Community</span>
             </h1>
-            <p className="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto font-medium leading-relaxed mb-10">
+            <p className="text-xl md:text-2xl text-[#2d2d2d] max-w-2xl mx-auto font-bold leading-relaxed mb-10">
               Meet the amazing people from across the country who have connected with PathSarthi Trust to spread hope, heal hearts, and serve humanity.
             </p>
           </motion.div>
@@ -104,25 +103,25 @@ const JanSamparkNetwork = () => {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-4 md:gap-8"
+            className="flex flex-wrap justify-center gap-4 md:gap-8 mt-6"
           >
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 flex items-center gap-4 min-w-[200px]">
-              <div className="w-12 h-12 rounded-full bg-orange-400 text-white flex items-center justify-center shrink-0">
-                <Users size={24} />
+            <div className="bg-white wobbly-sm border-[3px] border-[#2d2d2d] shadow-hard p-4 md:p-6 flex items-center gap-4 min-w-[200px] rotate-1">
+              <div className="w-14 h-14 rounded-full bg-[#ff4d4d] border-[3px] border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] text-white flex items-center justify-center shrink-0">
+                <Users size={28} />
               </div>
               <div className="text-left">
-                <div className="text-3xl font-black">{loading ? '-' : totalMembers}</div>
-                <div className="text-xs text-indigo-200 font-bold uppercase tracking-widest mt-1">People Joined</div>
+                <div className="text-4xl font-kalam font-bold text-[#2d2d2d]">{loading ? '-' : totalMembers}</div>
+                <div className="text-sm font-bold text-[#2d2d2d] uppercase tracking-widest mt-1">People Joined</div>
               </div>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 flex items-center gap-4 min-w-[200px]">
-              <div className="w-12 h-12 rounded-full bg-emerald-400 text-white flex items-center justify-center shrink-0">
-                <Map size={24} />
+            <div className="bg-white wobbly-sm border-[3px] border-[#2d2d2d] shadow-hard p-4 md:p-6 flex items-center gap-4 min-w-[200px] -rotate-2">
+              <div className="w-14 h-14 rounded-full bg-[#2d5da1] border-[3px] border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] text-white flex items-center justify-center shrink-0">
+                <Map size={28} />
               </div>
               <div className="text-left">
-                <div className="text-3xl font-black">{loading ? '-' : totalDistricts}</div>
-                <div className="text-xs text-indigo-200 font-bold uppercase tracking-widest mt-1">Districts Reached</div>
+                <div className="text-4xl font-kalam font-bold text-[#2d2d2d]">{loading ? '-' : totalDistricts}</div>
+                <div className="text-sm font-bold text-[#2d2d2d] uppercase tracking-widest mt-1">Districts Reached</div>
               </div>
             </div>
           </motion.div>
@@ -130,18 +129,19 @@ const JanSamparkNetwork = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-4">
         
         {/* Filters */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-2 md:p-3 mb-10 overflow-x-auto custom-scrollbar flex gap-2">
+        <div className="bg-white wobbly-md border-[3px] border-[#2d2d2d] shadow-hard p-3 md:p-4 mb-10 overflow-x-auto custom-scrollbar flex gap-3 -rotate-1 relative z-10">
+          <div className="thumbtack"></div>
           {statesList.map(state => (
             <button
               key={state}
               onClick={() => setSelectedState(state)}
-              className={`whitespace-nowrap px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${
+              className={`whitespace-nowrap px-6 py-2.5 wobbly-sm font-patrick font-bold text-lg transition-all border-2 ${
                 selectedState === state
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200'
-                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
+                  ? 'bg-[#ff4d4d] text-white border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d]'
+                  : 'bg-white text-[#2d2d2d] border-transparent hover:border-[#2d2d2d] hover:shadow-[2px_2px_0_#2d2d2d]'
               }`}
             >
               {state}
@@ -152,15 +152,15 @@ const JanSamparkNetwork = () => {
         {/* Member Grid */}
         {loading ? (
           <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+            <div className="w-10 h-10 border-[4px] border-[#2d2d2d] border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : filteredMembers.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
-            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users size={32} className="text-slate-300" />
+          <div className="text-center py-20 bg-white wobbly-md border-[3px] border-[#2d2d2d] shadow-hard rotate-1">
+            <div className="w-20 h-20 bg-[#fff9c4] border-[3px] border-[#2d2d2d] wobbly-sm flex items-center justify-center mx-auto mb-4 shadow-[4px_4px_0_#2d2d2d] -rotate-2">
+              <Users size={36} className="text-[#2d2d2d]" />
             </div>
-            <h3 className="text-xl font-bold text-slate-700">No members found</h3>
-            <p className="text-slate-500 mt-2">Try selecting a different state from the filter above.</p>
+            <h3 className="text-3xl font-kalam font-bold text-[#2d2d2d]">No members found</h3>
+            <p className="text-lg font-patrick font-bold text-[#2d2d2d]/70 mt-2">Try selecting a different state from the filter above.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -170,6 +170,10 @@ const JanSamparkNetwork = () => {
                 const initials = (displayName[0] || 'U').toUpperCase();
                 const gradient = getAvatarGradient(member.id || displayName);
 
+                // Random rotation for each card to look like scattered paper
+                const rotationClasses = ['-rotate-1', 'rotate-1', '-rotate-2', 'rotate-2'];
+                const randomRotate = rotationClasses[i % rotationClasses.length];
+
                 return (
                   <motion.div
                     layout
@@ -178,32 +182,34 @@ const JanSamparkNetwork = () => {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.3, delay: i * 0.05 }}
                     key={member.id}
-                    className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition-shadow border border-slate-100 group relative overflow-hidden"
+                    className={`bg-white wobbly-md p-6 shadow-hard hover:shadow-hard-hover transition-all border-[3px] border-[#2d2d2d] group relative overflow-hidden flex flex-col items-center text-center ${randomRotate}`}
                   >
+                    <div className="tape-strip"></div>
+                    
                     {/* Decorative Blob */}
                     <div className={`absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br ${gradient} rounded-full mix-blend-multiply filter blur-2xl opacity-10 group-hover:opacity-20 transition-opacity`}></div>
 
-                    <div className="flex flex-col items-center text-center">
-                      <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${gradient} text-white flex items-center justify-center text-3xl font-black shadow-lg mb-4 ring-4 ring-white`}>
+                    <div className="flex flex-col items-center text-center mt-2 w-full">
+                      <div className={`w-24 h-24 rounded-full bg-gradient-to-br ${gradient} text-white flex items-center justify-center text-4xl font-kalam font-bold shadow-[4px_4px_0_#2d2d2d] mb-4 border-[3px] border-[#2d2d2d]`}>
                         {initials}
                       </div>
                       
-                      <h3 className="text-lg font-black text-slate-800 mb-1 line-clamp-1">{displayName}</h3>
+                      <h3 className="text-2xl font-kalam font-bold text-[#2d2d2d] mb-1 line-clamp-1">{displayName}</h3>
                       
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-full mb-4">
-                        <Briefcase size={12} />
+                      <div className="flex items-center gap-1.5 text-sm font-patrick font-bold text-[#2d2d2d] bg-[#fff9c4] border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] px-3 py-1.5 wobbly-sm mb-4">
+                        <Briefcase size={14} className="text-[#ff4d4d]" />
                         {member.employment || 'Member'}
                       </div>
 
-                      <div className="w-full h-px bg-slate-100 mb-4"></div>
+                      <div className="w-full border-t-2 border-dashed border-[#2d2d2d]/30 mb-4"></div>
 
-                      <div className="flex items-start justify-center gap-2 text-sm font-medium text-slate-500 mb-3">
-                        <MapPin size={16} className="shrink-0 mt-0.5 text-slate-400" />
+                      <div className="flex items-start justify-center gap-2 text-lg font-patrick font-bold text-[#2d2d2d] mb-3">
+                        <MapPin size={18} className="shrink-0 mt-0.5 text-[#ff4d4d]" />
                         <span className="line-clamp-2 leading-snug">{member.city}, {member.state}</span>
                       </div>
                       
-                      <div className="text-xs bg-slate-50 border border-slate-100 rounded-lg py-2 px-3 w-full text-slate-500 mt-auto">
-                        <span className="font-semibold">Ref:</span> {member.reference || 'Direct'}
+                      <div className="text-sm font-patrick font-bold bg-[#e5e0d8] border-2 border-[#2d2d2d] wobbly-sm shadow-[2px_2px_0_#2d2d2d] py-2 px-3 w-full text-[#2d2d2d] mt-auto">
+                        <span className="text-[#2d5da1]">Ref:</span> {member.reference || 'Direct'}
                       </div>
                     </div>
                   </motion.div>
@@ -215,10 +221,10 @@ const JanSamparkNetwork = () => {
       </div>
       
       {/* CTA Section */}
-      <div className="max-w-4xl mx-auto mt-24 text-center px-4">
-        <h3 className="text-2xl font-black text-slate-800 mb-4">Want to be part of the change?</h3>
-        <p className="text-slate-600 mb-8 max-w-xl mx-auto">Join the Jan Sampark Abhiyan and connect with thousands of like-minded individuals working towards a better tomorrow.</p>
-        <a href="/jan-sampark" className="inline-block px-8 py-4 bg-[#ff7300] hover:bg-orange-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-orange-200 transition-all hover:-translate-y-1">
+      <div className="max-w-4xl mx-auto mt-24 text-center px-4 relative z-20">
+        <h3 className="text-4xl font-kalam font-bold text-[#2d2d2d] mb-4 rotate-1">Want to be part of the change?</h3>
+        <p className="text-xl font-patrick font-bold text-[#2d2d2d] mb-8 max-w-xl mx-auto -rotate-1">Join the Jan Sampark Abhiyan and connect with thousands of like-minded individuals working towards a better tomorrow.</p>
+        <a href="/jan-sampark" className="inline-block px-8 py-4 bg-white border-[3px] border-[#2d2d2d] wobbly-sm text-[#2d2d2d] font-patrick font-bold text-2xl shadow-hard shadow-hard-hover transition-all hover:bg-[#ff4d4d] hover:text-white rotate-2">
           Join Jan Sampark Today
         </a>
       </div>
