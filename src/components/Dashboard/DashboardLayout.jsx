@@ -27,6 +27,7 @@ import MissionManager from './MissionManager';
 import AnalyticsPanel from './AnalyticsPanel';
 import AdminEducation from './AdminEducation';
 import AdminMemberships from './AdminMemberships';
+import AdminJanSampark from './AdminJanSampark';
 
 ChartJS.register(
   CategoryScale,
@@ -76,6 +77,7 @@ const DashboardLayout = () => {
   const menuItems = [
     { id: "overview", label: "Overview Home", icon: <LayoutDashboard size={20} /> },
     { id: "memberships", label: "Membership Database", icon: <Users size={20} /> },
+    { id: "jan-sampark", label: "Jan Sampark Database", icon: <Users size={20} /> },
     { id: "education-applications", label: "Education Requests", icon: <GraduationCap size={20} /> },
     { id: "analytics", label: "Website Analytics", icon: <Activity size={20} /> },
     { id: "team", label: "Team & Supporters", icon: <Users size={20} /> },
@@ -241,6 +243,7 @@ const DashboardLayout = () => {
               {activeSection === "edit-gallery-headings" && <EditGalleryHeadings />}
               {activeSection === "education-applications" && <AdminEducation />}
               {activeSection === "memberships" && <AdminMemberships />}
+              {activeSection === "jan-sampark" && <AdminJanSampark />}
             </div>
             
           </div>
