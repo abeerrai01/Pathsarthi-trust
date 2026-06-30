@@ -86,7 +86,7 @@ const AdminJanSampark = () => {
       'Phone': e.phone || 'N/A',
       'Gender': e.gender || 'N/A',
       'DOB': e.dob || 'N/A',
-      'Employment': e.employment || 'N/A',
+      'Amount Paid': `₹${e.amount || 5}`,
       'Location': `${e.city || 'N/A'}, ${e.state || 'N/A'} - ${e.pincode || ''}`,
       'Reference': e.reference || 'N/A',
       'Status': e.status || 'pending',
@@ -311,8 +311,8 @@ const AdminJanSampark = () => {
                       
                       <div className="pt-2.5 mt-2.5 border-t border-slate-200 text-xs flex flex-col gap-1 text-slate-500">
                         <div className="flex justify-between">
-                          <span>Employment:</span>
-                          <span className="font-semibold text-slate-700">{member.employment}</span>
+                          <span>Amount Paid:</span>
+                          <span className="font-semibold text-slate-700">₹{member.amount || 5}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Reference:</span>

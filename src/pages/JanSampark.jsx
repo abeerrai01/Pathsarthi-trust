@@ -21,7 +21,6 @@ const initialForm = {
   pincode: '',
   state: '',
   city: '', // This will serve as district
-  employment: '',
   reference: '',
 };
 
@@ -34,6 +33,9 @@ const JanSampark = () => {
   const [createdDocId, setCreatedDocId] = useState('');
   const [cities, setCities] = useState([]);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [donationAmount, setDonationAmount] = useState(5);
+  
+  const predefinedAmounts = [5, 10, 50, 100, 250, 500, 1000];
 
   const createdDocIdRef = useRef('');
   const formRef = useRef(form);
@@ -84,7 +86,7 @@ const JanSampark = () => {
 
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_lrTbKMU5YpM6UD",
-      amount: 5 * 100, // ₹5 in paise
+      amount: (donationAmount || 5) * 100, // Amount in paise
       currency: "INR",
       name: "Path Sarthi Trust",
       description: "Jan Sampark Registration",
@@ -98,11 +100,13 @@ const JanSampark = () => {
           if (docId) {
             await updateDoc(doc(db, "jan_sampark", docId), {
               paymentId: generatedId,
+              amount: donationAmount || 5,
               status: 'completed',
             });
           } else {
             await addDoc(collection(db, "jan_sampark"), {
               ...formRef.current,
+              amount: donationAmount || 5,
               paymentId: generatedId,
               createdAt: new Date(),
               status: 'completed',
@@ -196,7 +200,7 @@ const JanSampark = () => {
   };
 
   const validateForm = () => {
-    if (!form.fullName || !form.dob || !form.gender || !form.city || !form.state || !form.phone || !form.pincode || !form.employment) {
+    if (!form.fullName || !form.dob || !form.gender || !form.city || !form.state || !form.phone || !form.pincode) {
       showToast('Please fill all required fields.', 'error');
       return false;
     }
@@ -250,7 +254,7 @@ const JanSampark = () => {
             <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-16 h-auto mb-3 object-contain" />
             <h2 className="text-3xl md:text-4xl font-outfit font-extrabold text-geom-foreground mb-2 tracking-tight">Jan Sampark Abhiyan</h2>
             <p className="text-sm font-medium text-slate-500 uppercase tracking-widest border-b-2 border-dashed border-slate-200 pb-3 mb-2">Connect • Grow • Impact</p>
-            <p className="text-base text-slate-600 font-medium">Join the movement. Registration fee: <span className="font-outfit font-bold text-[#8B5CF6] text-xl">₹5</span></p>
+            <p className="text-base text-slate-600 font-medium">Join the movement with a contribution starting from: <span className="font-outfit font-bold text-[#8B5CF6] text-xl">₹5</span></p>
           </div>
         </div>
       )}
@@ -282,26 +286,14 @@ const JanSampark = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1 w-full">
-                    <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Gender*</label>
-                    <select name="gender" value={form.gender} onChange={handleChange} required className="w-full px-4 py-3 geom-input h-[50px]">
-                      <option value="">Select Gender*</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                  <div className="flex flex-col gap-1 w-full">
-                    <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Employment Status*</label>
-                    <select name="employment" value={form.employment} onChange={handleChange} required className="w-full px-4 py-3 geom-input h-[50px]">
-                      <option value="">Select Employment*</option>
-                      <option value="Student">Student</option>
-                      <option value="Job">Job</option>
-                      <option value="Business">Business</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
+                <div className="flex flex-col gap-1 w-full">
+                  <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Gender*</label>
+                  <select name="gender" value={form.gender} onChange={handleChange} required className="w-full px-4 py-3 geom-input h-[50px]">
+                    <option value="">Select Gender*</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
               </div>
 
@@ -414,15 +406,36 @@ const JanSampark = () => {
                 <span className="font-semibold text-slate-500 uppercase tracking-wide">Location</span>
                 <span className="font-bold">{form.city}, {form.state}</span>
               </div>
-              <div className="flex justify-between pt-2 text-lg font-bold text-[#1E293B] items-center">
-                <span className="font-outfit uppercase tracking-wide">Registration Fee</span>
-                <span className="text-[#8B5CF6] text-3xl font-outfit font-extrabold">₹5</span>
+              <div className="pt-2 border-t-2 border-dashed border-slate-200 mt-2">
+                <span className="font-outfit uppercase tracking-wide font-bold text-[#1E293B] block mb-3">Select Contribution Amount</span>
+                <div className="grid grid-cols-4 sm:grid-cols-4 gap-2 mb-4">
+                  {predefinedAmounts.map(amt => (
+                    <button
+                      key={amt}
+                      onClick={() => setDonationAmount(amt)}
+                      className={`py-2 px-1 rounded-xl border-2 font-bold transition-all text-sm ${donationAmount === amt ? 'bg-[#8B5CF6] text-white border-[#1E293B] shadow-geom' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-[#8B5CF6]'}`}
+                    >
+                      ₹{amt}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-500">Other: ₹</span>
+                  <input
+                    type="number"
+                    min="1"
+                    value={donationAmount}
+                    onChange={(e) => setDonationAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                    className="flex-1 px-4 py-2 geom-input h-[45px] text-lg font-bold border-2 border-[#1E293B] focus:border-[#8B5CF6]"
+                    placeholder="Custom amount"
+                  />
+                </div>
               </div>
             </div>
 
             <button 
               className="w-full candy-btn candy-btn-primary py-4 text-xl flex items-center justify-center gap-2" 
-              disabled={loading} 
+              disabled={loading || !donationAmount || donationAmount < 1} 
               onClick={handlePayWithRazorpay}
             >
               {loading ? (
@@ -430,7 +443,7 @@ const JanSampark = () => {
                   <div className="w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin"></div>
                   Processing...
                 </>
-              ) : 'Pay ₹5 & Complete'}
+              ) : `Pay ₹${donationAmount || 0} & Complete`}
             </button>
           </div>
         )}
