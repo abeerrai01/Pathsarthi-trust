@@ -73,6 +73,7 @@ const Navbar = () => {
       ]
     },
     { to: '/membership', label: 'Membership' },
+    { to: '/jan-sampark', label: 'Jan Sampark' },
     { to: '/education-support', label: 'Education Support Program' },
     { to: '/internship', label: 'Internship' },
     { to: '/blog', label: 'Blog' },
