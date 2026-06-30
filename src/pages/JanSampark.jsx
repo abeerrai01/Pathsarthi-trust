@@ -237,14 +237,20 @@ const JanSampark = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-orange-50 py-12 px-4 sm:px-6">
-      <div className={`w-full transition-all duration-500 bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-10 mx-auto border border-indigo-100/50 flex flex-col ${step === 'done' ? 'max-w-3xl' : 'max-w-xl'}`}>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-orange-50 py-16 px-4 sm:px-6 overflow-hidden">
+      
+      <div className={`w-full relative transition-all duration-500 bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl px-8 pb-8 pt-20 md:px-10 md:pb-10 md:pt-28 mx-auto border border-indigo-100/50 flex flex-col mt-28 md:mt-32 ${step === 'done' ? 'max-w-3xl' : 'max-w-xl'}`}>
         
+        {/* Engaging Overlay Illustration */}
+        <div className="absolute -top-32 md:-top-40 left-1/2 transform -translate-x-1/2 w-72 md:w-96 h-auto z-20 drop-shadow-[0_20px_20px_rgba(79,70,229,0.15)] animate-in fade-in slide-in-from-bottom-8 zoom-in-95 duration-1000">
+          <img src="/Team spirit-cuate.png" alt="Team Spirit" className="w-full h-full object-contain hover:-translate-y-2 hover:scale-105 transition-all duration-500" />
+        </div>
+
         {step !== 'done' && (
-          <div className="flex flex-col items-center mb-8">
-            <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-24 h-auto mb-4 object-contain" />
+          <div className="flex flex-col items-center mb-8 relative z-10">
+            <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-16 h-auto mb-4 object-contain opacity-90" />
             <h2 className="text-2xl md:text-3xl font-black text-center text-indigo-700 tracking-tight">Jan Sampark Abhiyan</h2>
-            <p className="text-xs text-gray-400 font-bold mt-1.5 uppercase tracking-widest">Connect • Grow • Impact</p>
+            <p className="text-xs text-gray-500 font-bold mt-1.5 uppercase tracking-widest">Connect • Grow • Impact</p>
           </div>
         )}
 
