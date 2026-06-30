@@ -46,80 +46,74 @@
     animation: slide-up 0.5s ease-out forwards;
   }
 
-  /* --- Hand-Drawn Design System Tokens --- */
+  /* --- Playful Geometric Design System Tokens --- */
   
-  .font-kalam {
-    font-family: 'Kalam', cursive;
+  .font-outfit {
+    font-family: 'Outfit', system-ui, sans-serif;
   }
   
-  .font-patrick {
-    font-family: 'Patrick Hand', cursive;
+  .font-jakarta {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 
-  .bg-paper {
-    background-color: #fdfbf7;
-    background-image: radial-gradient(#e5e0d8 1.5px, transparent 1.5px);
+  .bg-geom-light {
+    background-color: #FFFDF5;
+  }
+  
+  .bg-dot-pattern {
+    background-color: #FFFDF5;
+    background-image: radial-gradient(#CBD5E1 2px, transparent 2px);
     background-size: 24px 24px;
   }
 
-  /* Wobbly Radii */
-  .wobbly {
-    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px !important;
+  .text-geom-foreground {
+    color: #1E293B;
   }
-  .wobbly-md {
-    border-radius: 125px 15px 125px 15px / 15px 125px 15px 125px !important;
+
+  /* Blob Radii */
+  .rounded-blob {
+    border-radius: 1rem 1rem 1rem 0 !important;
   }
-  .wobbly-sm {
-    border-radius: 45px 15px 45px 15px / 15px 45px 15px 45px !important;
-  }
-  .wobbly-input {
-    border-radius: 20px 8px 15px 8px / 8px 15px 8px 20px !important;
+  .rounded-arch {
+    border-radius: 9999px 9999px 0 0 !important;
   }
   
-  /* Hard Offset Shadows */
-  .shadow-hard {
-    box-shadow: 4px 4px 0px 0px #2d2d2d !important;
+  /* Geometric Hard Shadows */
+  .shadow-geom {
+    box-shadow: 4px 4px 0px 0px #1E293B !important;
   }
-  .shadow-hard-hover:hover {
-    box-shadow: 2px 2px 0px 0px #2d2d2d !important;
+  .shadow-geom-hover:hover {
+    box-shadow: 6px 6px 0px 0px #1E293B !important;
+    transform: translate(-2px, -2px);
+  }
+  .shadow-geom-active:active {
+    box-shadow: 2px 2px 0px 0px #1E293B !important;
     transform: translate(2px, 2px);
   }
-  .shadow-hard-active:active {
-    box-shadow: 0px 0px 0px 0px #2d2d2d !important;
-    transform: translate(4px, 4px);
+  .shadow-geom-pink {
+    box-shadow: 8px 8px 0px 0px #F472B6 !important;
   }
-  .shadow-hard-lg {
-    box-shadow: 8px 8px 0px 0px #2d2d2d !important;
-  }
-  .shadow-hard-orange {
-    box-shadow: 4px 4px 0px 0px #ff7300 !important;
+  .shadow-geom-soft {
+    box-shadow: 8px 8px 0px 0px #E2E8F0 !important;
   }
 
-  /* Decorative Overlay Patterns */
-  .tape-strip {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%) rotate(-2deg);
-    width: 80px;
-    height: 30px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-    z-index: 10;
+  /* Component Bases */
+  .candy-btn {
+    @apply inline-flex items-center justify-center font-outfit font-bold rounded-full border-2 border-[#1E293B] shadow-geom shadow-geom-hover shadow-geom-active transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)];
+  }
+  .candy-btn-primary {
+    @apply bg-[#8B5CF6] text-white;
+  }
+  .candy-btn-secondary {
+    @apply bg-transparent text-[#1E293B] hover:bg-[#FBBF24];
+  }
+  
+  .sticker-card {
+    @apply bg-white border-2 border-[#1E293B] rounded-xl shadow-geom-soft hover:shadow-geom-pink hover:-rotate-1 hover:scale-105 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)];
   }
 
-  .thumbtack {
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 14px;
-    height: 14px;
-    background-color: #ff4d4d;
-    border-radius: 50%;
-    border: 2px solid #2d2d2d;
-    box-shadow: 2px 2px 0px 0px rgba(45,45,45,0.4);
-    z-index: 10;
+  .geom-input {
+    @apply bg-white border-2 border-[#CBD5E1] rounded-lg text-[#1E293B] font-jakarta shadow-[4px_4px_0px_transparent] focus:border-[#8B5CF6] focus:shadow-[4px_4px_0_#8B5CF6] outline-none transition-all duration-200;
   }
 }
 

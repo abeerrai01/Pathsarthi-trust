@@ -442,26 +442,25 @@ const MembershipForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-paper py-16 px-4 sm:px-6 overflow-hidden font-patrick">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-geom-light py-16 px-4 sm:px-6 overflow-hidden font-jakarta relative">
       
-      <div className={`w-full relative transition-all duration-500 bg-white wobbly-md shadow-hard px-8 pb-8 pt-20 md:px-10 md:pb-10 md:pt-28 mx-auto border-[3px] border-[#2d2d2d] flex flex-col mt-28 md:mt-32 ${step === 'done' ? 'max-w-4xl' : 'max-w-xl'}`}>
-        
-        {/* Tape Decoration */}
-        <div className="tape-strip"></div>
+      {/* Background Dots */}
+      <div className="absolute inset-0 bg-dot-pattern opacity-50 pointer-events-none"></div>
 
-        {/* Engaging Overlay Illustration */}
-        <div className="absolute -top-32 md:-top-40 left-1/2 transform -translate-x-1/2 w-72 md:w-96 h-auto z-20 drop-shadow-[4px_4px_0_#2d2d2d] animate-in fade-in slide-in-from-bottom-8 zoom-in-95 duration-1000 rotate-1">
-          <img src="/Forms-bro.png" alt="Membership Form" className="w-full h-full object-contain hover:-translate-y-2 hover:-rotate-1 transition-all duration-500" />
-        </div>
-
-        {/* Brand Header with centered Logo-2 */}
-        {step !== 'done' && (
-          <div className="flex flex-col items-center mb-8 relative z-10">
-            <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-16 h-auto mb-4 object-contain opacity-90" />
-            <h2 className="text-4xl md:text-5xl font-kalam font-bold text-center text-[#2d2d2d] tracking-tight -rotate-1">Become a Pathsarthi Member</h2>
-            <p className="text-sm font-patrick font-bold mt-2 uppercase tracking-widest text-[#2d2d2d] underline decoration-dashed underline-offset-4 decoration-[#ff4d4d] rotate-1">Hope • Heal • Humanity</p>
+      {/* Hero Header & Image */}
+      {step !== 'done' && (
+        <div className="relative z-20 flex flex-col items-center text-center mb-8 animate-in slide-in-from-bottom-8 duration-700">
+          <img src="/Forms-bro.png" alt="Membership Form" className="w-64 md:w-80 h-auto object-contain drop-shadow-xl hover:-translate-y-2 transition-transform duration-300 mb-4" />
+          <div className="flex flex-col items-center bg-white border-2 border-[#1E293B] shadow-geom-soft rounded-2xl px-8 py-6 max-w-lg">
+            <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-16 h-auto mb-3 object-contain" />
+            <h2 className="text-3xl md:text-4xl font-outfit font-extrabold text-geom-foreground mb-2 tracking-tight">Become a Member</h2>
+            <p className="text-sm font-medium text-slate-500 uppercase tracking-widest border-b-2 border-dashed border-slate-200 pb-3 mb-2">Join PathSarthi Trust</p>
+            <p className="text-base text-slate-600 font-medium">Be a catalyst for hope. Registration fee: <span className="font-outfit font-bold text-[#8B5CF6] text-xl">₹100</span></p>
           </div>
-        )}
+        </div>
+      )}
+
+      <div className={`w-full relative transition-all duration-500 bg-white shadow-geom px-6 pb-8 pt-8 md:px-10 md:pb-10 mx-auto border-2 border-[#1E293B] rounded-2xl flex flex-col z-20 ${step === 'done' ? 'max-w-4xl' : 'max-w-xl'}`}>
 
         {toast && (
           <div className={`mb-6 px-4 py-3 rounded-xl text-center text-sm font-semibold text-white shadow-md ${toast.type === 'error' ? 'bg-red-500' : toast.type === 'success' ? 'bg-green-600' : 'bg-indigo-500'}`}>
@@ -473,17 +472,17 @@ const MembershipForm = () => {
           <form onSubmit={handleFormSubmit} className="space-y-6">
             <div className="space-y-4">
               {/* Personal Details Group */}
-              <div className="space-y-3">
-                <label className="text-xl font-kalam font-bold text-[#2d2d2d] block mb-2 rotate-1">Personal Details</label>
-                <input name="fullName" value={form.fullName} onChange={handleChange} required placeholder="Full Name*" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="space-y-4">
+                <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide block mb-1">Personal Details</label>
+                <input name="fullName" value={form.fullName} onChange={handleChange} required placeholder="Full Name*" className="w-full px-4 py-3 geom-input" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-lg font-patrick font-bold text-[#2d2d2d] px-1">Date of Birth*</label>
-                    <input name="dob" value={form.dob} onChange={handleChange} required type="date" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all text-[#2d2d2d] bg-white font-bold text-lg" />
+                    <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Date of Birth*</label>
+                    <input name="dob" value={form.dob} onChange={handleChange} required type="date" className="w-full px-4 py-3 geom-input h-[50px]" />
                   </div>
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-lg font-patrick font-bold text-[#2d2d2d] px-1">Gender*</label>
-                    <select name="gender" value={form.gender} onChange={handleChange} required className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all text-[#2d2d2d] bg-white font-bold text-lg h-[50px]">
+                    <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Gender*</label>
+                    <select name="gender" value={form.gender} onChange={handleChange} required className="w-full px-4 py-3 geom-input h-[50px]">
                       <option value="">Gender*</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -494,31 +493,31 @@ const MembershipForm = () => {
               </div>
 
               {/* Contact & Verification Group */}
-              <div className="space-y-3 pt-2">
-                <label className="text-xl font-kalam font-bold text-[#2d2d2d] block mb-2 -rotate-1">Contact & Verification</label>
-                <input name="email" value={form.email} onChange={handleChange} required placeholder="Email ID*" type="email" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg" />
-                <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg" />
-                <input name="pincode" value={form.pincode} onChange={handleChange} required placeholder="Pincode*" maxLength="6" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg" />
+              <div className="space-y-4 pt-4 border-t-2 border-dashed border-slate-200">
+                <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide block mb-1">Contact & Verification</label>
+                <input name="email" value={form.email} onChange={handleChange} required placeholder="Email ID*" type="email" className="w-full px-4 py-3 geom-input" />
+                <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" className="w-full px-4 py-3 geom-input" />
+                <input name="pincode" value={form.pincode} onChange={handleChange} required placeholder="Pincode*" maxLength="6" className="w-full px-4 py-3 geom-input" />
               </div>
 
               {/* Reference Group */}
-              <div className="space-y-3 pt-2">
-                <label className="text-xl font-kalam font-bold text-[#2d2d2d] block mb-2 rotate-1">Reference</label>
-                <input name="reference" value={form.reference} onChange={handleChange} placeholder="Referred By (Optional)" type="text" className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg" />
+              <div className="space-y-4 pt-4 border-t-2 border-dashed border-slate-200">
+                <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide block mb-1">Reference</label>
+                <input name="reference" value={form.reference} onChange={handleChange} placeholder="Referred By (Optional)" type="text" className="w-full px-4 py-3 geom-input" />
               </div>
 
               {/* Location Details Group */}
-              <div className="space-y-3 pt-2">
-                <label className="text-xl font-kalam font-bold text-[#2d2d2d] block mb-2 -rotate-1">Location Details</label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="space-y-4 pt-4 border-t-2 border-dashed border-slate-200">
+                <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide block mb-1">Location Details</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-lg font-patrick font-bold text-[#2d2d2d] px-1">State*</label>
+                    <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">State*</label>
                     <select 
                       name="state" 
                       value={form.state} 
                       onChange={handleChange} 
                       required 
-                      className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all text-[#2d2d2d] bg-white font-bold text-lg h-[50px]"
+                      className="w-full px-4 py-3 geom-input h-[50px]"
                     >
                       <option value="">Select State</option>
                       {indianStates.map((s, i) => (
@@ -530,14 +529,14 @@ const MembershipForm = () => {
                     </select>
                   </div>
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-lg font-patrick font-bold text-[#2d2d2d] px-1">City/District*</label>
+                    <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">City/District*</label>
                     {cities.length > 0 ? (
                       <select 
                         name="city" 
                         value={form.city} 
                         onChange={handleChange} 
                         required 
-                        className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all text-[#2d2d2d] bg-white font-bold text-lg h-[50px]"
+                        className="w-full px-4 py-3 geom-input h-[50px]"
                       >
                         <option value="">Select City</option>
                         {cities.map((c, i) => (
@@ -554,7 +553,7 @@ const MembershipForm = () => {
                         onChange={handleChange} 
                         required 
                         placeholder="City*" 
-                        className="w-full px-4 py-3 wobbly-input border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] focus:border-[#2d5da1] focus:ring-0 outline-none transition-all placeholder:text-[#2d2d2d]/50 bg-white text-[#2d2d2d] font-bold text-lg h-[50px]" 
+                        className="w-full px-4 py-3 geom-input h-[50px]" 
                       />
                     )}
                   </div>
@@ -565,38 +564,38 @@ const MembershipForm = () => {
               {(() => {
                 const { from, to } = calculateValidityDates();
                 return (
-                  <div className="p-4 bg-[#fff9c4] border-[3px] border-[#2d2d2d] wobbly-sm text-[#2d2d2d] shadow-[4px_4px_0_rgba(45,45,45,0.1)] flex flex-col gap-1 rotate-1 my-2">
-                    <span className="font-kalam font-bold text-[#ff4d4d] text-lg">📅 Membership Validity Period</span>
-                    <p className="font-patrick font-bold text-lg">
-                      Your membership will be active from <span className="font-black">{from}</span> to <span className="font-black">{to}</span> (Valid for 1 year).
+                  <div className="p-4 bg-[#FBBF24] border-2 border-[#1E293B] rounded-xl text-[#1E293B] shadow-geom-soft flex flex-col gap-1 my-4">
+                    <span className="font-outfit font-bold text-[#1E293B] text-lg uppercase tracking-wide">📅 Membership Validity</span>
+                    <p className="font-jakarta text-sm font-medium">
+                      Your membership will be active from <span className="font-bold">{from}</span> to <span className="font-bold">{to}</span> (Valid for 1 year).
                     </p>
                   </div>
                 );
               })()}
 
               {/* Profile Photo Upload Field */}
-              <div className="flex flex-col gap-1.5 pt-2">
-                <label className="text-xl font-kalam font-bold text-[#2d2d2d] flex items-center gap-2 mb-2 rotate-1">
-                  <User className="w-5 h-5 text-[#ff4d4d]" />
+              <div className="flex flex-col gap-1.5 pt-4 border-t-2 border-dashed border-slate-200">
+                <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide flex items-center gap-2 mb-1">
+                  <div className="bg-[#34D399] rounded-full p-1 border-2 border-[#1E293B] shadow-sm"><User className="w-4 h-4 text-[#1E293B]" strokeWidth={3} /></div>
                   Profile Photo (Optional)
                 </label>
-                <div className="relative border-[3px] border-dashed border-[#2d2d2d] wobbly-input p-4 text-center hover:bg-[#fff9c4] transition-colors bg-white flex flex-col items-center justify-center cursor-pointer shadow-[2px_2px_0_#2d2d2d]">
+                <div className="relative border-2 border-dashed border-[#1E293B] rounded-xl p-4 text-center hover:bg-[#F1F5F9] transition-colors bg-white flex flex-col items-center justify-center cursor-pointer shadow-geom-soft">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handlePhotoChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
-                  <UploadCloud className="w-8 h-8 text-[#2d2d2d] mb-2" />
+                  <UploadCloud className="w-8 h-8 text-[#1E293B] mb-2" />
                   {photoPreview ? (
-                    <div className="flex items-center gap-2 mt-1">
-                      <img src={photoPreview} alt="Preview" className="w-12 h-12 rounded-full object-cover border-2 border-[#2d2d2d] shadow-hard" />
-                      <span className="text-sm text-[#2d2d2d] font-patrick font-bold truncate max-w-[200px]">{photoFile?.name}</span>
+                    <div className="flex items-center gap-2 mt-1 z-10">
+                      <img src={photoPreview} alt="Preview" className="w-12 h-12 rounded-full object-cover border-2 border-[#1E293B] shadow-geom" />
+                      <span className="text-sm text-[#1E293B] font-jakarta font-semibold truncate max-w-[200px]">{photoFile?.name}</span>
                     </div>
                   ) : (
                     <>
-                      <span className="text-lg text-[#2d2d2d] font-patrick font-bold">Click to upload your profile photo</span>
-                      <span className="text-xs font-patrick text-[#2d2d2d]/60 font-bold">PNG, JPG, WEBP</span>
+                      <span className="text-base text-[#1E293B] font-jakarta font-bold">Click to upload your profile photo</span>
+                      <span className="text-xs font-jakarta text-slate-500 font-semibold uppercase tracking-wide mt-1">PNG, JPG, WEBP</span>
                     </>
                   )}
                 </div>
@@ -604,21 +603,21 @@ const MembershipForm = () => {
             </div>
 
             {/* Terms and Conditions Checkbox */}
-            <div className="flex items-start gap-2.5 pt-2 mb-4">
+            <div className="flex items-start gap-3 pt-4 mb-6">
               <input
                 id="agreeTerms"
                 type="checkbox"
                 checked={agreeTerms}
                 onChange={e => setAgreeTerms(e.target.checked)}
-                className="mt-1.5 w-5 h-5 rounded border-2 border-[#2d2d2d] text-[#ff4d4d] focus:ring-0 cursor-pointer accent-[#ff4d4d]"
+                className="mt-1 w-5 h-5 rounded border-2 border-[#1E293B] text-[#8B5CF6] focus:ring-0 cursor-pointer accent-[#8B5CF6] shadow-sm"
                 required
               />
-              <label htmlFor="agreeTerms" className="text-lg text-[#2d2d2d] font-bold cursor-pointer select-none leading-tight">
+              <label htmlFor="agreeTerms" className="text-sm text-[#1E293B] font-jakarta font-semibold cursor-pointer select-none leading-tight">
                 I agree to the{" "}
                 <button
                   type="button"
                   onClick={() => setShowTermsModal(true)}
-                  className="text-[#ff4d4d] hover:text-[#ff7300] underline font-bold focus:outline-none"
+                  className="text-[#8B5CF6] hover:text-[#F472B6] underline font-bold focus:outline-none transition-colors"
                 >
                   Membership Terms & Conditions
                 </button>{" "}
@@ -626,11 +625,11 @@ const MembershipForm = () => {
               </label>
             </div>
 
-            <button type="submit" className="w-full wobbly-sm bg-white border-[3px] border-[#2d2d2d] text-[#2d2d2d] font-patrick font-bold text-2xl py-3 shadow-hard shadow-hard-hover shadow-hard-active transition-all disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-[#ff7300] hover:text-white" disabled={loading}>
+            <button type="submit" className="w-full candy-btn candy-btn-primary py-4 text-xl flex items-center justify-center gap-2" disabled={loading}>
               {loading ? (
                 <>
-                  <div className="w-5 h-5 border-[3px] border-[#2d2d2d] border-t-transparent rounded-full animate-spin"></div>
-                  {photoFile ? 'Uploading photo...' : 'Processing...'}
+                  <div className="w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin"></div>
+                  {photoFile ? 'Uploading...' : 'Processing...'}
                 </>
               ) : 'Proceed to Payment'}
             </button>
@@ -638,39 +637,37 @@ const MembershipForm = () => {
         )}
 
         {step === 'payment' && (
-          <div className="flex flex-col items-center gap-6 font-patrick">
-            <div className="text-center text-2xl font-kalam font-bold text-[#2d2d2d] -rotate-1">Please complete the payment to activate your membership.</div>
+          <div className="flex flex-col items-center gap-6 font-jakarta">
+            <div className="text-center text-2xl font-outfit font-extrabold text-[#1E293B]">Complete Payment to Activate</div>
             
-            <div className="w-full bg-[#fff9c4] border-[3px] border-[#2d2d2d] wobbly-sm p-5 space-y-3 shadow-hard rotate-1">
-              <div className="thumbtack"></div>
-              <div className="flex justify-between border-b-2 border-dashed border-[#2d2d2d]/30 pb-2.5 text-lg text-[#2d2d2d]">
-                <span className="font-bold">Applicant Name</span>
+            <div className="w-full sticker-card p-6 space-y-4">
+              <div className="flex justify-between border-b-2 border-dashed border-slate-200 pb-3 text-base text-[#1E293B]">
+                <span className="font-semibold text-slate-500 uppercase tracking-wide">Applicant</span>
                 <span className="font-bold">{form.fullName}</span>
               </div>
-              <div className="flex justify-between border-b-2 border-dashed border-[#2d2d2d]/30 pb-2.5 text-lg text-[#2d2d2d]">
-                <span className="font-bold">Email Address</span>
+              <div className="flex justify-between border-b-2 border-dashed border-slate-200 pb-3 text-base text-[#1E293B]">
+                <span className="font-semibold text-slate-500 uppercase tracking-wide">Email</span>
                 <span className="font-bold">{form.email}</span>
               </div>
-              <div className="flex justify-between border-b-2 border-dashed border-[#2d2d2d]/30 pb-2.5 text-lg text-[#2d2d2d]">
-                <span className="font-bold">Phone Number</span>
+              <div className="flex justify-between border-b-2 border-dashed border-slate-200 pb-3 text-base text-[#1E293B]">
+                <span className="font-semibold text-slate-500 uppercase tracking-wide">Phone</span>
                 <span className="font-bold">{form.phone}</span>
               </div>
-              <div className="flex justify-between pt-2.5 text-xl font-bold text-[#2d2d2d]">
-                <span>Membership Fee</span>
-                <span className="text-[#ff4d4d] text-2xl font-kalam">₹100</span>
+              <div className="flex justify-between pt-2 text-lg font-bold text-[#1E293B] items-center">
+                <span className="font-outfit uppercase tracking-wide">Membership Fee</span>
+                <span className="text-[#8B5CF6] text-3xl font-outfit font-extrabold">₹100</span>
               </div>
             </div>
 
             {/* Payment Method Selector */}
-            {/* Payment Method Selector */}
-            <div className="w-full grid grid-cols-2 gap-3 p-2 bg-[#e5e0d8] wobbly-sm border-2 border-[#2d2d2d] shadow-hard -rotate-1">
+            <div className="w-full grid grid-cols-2 gap-3 p-2 bg-[#F1F5F9] rounded-xl border-2 border-[#1E293B] shadow-geom-soft">
               <button
                 type="button"
                 onClick={() => setPaymentMethod('razorpay')}
-                className={`py-2 px-3 wobbly-sm text-lg font-bold transition-all border-2 border-transparent ${
+                className={`py-3 px-3 rounded-lg text-sm font-outfit font-bold uppercase tracking-wide transition-all border-2 border-transparent ${
                   paymentMethod === 'razorpay'
-                    ? 'bg-white text-[#2d2d2d] border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d]'
-                    : 'text-[#2d2d2d]/60 hover:text-[#2d2d2d]'
+                    ? 'bg-white text-[#1E293B] border-[#1E293B] shadow-geom'
+                    : 'text-slate-500 hover:text-[#1E293B]'
                 }`}
               >
                 Razorpay (Instant)
@@ -678,67 +675,67 @@ const MembershipForm = () => {
               <button
                 type="button"
                 onClick={() => setPaymentMethod('upi_qr')}
-                className={`py-2 px-3 wobbly-sm text-lg font-bold transition-all border-2 border-transparent ${
+                className={`py-3 px-3 rounded-lg text-sm font-outfit font-bold uppercase tracking-wide transition-all border-2 border-transparent ${
                   paymentMethod === 'upi_qr'
-                    ? 'bg-white text-[#2d2d2d] border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d]'
-                    : 'text-[#2d2d2d]/60 hover:text-[#2d2d2d]'
+                    ? 'bg-white text-[#1E293B] border-[#1E293B] shadow-geom'
+                    : 'text-slate-500 hover:text-[#1E293B]'
                 }`}
               >
-                UPI QR Code (Manual)
+                UPI QR (Manual)
               </button>
             </div>
 
             {paymentMethod === 'razorpay' ? (
               <button 
-                className="w-full wobbly-sm bg-white border-[3px] border-[#2d2d2d] text-[#2d2d2d] font-patrick font-bold text-2xl py-3 shadow-hard shadow-hard-hover shadow-hard-active transition-all disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-[#ff7300] hover:text-white" 
+                className="w-full candy-btn candy-btn-primary py-4 text-xl flex items-center justify-center gap-2" 
                 disabled={loading} 
                 onClick={handlePayWithRazorpay}
               >
                 {loading ? (
                   <>
-                    <div className="w-5 h-5 border-[3px] border-[#2d2d2d] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin"></div>
                     Processing...
                   </>
-                ) : 'Pay ₹100 & Complete Registration'}
+                ) : 'Pay ₹100 & Complete'}
               </button>
             ) : (
               <form onSubmit={handlePayManualUPI} className="w-full space-y-4">
-                <div className="flex flex-col items-center justify-center p-4 bg-white border-[3px] border-[#2d2d2d] shadow-hard wobbly-sm rotate-1">
-                  <div className="tape-strip"></div>
+                <div className="flex flex-col items-center justify-center p-6 bg-white border-2 border-[#1E293B] rounded-xl shadow-geom-soft relative">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-[#F472B6] rounded-bl-full mix-blend-multiply opacity-20 pointer-events-none"></div>
                   <img
                     src="/Qr-code-3.jpg"
                     alt="UPI QR Code"
-                    className="w-44 h-44 object-contain rounded-xl shadow-sm border-2 border-[#2d2d2d]"
+                    className="w-48 h-48 object-contain rounded-lg shadow-sm border-2 border-[#1E293B] mb-4"
                   />
-                  <p className="text-sm font-patrick font-bold text-[#2d2d2d] mt-2 uppercase tracking-widest underline decoration-dashed decoration-[#ff4d4d]">Pathsarthi Trust</p>
+                  <p className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide">Pathsarthi Trust</p>
                 </div>
 
                 <div className="space-y-1 mt-4">
-                  <label className="text-xl font-kalam font-bold text-[#2d2d2d] block -rotate-1">UPI ID</label>
-                  <div className="flex items-center justify-between bg-white wobbly-input border-[3px] border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] px-4 py-2">
-                    <span className="font-patrick text-xl font-bold text-[#2d2d2d]">8958421200m@pnb</span>
+                  <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide block mb-1">UPI ID</label>
+                  <div className="flex items-center justify-between bg-white geom-input px-4 py-2">
+                    <span className="font-jakarta text-lg font-bold text-[#1E293B]">8958421200m@pnb</span>
                     <button
                       type="button"
                       onClick={handleCopyUPI}
-                      className="text-[#ff4d4d] p-2 hover:rotate-12 transition-transform"
+                      className="text-[#8B5CF6] p-2 hover:bg-[#F1F5F9] rounded-full transition-colors"
                     >
-                      {copied ? <Check className="w-5 h-5 text-[#2d2d2d]" /> : <Copy className="w-5 h-5" />}
+                      {copied ? <Check className="w-5 h-5 text-[#1E293B]" /> : <Copy className="w-5 h-5" />}
                     </button>
                   </div>
                 </div>
 
-                <div className="bg-[#e5e0d8] border-[3px] border-[#2d2d2d] wobbly-sm shadow-[4px_4px_0_rgba(45,45,45,0.2)] p-4 text-lg text-[#2d2d2d] font-patrick font-bold leading-relaxed rotate-1">
-                  Scan QR (or copy UPI ID) to pay ₹100.
+                <div className="bg-[#E0F2FE] border-2 border-[#1E293B] rounded-xl shadow-geom-soft p-4 text-sm text-[#1E293B] font-jakarta font-medium leading-relaxed my-2">
+                  <span className="font-bold">Scan QR or copy UPI ID to pay ₹100.</span>
                   <br /><br />
-                  Please <span className="text-[#ff4d4d] underline decoration-dashed">send the payment screenshot</span> to our trust number: <span className="font-black text-[#2d5da1]">8958421200</span>.
+                  Please <span className="font-bold underline decoration-dashed text-[#8B5CF6]">send the payment screenshot</span> to our trust number: <span className="font-outfit font-extrabold text-[#1E293B]">8958421200</span>.
                 </div>
 
                 {/* Payment Screenshot Upload Field */}
-                <div className="flex flex-col gap-1.5 pt-2">
-                  <label className="text-xl font-kalam font-bold text-[#2d2d2d] block -rotate-1">
+                <div className="flex flex-col gap-1.5 pt-4 border-t-2 border-dashed border-slate-200">
+                  <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide block mb-1">
                     Upload Payment Screenshot*
                   </label>
-                  <div className="relative border-[3px] border-dashed border-[#2d2d2d] wobbly-input p-4 text-center hover:bg-[#fff9c4] transition-colors bg-white flex flex-col items-center justify-center cursor-pointer shadow-[2px_2px_0_#2d2d2d]">
+                  <div className="relative border-2 border-dashed border-[#1E293B] rounded-xl p-4 text-center hover:bg-[#F1F5F9] transition-colors bg-white flex flex-col items-center justify-center cursor-pointer shadow-geom-soft">
                     <input
                       type="file"
                       accept="image/*"
@@ -746,16 +743,16 @@ const MembershipForm = () => {
                       required
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     />
-                    <UploadCloud className="w-8 h-8 text-[#2d2d2d] mb-2" />
+                    <UploadCloud className="w-8 h-8 text-[#1E293B] mb-2" />
                     {screenshotPreview ? (
-                      <div className="flex items-center gap-2 mt-1">
-                        <img src={screenshotPreview} alt="Screenshot Preview" className="w-12 h-12 rounded object-cover border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d]" />
-                        <span className="text-sm font-patrick font-bold text-[#2d2d2d] truncate max-w-[200px]">{screenshotFile?.name}</span>
+                      <div className="flex items-center gap-2 mt-1 z-10">
+                        <img src={screenshotPreview} alt="Screenshot Preview" className="w-12 h-12 rounded object-cover border-2 border-[#1E293B] shadow-sm" />
+                        <span className="text-sm font-jakarta font-semibold text-[#1E293B] truncate max-w-[200px]">{screenshotFile?.name}</span>
                       </div>
                     ) : (
                       <>
-                        <span className="text-lg font-patrick font-bold text-[#2d2d2d]">Click to upload payment screenshot</span>
-                        <span className="text-xs font-patrick font-bold text-[#2d2d2d]/60">PNG, JPG, WEBP</span>
+                        <span className="text-base font-jakarta font-bold text-[#1E293B]">Click to upload payment screenshot</span>
+                        <span className="text-xs font-jakarta font-semibold uppercase tracking-wide text-slate-500 mt-1">PNG, JPG, WEBP</span>
                       </>
                     )}
                   </div>
@@ -764,11 +761,11 @@ const MembershipForm = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full wobbly-sm bg-white border-[3px] border-[#2d2d2d] text-[#2d2d2d] font-patrick font-bold text-2xl py-3 shadow-hard shadow-hard-hover shadow-hard-active transition-all disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-[#ff7300] hover:text-white"
+                  className="w-full candy-btn candy-btn-primary py-4 text-xl flex items-center justify-center gap-2 mt-4"
                 >
                   {loading ? (
                     <>
-                      <div className="w-5 h-5 border-[3px] border-[#2d2d2d] border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin"></div>
                       Processing...
                     </>
                   ) : 'I Have Paid & Sent Screenshot'}
@@ -785,23 +782,23 @@ const MembershipForm = () => {
             <div className="flex flex-col gap-8 py-4 animate-in fade-in duration-500">
               
               {/* Header inside the Success Screen */}
-              <div className="flex flex-col md:flex-row items-center justify-between border-b-[3px] border-dashed border-[#2d2d2d] pb-6 gap-4">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-col md:flex-row items-center justify-between border-b-2 border-dashed border-slate-200 pb-6 gap-4">
+                <div className="flex items-center gap-4">
                   <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-16 h-auto object-contain" />
                   <div>
-                    <h2 className="text-3xl font-kalam font-bold text-[#2d2d2d] tracking-tight rotate-1">Pathsarthi Trust</h2>
-                    <p className="text-sm font-patrick font-bold text-[#ff4d4d] uppercase tracking-wider underline decoration-dashed">Hope • Heal • Humanity</p>
+                    <h2 className="text-3xl font-outfit font-extrabold text-[#1E293B] tracking-tight">PathSarthi Trust</h2>
+                    <p className="text-sm font-jakarta font-bold text-[#8B5CF6] uppercase tracking-wider">Hope • Heal • Humanity</p>
                   </div>
                 </div>
                 <div>
                   {isQRPayment ? (
-                    <span className="px-4 py-2 bg-[#fff9c4] text-[#2d2d2d] font-patrick font-bold wobbly-sm border-[3px] border-[#2d2d2d] shadow-hard flex items-center gap-2 text-lg -rotate-2">
-                      <span className="w-3 h-3 rounded-full bg-[#ff4d4d] border-2 border-[#2d2d2d] animate-pulse"></span>
+                    <span className="px-4 py-2 bg-[#FBBF24] text-[#1E293B] font-jakarta font-bold rounded-full border-2 border-[#1E293B] shadow-geom flex items-center gap-2 text-sm uppercase tracking-wide">
+                      <span className="w-3 h-3 rounded-full bg-[#1E293B] animate-pulse"></span>
                       Registration Staged
                     </span>
                   ) : (
-                    <span className="px-4 py-2 bg-white text-[#2d2d2d] font-patrick font-bold wobbly-sm border-[3px] border-[#2d2d2d] shadow-hard flex items-center gap-2 text-lg rotate-1">
-                      <span className="w-3 h-3 rounded-full bg-green-500 border-2 border-[#2d2d2d] animate-pulse"></span>
+                    <span className="px-4 py-2 bg-[#34D399] text-[#1E293B] font-jakarta font-bold rounded-full border-2 border-[#1E293B] shadow-geom flex items-center gap-2 text-sm uppercase tracking-wide">
+                      <span className="w-3 h-3 rounded-full bg-[#1E293B] animate-pulse"></span>
                       Payment Successful
                     </span>
                   )}
@@ -814,7 +811,7 @@ const MembershipForm = () => {
                 {/* Left Column: Video & Real World Stats */}
                 <div className="space-y-6">
                   {/* Video Player */}
-                  <div className="relative rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-black aspect-video flex items-center justify-center group hover:shadow-xl transition-all duration-300">
+                  <div className="relative rounded-2xl overflow-hidden shadow-geom-soft border-2 border-[#1E293B] bg-black aspect-video flex items-center justify-center group hover:-translate-y-1 transition-all duration-300">
                     <video 
                       src="/IMG_7027.MP4" 
                       className="w-full h-full object-cover pointer-events-none" 
@@ -824,44 +821,43 @@ const MembershipForm = () => {
                   </div>
 
                   {/* Real World Impact of 100rs */}
-                  <div className="bg-[#fff9c4] wobbly-sm p-6 border-[3px] border-[#2d2d2d] shadow-hard space-y-4 -rotate-1 relative mt-4">
-                    <div className="tape-strip"></div>
+                  <div className="sticker-card p-6 space-y-4">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-[#2d2d2d] text-2xl font-kalam uppercase tracking-wider">How ₹100 Drives Real Change</h3>
+                      <h3 className="font-extrabold text-[#1E293B] text-2xl font-outfit tracking-tight">How ₹100 Drives Real Change</h3>
                     </div>
                     
-                    <p className="text-lg font-bold font-patrick text-[#2d2d2d] leading-relaxed">
+                    <p className="text-base font-medium font-jakarta text-slate-600 leading-relaxed">
                       In a developing nation like India, small contributions compile to solve mammoth-sized challenges. Non-Governmental Organizations (NGOs) and community groups work on-ground to bridge crucial gaps. Your ₹100 membership fee does not just verify your account—it funds immediate local relief:
                     </p>
 
                     <div className="grid grid-cols-1 gap-4 pt-2">
-                      <div className="flex items-start gap-3 bg-white p-3 wobbly-sm border-2 border-[#2d2d2d] shadow-[3px_3px_0_#2d2d2d] rotate-1">
+                      <div className="flex items-start gap-3 bg-[#F1F5F9] p-4 rounded-xl border-2 border-transparent hover:border-[#F472B6] transition-colors">
                         <span className="text-2xl pt-1">🎒</span>
-                        <div className="space-y-0.5">
-                          <h4 className="text-xl font-kalam font-bold text-[#2d2d2d]">Childhood Education</h4>
-                          <p className="text-base font-patrick font-bold text-[#2d2d2d]">Buys 5 school notebooks & stationery kits for underprivileged children to prevent them from dropping out.</p>
+                        <div className="space-y-1">
+                          <h4 className="text-lg font-outfit font-bold text-[#1E293B]">Childhood Education</h4>
+                          <p className="text-sm font-jakarta font-medium text-slate-600">Buys 5 school notebooks & stationery kits for underprivileged children to prevent them from dropping out.</p>
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-3 bg-white p-3 wobbly-sm border-2 border-[#2d2d2d] shadow-[3px_3px_0_#2d2d2d] -rotate-1">
+                      <div className="flex items-start gap-3 bg-[#F1F5F9] p-4 rounded-xl border-2 border-transparent hover:border-[#34D399] transition-colors">
                         <span className="text-2xl pt-1">🍲</span>
-                        <div className="space-y-0.5">
-                          <h4 className="text-xl font-kalam font-bold text-[#2d2d2d]">Zero Hunger Initiative</h4>
-                          <p className="text-base font-patrick font-bold text-[#2d2d2d]">Provides 3 wholesome, hot mid-day meals to street kids, securing their basic nutritional needs.</p>
+                        <div className="space-y-1">
+                          <h4 className="text-lg font-outfit font-bold text-[#1E293B]">Zero Hunger Initiative</h4>
+                          <p className="text-sm font-jakarta font-medium text-slate-600">Provides 3 wholesome, hot mid-day meals to street kids, securing their basic nutritional needs.</p>
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-3 bg-white p-3 wobbly-sm border-2 border-[#2d2d2d] shadow-[3px_3px_0_#2d2d2d] rotate-1">
+                      <div className="flex items-start gap-3 bg-[#F1F5F9] p-4 rounded-xl border-2 border-transparent hover:border-[#FBBF24] transition-colors">
                         <span className="text-2xl pt-1">🏥</span>
-                        <div className="space-y-0.5">
-                          <h4 className="text-xl font-kalam font-bold text-[#2d2d2d]">Health & Hygiene</h4>
-                          <p className="text-base font-patrick font-bold text-[#2d2d2d]">Supports basic sanitary hygiene pads and clean drinking water kits for families in slum clusters.</p>
+                        <div className="space-y-1">
+                          <h4 className="text-lg font-outfit font-bold text-[#1E293B]">Health & Hygiene</h4>
+                          <p className="text-sm font-jakarta font-medium text-slate-600">Supports basic sanitary hygiene pads and clean drinking water kits for families in slum clusters.</p>
                         </div>
                       </div>
                     </div>
 
                     <div className="pt-4 text-center">
-                      <p className="text-sm font-patrick font-bold text-[#2d2d2d] uppercase tracking-widest border-t-2 border-dashed border-[#2d2d2d]/30 pt-2">Pathsarthi Trust • Transforming Lives Together</p>
+                      <p className="text-xs font-jakarta font-bold text-slate-400 uppercase tracking-widest border-t-2 border-dashed border-slate-200 pt-4">PathSarthi Trust • Transforming Lives Together</p>
                     </div>
                   </div>
                 </div>
@@ -870,62 +866,64 @@ const MembershipForm = () => {
                 <div className="space-y-6">
                   
                   {/* Thank You Card */}
-                  <div className="flex flex-col items-center text-center p-6 bg-white wobbly-sm border-[3px] border-[#2d2d2d] shadow-hard rotate-1 relative mt-4">
-                    <div className="thumbtack"></div>
+                  <div className="flex flex-col items-center text-center p-8 bg-[#8B5CF6] text-white rounded-2xl border-2 border-[#1E293B] shadow-geom-pink relative">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-white/20 rounded-bl-full pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 w-16 h-16 bg-[#FBBF24] rounded-tr-full border-t-2 border-r-2 border-[#1E293B] pointer-events-none"></div>
+                    
                     {photoPreview || form.profilePhotoUrl ? (
                       <img 
                         src={photoPreview || form.profilePhotoUrl} 
                         alt="Member Profile" 
-                        className="w-24 h-24 rounded-full border-[3px] border-[#2d2d2d] shadow-[4px_4px_0_#ff7300] object-cover mb-4 animate-in zoom-in duration-300"
+                        className="w-24 h-24 rounded-full border-4 border-white shadow-geom object-cover mb-4 relative z-10 animate-in zoom-in duration-300"
                       />
                     ) : (
-                      <div className="w-24 h-24 rounded-full bg-white text-[#2d2d2d] flex items-center justify-center font-bold text-4xl font-kalam shadow-[4px_4px_0_#ff7300] border-[3px] border-[#2d2d2d] mb-4 animate-in zoom-in duration-300">
+                      <div className="w-24 h-24 rounded-full bg-white text-[#8B5CF6] flex items-center justify-center font-extrabold text-4xl font-outfit shadow-geom border-4 border-[#1E293B] mb-4 relative z-10 animate-in zoom-in duration-300">
                         {form.fullName ? form.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'PS'}
                       </div>
                     )}
-                    <h3 className="text-4xl font-kalam font-bold text-[#2d2d2d] leading-snug">Welcome to the Family! ❤️</h3>
-                    <p className="text-xl font-bold font-patrick text-[#ff4d4d] mt-1 underline decoration-dashed">{form.fullName}</p>
-                    <p className="text-lg font-bold font-patrick text-[#2d2d2d] mt-3 leading-relaxed">
-                      Dear <span className="font-bold bg-[#fff9c4] px-1">{form.fullName}</span>, we are extremely honored to have you as a registered member of Pathsarthi Trust. You are now a <strong>Pathsarthi</strong>—a charioteer guiding social change. Your contribution helps us sustain on-ground service.
+                    <h3 className="text-3xl font-outfit font-extrabold leading-snug relative z-10">Welcome to the Family! ❤️</h3>
+                    <p className="text-xl font-bold font-jakarta mt-1 relative z-10 opacity-90">{form.fullName}</p>
+                    <p className="text-base font-medium font-jakarta mt-4 leading-relaxed relative z-10 opacity-90">
+                      Dear <span className="font-bold bg-white/20 px-1 rounded">{form.fullName}</span>, we are extremely honored to have you as a registered member. You are now a <strong>Pathsarthi</strong>—a charioteer guiding social change.
                     </p>
                   </div>
 
                   {/* Membership Info Card */}
-                  <div className="bg-[#e5e0d8] border-[3px] border-[#2d2d2d] wobbly-sm p-5 space-y-3.5 shadow-[4px_4px_0_rgba(45,45,45,0.2)] -rotate-1 mt-6">
-                    <h4 className="text-xl font-kalam font-bold text-[#2d2d2d] uppercase tracking-widest border-b-2 border-dashed border-[#2d2d2d]/30 pb-2">Membership Details</h4>
+                  <div className="sticker-card p-6 space-y-4">
+                    <h4 className="text-lg font-outfit font-extrabold text-[#1E293B] uppercase tracking-widest border-b-2 border-dashed border-slate-200 pb-3">Membership Details</h4>
                     
-                    <div className="flex justify-between text-lg font-patrick font-bold text-[#2d2d2d]">
+                    <div className="flex justify-between text-base font-jakarta font-semibold text-slate-600">
                       <span>Email</span>
-                      <span className="text-[#2d5da1]">{form.email}</span>
+                      <span className="text-[#1E293B] font-bold">{form.email}</span>
                     </div>
 
-                    <div className="flex justify-between text-lg font-patrick font-bold text-[#2d2d2d]">
+                    <div className="flex justify-between text-base font-jakarta font-semibold text-slate-600">
                       <span>Phone</span>
-                      <span className="text-[#2d5da1]">{form.phone}</span>
+                      <span className="text-[#1E293B] font-bold">{form.phone}</span>
                     </div>
 
-                    <div className="flex justify-between text-lg font-patrick font-bold text-[#2d2d2d]">
+                    <div className="flex justify-between text-base font-jakarta font-semibold text-slate-600 items-center">
                       <span>Validity Range</span>
-                      <span className="bg-white px-2 py-0.5 border-2 border-[#2d2d2d] shadow-[2px_2px_0_#2d2d2d] rotate-1">
+                      <span className="bg-[#E2E8F0] px-2 py-1 rounded-md text-xs font-bold text-[#1E293B]">
                         {fromStr} - {toStr}
                       </span>
                     </div>
 
                     {isQRPayment ? (
-                      <div className="pt-2">
-                        <div className="bg-[#fff9c4] border-2 border-[#2d2d2d] wobbly-sm p-3 text-left text-lg font-patrick font-bold text-[#2d2d2d] space-y-1.5 shadow-[2px_2px_0_#2d2d2d] rotate-1">
-                          <p className="font-kalam text-[#ff4d4d] text-xl flex items-center gap-2">
-                            <span>⚠️</span> Screenshot Verification Required
+                      <div className="pt-4 border-t-2 border-dashed border-slate-200">
+                        <div className="bg-[#FBBF24] border-2 border-[#1E293B] rounded-xl p-4 text-left text-sm font-jakarta font-medium text-[#1E293B] space-y-2 shadow-geom-soft">
+                          <p className="font-outfit font-bold text-lg flex items-center gap-2">
+                            <span>⚠️</span> Verification Required
                           </p>
                           <p>
-                            Your payment screenshot has been uploaded. Please ensure you also send it to our trust number <span className="font-black text-[#2d5da1] underline decoration-dashed">8958421200</span> via WhatsApp to expedite admin activation.
+                            Your payment screenshot is uploaded. Please ensure you also send it to <span className="font-black underline decoration-dashed">8958421200</span> via WhatsApp to expedite admin activation.
                           </p>
                         </div>
                       </div>
                     ) : (
-                      <div className="flex justify-between items-center text-lg font-patrick font-bold text-[#2d2d2d] border-t-2 border-dashed pt-3.5 border-[#2d2d2d]/30">
+                      <div className="flex justify-between items-center text-base font-jakarta font-semibold text-slate-600 border-t-2 border-dashed pt-4 border-slate-200">
                         <span>Payment ID</span>
-                        <span className="font-mono bg-white px-2 py-0.5 border-2 border-[#2d2d2d] text-[#ff4d4d] select-all max-w-[170px] truncate shadow-[2px_2px_0_#2d2d2d] -rotate-1">
+                        <span className="font-mono bg-[#F1F5F9] px-2 py-1 rounded-md border-2 border-slate-300 text-[#8B5CF6] text-xs font-bold select-all max-w-[170px] truncate">
                           {paymentId}
                         </span>
                       </div>
@@ -935,7 +933,7 @@ const MembershipForm = () => {
                   {/* Return Button */}
                   <button 
                     onClick={() => window.location.href = "/"}
-                    className="w-full wobbly-sm bg-white border-[3px] border-[#2d2d2d] text-[#2d2d2d] font-patrick font-bold text-2xl py-3 shadow-hard shadow-hard-hover shadow-hard-active transition-all flex items-center justify-center gap-2 hover:bg-[#ff7300] hover:text-white uppercase tracking-wider"
+                    className="w-full candy-btn candy-btn-secondary py-4 text-lg"
                   >
                     Go Back to Home
                   </button>
@@ -950,17 +948,17 @@ const MembershipForm = () => {
 
       {/* Terms and Conditions Modal */}
       {showTermsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#2d2d2d]/80 p-4 animate-in fade-in duration-300 font-patrick">
-          <div className="bg-paper border-[3px] border-[#2d2d2d] wobbly-md shadow-hard max-w-2xl w-full max-h-[80vh] flex flex-col relative animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1E293B]/60 p-4 animate-in fade-in duration-300 font-jakarta">
+          <div className="bg-white border-2 border-[#1E293B] rounded-2xl shadow-geom-soft max-w-2xl w-full max-h-[80vh] flex flex-col relative animate-in zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b-[3px] border-dashed border-[#2d2d2d] flex items-center justify-between">
-              <h3 className="text-3xl font-kalam font-bold text-[#2d2d2d] -rotate-1">Membership Terms & Conditions</h3>
+            <div className="px-6 py-5 border-b-2 border-slate-200 flex items-center justify-between bg-[#F1F5F9] rounded-t-2xl">
+              <h3 className="text-2xl font-outfit font-extrabold text-[#1E293B]">Membership Terms & Conditions</h3>
               <button
                 onClick={() => setShowTermsModal(false)}
-                className="text-[#2d2d2d] hover:text-[#ff4d4d] p-1.5 border-2 border-transparent hover:border-[#2d2d2d] hover:shadow-[2px_2px_0_#2d2d2d] bg-white wobbly-sm transition-all rotate-2"
+                className="text-slate-500 hover:text-[#F472B6] p-2 bg-white rounded-full border-2 border-slate-300 hover:border-[#1E293B] hover:shadow-geom transition-all"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
@@ -1137,13 +1135,13 @@ const MembershipForm = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-4 border-t-[3px] border-dashed border-[#2d2d2d] flex justify-end gap-3 bg-[#e5e0d8]">
+            <div className="px-6 py-4 border-t-2 border-slate-200 flex justify-end gap-3 bg-white rounded-b-2xl">
               <button
                 onClick={() => {
                   setAgreeTerms(true);
                   setShowTermsModal(false);
                 }}
-                className="px-6 py-3 wobbly-sm bg-white border-[3px] border-[#2d2d2d] text-[#2d2d2d] font-patrick font-bold text-xl shadow-hard shadow-hard-hover shadow-hard-active transition-all hover:bg-[#ff4d4d] hover:text-white"
+                className="candy-btn candy-btn-primary px-8 py-3"
               >
                 Accept & Close
               </button>

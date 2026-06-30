@@ -4,7 +4,7 @@ import { db } from '../../config/firebase';
 import { Users, CheckCircle, XCircle, Search, Trash2, Mail, Phone, MapPin, ShieldCheck, Download, FileText, FileSpreadsheet } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import 'jspdf-autotable';
 
 const AdminMemberships = () => {
   const [memberships, setMemberships] = useState([]);
@@ -215,7 +215,7 @@ const AdminMemberships = () => {
     const headers = Object.keys(data[0]);
     const rows = data.map(row => headers.map(h => row[h]));
 
-    autoTable(doc, {
+    doc.autoTable({
       head: [headers],
       body: rows,
       startY: 20,
