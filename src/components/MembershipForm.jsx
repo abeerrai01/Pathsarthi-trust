@@ -28,6 +28,7 @@ const initialForm = {
   pincode: '',
   email: '',
   phone: '',
+  reference: '',
   profilePhotoUrl: '',
   image: '',
 };
@@ -488,6 +489,12 @@ const MembershipForm = () => {
                 <input name="email" value={form.email} onChange={handleChange} required placeholder="Email ID*" type="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
                 <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
                 <input name="pincode" value={form.pincode} onChange={handleChange} required placeholder="Pincode*" maxLength="6" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
+              </div>
+
+              {/* Reference Group */}
+              <div className="space-y-3 pt-2">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">Reference</label>
+                <input name="reference" value={form.reference} onChange={handleChange} placeholder="Referred By (Optional)" type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#ff7300] focus:ring-2 focus:ring-orange-200 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 hover:bg-slate-50 focus:bg-white text-slate-800 font-semibold text-sm" />
               </div>
 
               {/* Location Details Group */}
