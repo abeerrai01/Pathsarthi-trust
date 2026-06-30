@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { Users, CheckCircle, XCircle, Search, Trash2, Mail, Phone, MapPin, ShieldCheck } from 'lucide-react';
+import { Users, CheckCircle, XCircle, Search, Trash2, Mail, Phone, MapPin, ShieldCheck, Download, FileText, FileSpreadsheet } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const AdminMemberships = () => {
   const [memberships, setMemberships] = useState([]);
@@ -124,6 +126,106 @@ const AdminMemberships = () => {
     return `${formatDate(fromVal)} - ${formatDate(toVal)}`;
   };
 
+  // --- Export Functions --- //
+
+  const getExportData = () => {
+    return filteredMemberships.map(e => ({
+      'Name': e.fullName || `${e.firstName || ''} ${e.middleName || ''} ${e.lastName || ''}`.trim() || 'N/A',
+      'Email': e.email || 'N/A',
+      'Phone': e.phone || 'N/A',
+      'Age/DOB': e.age || e.dob || 'N/A',
+      'Gender': e.gender || 'N/A',
+      'Aadhaar': e.aadhaar || 'N/A',
+      'Location': `${e.city || 'N/A'}, ${e.state || 'N/A'} - ${e.pincode || ''}`,
+      'Reference': e.reference || 'N/A',
+      'Status': isPaidMember(e) ? 'Paid' : 'Pending',
+      'Payment ID': e.paymentId || 'N/A',
+      'Applied On': formatDate(e.createdAt),
+      'Validity': isPaidMember(e) ? getValidityString(e) : 'N/A'
+    }));
+  };
+
+  const exportToCSV = () => {
+    const data = getExportData();
+    if (data.length === 0) return alert('No data to export.');
+    
+    const headers = Object.keys(data[0]);
+    const csvRows = [];
+    csvRows.push(headers.join(',')); // Add headers
+    
+    for (const row of data) {
+      const values = headers.map(header => {
+        const val = row[header] ? String(row[header]).replace(/"/g, '""') : '';
+        return `"${val}"`;
+      });
+      csvRows.push(values.join(','));
+    }
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'memberships_database.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const exportToDOC = () => {
+    const data = getExportData();
+    if (data.length === 0) return alert('No data to export.');
+
+    const headers = Object.keys(data[0]);
+    let html = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>";
+    html += "<head><meta charset='utf-8'><title>Memberships Database</title>";
+    html += "<style>table { border-collapse: collapse; width: 100%; } th, td { border: 1px solid black; padding: 5px; text-align: left; } th { background-color: #f2f2f2; }</style>";
+    html += "</head><body>";
+    html += "<h2>Memberships Database</h2>";
+    html += "<table><thead><tr>";
+    headers.forEach(h => html += `<th>${h}</th>`);
+    html += "</tr></thead><tbody>";
+
+    data.forEach(row => {
+      html += "<tr>";
+      headers.forEach(h => html += `<td>${row[h] || ''}</td>`);
+      html += "</tr>";
+    });
+
+    html += "</tbody></table></body></html>";
+
+    const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'memberships_database.doc');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const exportToPDF = () => {
+    const data = getExportData();
+    if (data.length === 0) return alert('No data to export.');
+
+    const doc = new jsPDF('landscape');
+    doc.text("Memberships Database", 14, 15);
+    
+    const headers = Object.keys(data[0]);
+    const rows = data.map(row => headers.map(h => row[h]));
+
+    autoTable(doc, {
+      head: [headers],
+      body: rows,
+      startY: 20,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [255, 115, 0] }, // Orange theme
+    });
+
+    doc.save('memberships_database.pdf');
+  };
+
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
       
@@ -139,6 +241,20 @@ const AdminMemberships = () => {
             View and manage all registered members, check payment status (Razorpay or manual), and search through applications.
           </p>
         </div>
+      </div>
+
+      {/* Export Bar */}
+      <div className="flex flex-wrap gap-3 justify-end items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+        <span className="text-sm font-bold text-slate-500 uppercase tracking-widest mr-auto">Export Data</span>
+        <button onClick={exportToCSV} className="flex items-center gap-2 bg-green-50 text-green-700 hover:bg-green-100 px-4 py-2 rounded-xl font-semibold transition-colors text-sm border border-green-200 shadow-sm">
+          <FileSpreadsheet size={16} /> Excel (CSV)
+        </button>
+        <button onClick={exportToDOC} className="flex items-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-xl font-semibold transition-colors text-sm border border-blue-200 shadow-sm">
+          <FileText size={16} /> Word (DOC)
+        </button>
+        <button onClick={exportToPDF} className="flex items-center gap-2 bg-red-50 text-red-700 hover:bg-red-100 px-4 py-2 rounded-xl font-semibold transition-colors text-sm border border-red-200 shadow-sm">
+          <Download size={16} /> PDF
+        </button>
       </div>
 
       {/* Stats/Filters Row */}

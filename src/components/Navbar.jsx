@@ -54,6 +54,7 @@ const Navbar = () => {
         { to: '/trust-members', label: 'Board of Trustee' },
         { to: '/member', label: 'Member' },
         { to: '/supporters', label: 'Supporters' },
+        { to: '/jan-sampark-network', label: 'Our Community' },
         {
           label: 'Advisory Volunteers',
           items: [

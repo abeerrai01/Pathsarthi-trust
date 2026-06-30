@@ -4,7 +4,7 @@ import { db } from '../../config/firebase';
 import { Users, Search, Trash2, Phone, MapPin, Download, FileText, FileSpreadsheet } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 const AdminJanSampark = () => {
   const [entries, setEntries] = useState([]);
@@ -165,7 +165,7 @@ const AdminJanSampark = () => {
     const headers = Object.keys(data[0]);
     const rows = data.map(row => headers.map(h => row[h]));
 
-    doc.autoTable({
+    autoTable(doc, {
       head: [headers],
       body: rows,
       startY: 20,
@@ -314,12 +314,10 @@ const AdminJanSampark = () => {
                           <span>Employment:</span>
                           <span className="font-semibold text-slate-700">{member.employment}</span>
                         </div>
-                        {member.reference && (
-                          <div className="flex justify-between">
-                            <span>Reference:</span>
-                            <span className="font-semibold text-indigo-700">{member.reference}</span>
-                          </div>
-                        )}
+                        <div className="flex justify-between">
+                          <span>Reference:</span>
+                          <span className="font-semibold text-indigo-700">{member.reference || 'None'}</span>
+                        </div>
                         <div className="flex justify-between">
                           <span>Applied On:</span>
                           <span className="font-semibold text-slate-700">{formatDate(member.createdAt)}</span>
