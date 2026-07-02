@@ -195,7 +195,8 @@ const MembershipForm = () => {
           const data = doc.data();
           const s = (data.status || '').trim().toLowerCase();
           if ((s === 'completed' || s === 'paid') && data.reference && data.reference !== "Self") {
-            refCounts[data.reference] = (refCounts[data.reference] || 0) + 1;
+            const refTrimmed = data.reference.trim();
+            refCounts[refTrimmed] = (refCounts[refTrimmed] || 0) + 1;
           }
         });
 
@@ -205,8 +206,14 @@ const MembershipForm = () => {
         snapshot.forEach((doc) => {
           const data = doc.data();
           const s = (data.status || '').trim().toLowerCase();
-          if ((s === 'completed' || s === 'paid') && data.fullName) {
-            membersList.push(data.fullName.trim());
+          
+          let memberName = data.fullName;
+          if (!memberName && data.firstName) {
+            memberName = data.firstName + (data.lastName ? " " + data.lastName : "");
+          }
+          
+          if ((s === 'completed' || s === 'paid') && memberName) {
+            membersList.push(memberName.trim());
           }
         });
         

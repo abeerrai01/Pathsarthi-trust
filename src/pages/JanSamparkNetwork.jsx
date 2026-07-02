@@ -79,7 +79,8 @@ const JanSamparkNetwork = () => {
   members.forEach(m => {
     const ref = m.reference;
     if (ref && ref !== 'Self') {
-      referrerCounts[ref] = (referrerCounts[ref] || 0) + 1;
+      const refTrimmed = ref.trim();
+      referrerCounts[refTrimmed] = (referrerCounts[refTrimmed] || 0) + 1;
     }
   });
   
