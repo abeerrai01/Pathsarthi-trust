@@ -62,6 +62,8 @@ const PremiumMembershipForm = () => {
   const [step, setStep] = useState('form'); // form | payment | done
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState(1100);
+  const [isCustomAmount, setIsCustomAmount] = useState(false);
+  const [panCard, setPanCard] = useState('');
   
   const fillDummyData = () => {
     setForm({
@@ -125,6 +127,16 @@ const PremiumMembershipForm = () => {
 
   const handlePayManualUPI = async (e) => {
     if (e) e.preventDefault();
+    if (amount >= 2100) {
+      if (!panCard) {
+        showToast("PAN Card is required for amounts ₹2100 and above.", "error");
+        return;
+      }
+      if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test(panCard)) {
+        showToast("Please enter a valid PAN Card number.", "error");
+        return;
+      }
+    }
     if (!screenshotFile) {
       showToast('Please upload a screenshot of your payment.', 'error');
       return;
@@ -144,7 +156,8 @@ const PremiumMembershipForm = () => {
           paymentId: manualUpiId,
           status: 'pending', // remains pending for manual verification
           paymentScreenshotUrl: uploadedScreenshotUrl,
-          amount: amount
+          amount: amount,
+          panCard: amount >= 2100 ? panCard.toUpperCase() : ''
         });
       } else {
         await addDoc(collection(db, "memberships"), {
@@ -153,7 +166,8 @@ const PremiumMembershipForm = () => {
           createdAt: new Date(),
           status: 'pending',
           paymentScreenshotUrl: uploadedScreenshotUrl,
-          amount: amount
+          amount: amount,
+          panCard: amount >= 2100 ? panCard.toUpperCase() : ''
         });
       }
       setPaymentId(manualUpiId);
@@ -260,6 +274,16 @@ const PremiumMembershipForm = () => {
   };
 
   const handlePayWithRazorpay = () => {
+    if (amount >= 2100) {
+      if (!panCard) {
+        showToast("PAN Card is required for amounts ₹2100 and above.", "error");
+        return;
+      }
+      if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test(panCard)) {
+        showToast("Please enter a valid PAN Card number.", "error");
+        return;
+      }
+    }
     if (!window.Razorpay) {
       showToast("Razorpay payment gateway is loading. Please wait a moment.", "error");
       return;
@@ -287,7 +311,8 @@ const PremiumMembershipForm = () => {
               status: 'completed',
               validFrom: validFrom,
               validTo: validTo,
-              amount: amount
+              amount: amount,
+              panCard: amount >= 2100 ? panCard.toUpperCase() : ''
             });
           } else {
             await addDoc(collection(db, "memberships"), {
@@ -297,7 +322,8 @@ const PremiumMembershipForm = () => {
               status: 'completed',
               validFrom: validFrom,
               validTo: validTo,
-              amount: amount
+              amount: amount,
+              panCard: amount >= 2100 ? panCard.toUpperCase() : ''
             });
           }
           setPaymentId(generatedId);
@@ -750,19 +776,57 @@ const PremiumMembershipForm = () => {
               </div>
               <div className="flex flex-col gap-3 pt-2">
                 <span className="font-outfit uppercase tracking-wide font-bold text-[#1E293B]">Select Contribution Amount</span>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3 items-center">
                   {[1100, 2100, 5100, 11000].map(val => (
                     <button
                       key={val}
                       type="button"
-                      onClick={() => setAmount(val)}
-                      className={`px-6 py-3 rounded-xl font-bold transition-all ${amount === val ? 'bg-[#8B5CF6] text-white shadow-md scale-105' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:scale-105'}`}
+                      onClick={() => { setAmount(val); setIsCustomAmount(false); }}
+                      className={`px-6 py-3 rounded-xl font-bold transition-all ${amount === val && !isCustomAmount ? 'bg-[#8B5CF6] text-white shadow-md scale-105' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:scale-105'}`}
                     >
                       ₹{val}
                     </button>
                   ))}
+                  <button
+                    type="button"
+                    onClick={() => setIsCustomAmount(true)}
+                    className={`px-6 py-3 rounded-xl font-bold transition-all ${isCustomAmount ? 'bg-[#8B5CF6] text-white shadow-md scale-105' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:scale-105'}`}
+                  >
+                    Custom
+                  </button>
                 </div>
+                {isCustomAmount && (
+                  <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-[#1E293B] text-lg">₹</span>
+                      <input
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(Number(e.target.value) || 0)}
+                        placeholder="Enter custom amount"
+                        className="w-full pl-8 pr-4 py-3 geom-input font-bold text-lg text-[#1E293B]"
+                        min="1"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
+              
+              {amount >= 2100 && (
+                <div className="bg-orange-50 border-2 border-orange-200 text-orange-800 p-4 rounded-xl font-jakarta mt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <label className="text-sm font-outfit font-bold uppercase tracking-wide block mb-1">PAN Card Details Required*</label>
+                  <p className="text-xs mb-3 font-medium opacity-80">As per government regulations, PAN is mandatory for contributions of ₹2100 and above.</p>
+                  <input
+                    type="text"
+                    value={panCard}
+                    onChange={(e) => setPanCard(e.target.value.toUpperCase())}
+                    placeholder="Enter 10-digit PAN (e.g. ABCDE1234F)"
+                    maxLength="10"
+                    className="w-full px-4 py-3 geom-input font-bold text-[#1E293B]"
+                    required
+                  />
+                </div>
+              )}
             </div>
 
             {/* Payment Flow */}
