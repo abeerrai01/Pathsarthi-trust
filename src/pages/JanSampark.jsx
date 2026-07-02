@@ -280,9 +280,9 @@ const JanSampark = () => {
                     <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Mobile Number*</label>
                     <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" maxLength="10" className="w-full px-4 py-3 geom-input" />
                   </div>
-                  <div className="flex flex-col gap-1 w-full">
+                  <div className="flex flex-col gap-1 w-full min-w-0 overflow-hidden">
                     <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Date of Birth*</label>
-                    <input name="dob" value={form.dob} onChange={handleChange} required type="date" className="w-full px-4 py-3 geom-input h-[50px]" />
+                    <input name="dob" value={form.dob} onChange={handleChange} required type="date" className="w-full px-4 py-3 geom-input h-[50px] min-w-0" />
                   </div>
                 </div>
 
@@ -457,17 +457,17 @@ const JanSampark = () => {
             <p className="text-lg text-slate-600 font-medium">Thank you for joining the Jan Sampark Abhiyan.</p>
             
             <div className="sticker-card w-full p-6 text-base flex flex-col gap-3 mt-4 text-left">
-              <div className="flex justify-between border-b-2 border-dashed border-slate-200 pb-2">
-                <span className="font-semibold text-slate-500 uppercase tracking-wide">Name:</span>
-                <span className="font-bold text-[#1E293B]">{form.fullName}</span>
+              <div className="flex justify-between items-start gap-4 border-b-2 border-dashed border-slate-200 pb-2">
+                <span className="font-semibold text-slate-500 uppercase tracking-wide shrink-0">Name:</span>
+                <span className="font-bold text-[#1E293B] text-right break-words">{form.fullName}</span>
               </div>
-              <div className="flex justify-between border-b-2 border-dashed border-slate-200 pb-2">
-                <span className="font-semibold text-slate-500 uppercase tracking-wide">Phone:</span>
-                <span className="font-bold text-[#1E293B]">{form.phone}</span>
+              <div className="flex justify-between items-start gap-4 border-b-2 border-dashed border-slate-200 pb-2">
+                <span className="font-semibold text-slate-500 uppercase tracking-wide shrink-0">Phone:</span>
+                <span className="font-bold text-[#1E293B] text-right break-words">{form.phone}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="font-semibold text-slate-500 uppercase tracking-wide">Payment ID:</span>
-                <span className="font-mono text-sm font-bold bg-[#F1F5F9] border-2 border-slate-300 rounded-md px-2 py-1 text-[#8B5CF6] select-all truncate max-w-[170px]">{paymentId}</span>
+              <div className="flex justify-between items-start gap-4">
+                <span className="font-semibold text-slate-500 uppercase tracking-wide shrink-0 pt-1">Payment ID:</span>
+                <span className="font-mono text-xs font-bold bg-[#F1F5F9] border-2 border-slate-300 rounded-md px-2 py-1 text-[#8B5CF6] select-all text-right break-all max-w-[200px]">{paymentId}</span>
               </div>
             </div>
 

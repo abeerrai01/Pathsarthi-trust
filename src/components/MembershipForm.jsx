@@ -476,9 +476,9 @@ const MembershipForm = () => {
                 <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide block mb-1">Personal Details</label>
                 <input name="fullName" value={form.fullName} onChange={handleChange} required placeholder="Full Name*" className="w-full px-4 py-3 geom-input" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1 w-full">
+                  <div className="flex flex-col gap-1 w-full min-w-0 overflow-hidden">
                     <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Date of Birth*</label>
-                    <input name="dob" value={form.dob} onChange={handleChange} required type="date" className="w-full px-4 py-3 geom-input h-[50px]" />
+                    <input name="dob" value={form.dob} onChange={handleChange} required type="date" className="w-full px-4 py-3 geom-input h-[50px] min-w-0" />
                   </div>
                   <div className="flex flex-col gap-1 w-full">
                     <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Gender*</label>
@@ -641,17 +641,17 @@ const MembershipForm = () => {
             <div className="text-center text-2xl font-outfit font-extrabold text-[#1E293B]">Complete Payment to Activate</div>
             
             <div className="w-full sticker-card p-6 space-y-4">
-              <div className="flex justify-between border-b-2 border-dashed border-slate-200 pb-3 text-base text-[#1E293B]">
-                <span className="font-semibold text-slate-500 uppercase tracking-wide">Applicant</span>
-                <span className="font-bold">{form.fullName}</span>
+              <div className="flex justify-between items-start gap-4 border-b-2 border-dashed border-slate-200 pb-3 text-base text-[#1E293B]">
+                <span className="font-semibold text-slate-500 uppercase tracking-wide shrink-0">Applicant</span>
+                <span className="font-bold text-right break-words">{form.fullName}</span>
               </div>
-              <div className="flex justify-between border-b-2 border-dashed border-slate-200 pb-3 text-base text-[#1E293B]">
-                <span className="font-semibold text-slate-500 uppercase tracking-wide">Email</span>
-                <span className="font-bold">{form.email}</span>
+              <div className="flex justify-between items-start gap-4 border-b-2 border-dashed border-slate-200 pb-3 text-base text-[#1E293B]">
+                <span className="font-semibold text-slate-500 uppercase tracking-wide shrink-0">Email</span>
+                <span className="font-bold text-right break-all">{form.email}</span>
               </div>
-              <div className="flex justify-between border-b-2 border-dashed border-slate-200 pb-3 text-base text-[#1E293B]">
-                <span className="font-semibold text-slate-500 uppercase tracking-wide">Phone</span>
-                <span className="font-bold">{form.phone}</span>
+              <div className="flex justify-between items-start gap-4 border-b-2 border-dashed border-slate-200 pb-3 text-base text-[#1E293B]">
+                <span className="font-semibold text-slate-500 uppercase tracking-wide shrink-0">Phone</span>
+                <span className="font-bold text-right break-words">{form.phone}</span>
               </div>
               <div className="flex justify-between pt-2 text-lg font-bold text-[#1E293B] items-center">
                 <span className="font-outfit uppercase tracking-wide">Membership Fee</span>
@@ -659,47 +659,67 @@ const MembershipForm = () => {
               </div>
             </div>
 
-            {/* Payment Method Selector */}
-            <div className="w-full grid grid-cols-2 gap-3 p-2 bg-[#F1F5F9] rounded-xl border-2 border-[#1E293B] shadow-geom-soft">
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('razorpay')}
-                className={`py-3 px-3 rounded-lg text-sm font-outfit font-bold uppercase tracking-wide transition-all border-2 border-transparent ${
-                  paymentMethod === 'razorpay'
-                    ? 'bg-white text-[#1E293B] border-[#1E293B] shadow-geom'
-                    : 'text-slate-500 hover:text-[#1E293B]'
-                }`}
-              >
-                Razorpay (Instant)
-              </button>
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('upi_qr')}
-                className={`py-3 px-3 rounded-lg text-sm font-outfit font-bold uppercase tracking-wide transition-all border-2 border-transparent ${
-                  paymentMethod === 'upi_qr'
-                    ? 'bg-white text-[#1E293B] border-[#1E293B] shadow-geom'
-                    : 'text-slate-500 hover:text-[#1E293B]'
-                }`}
-              >
-                UPI QR (Manual)
-              </button>
-            </div>
-
+            {/* Payment Flow */}
             {paymentMethod === 'razorpay' ? (
-              <button 
-                className="w-full candy-btn candy-btn-primary py-4 text-xl flex items-center justify-center gap-2" 
-                disabled={loading} 
-                onClick={handlePayWithRazorpay}
-              >
-                {loading ? (
-                  <>
-                    <div className="w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin"></div>
-                    Processing...
-                  </>
-                ) : 'Pay ₹100 & Complete'}
-              </button>
+              <div className="w-full flex flex-col gap-4 mt-2">
+                <div className="bg-green-50 border-2 border-green-600 rounded-xl p-6 shadow-sm relative">
+                  <div className="absolute -top-3 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                    <span>⭐</span> Recommended
+                  </div>
+                  
+                  <h3 className="text-xl font-bold text-green-900 mb-4 font-outfit mt-2">🔒 Pay Securely (Instant Verification)</h3>
+                  
+                  <ul className="space-y-2 mb-6 text-green-800 font-jakarta font-medium text-sm">
+                    <li className="flex items-center gap-2"><span>✔</span> Instant Confirmation</li>
+                    <li className="flex items-center gap-2"><span>✔</span> Auto Verification</li>
+                    <li className="flex items-center gap-2"><span>✔</span> No Screenshot Required</li>
+                  </ul>
+
+                  <button 
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg text-xl transition-colors flex items-center justify-center gap-2 shadow-md" 
+                    disabled={loading} 
+                    onClick={handlePayWithRazorpay}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin"></div>
+                        Processing...
+                      </>
+                    ) : 'Pay ₹100 Securely'}
+                  </button>
+                  <div className="flex items-center justify-center gap-4 mt-4 text-xs font-bold text-green-700/70 uppercase tracking-wide">
+                    <span className="flex items-center gap-1">🔒 Secure</span>
+                    <span className="flex items-center gap-1">⚡ Instant</span>
+                    <span className="flex items-center gap-1">🛡 Razorpay</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-center gap-2 mt-4">
+                  <span className="text-sm font-jakarta font-semibold text-slate-500">Having trouble with Razorpay?</span>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('upi_qr')}
+                    className="text-slate-500 hover:text-slate-800 text-sm font-bold underline decoration-dashed underline-offset-4 transition-colors"
+                  >
+                    Use Manual UPI (Requires Screenshot)
+                  </button>
+                </div>
+              </div>
             ) : (
-              <form onSubmit={handlePayManualUPI} className="w-full space-y-4">
+              <div className="w-full flex flex-col gap-4 mt-2">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('razorpay')}
+                  className="text-green-600 hover:text-green-700 text-sm font-bold flex items-center gap-1 w-fit"
+                >
+                  ← Back to Secure Payment
+                </button>
+
+                <div className="bg-orange-50 border-2 border-orange-200 text-orange-800 text-xs p-3 rounded-xl font-jakarta">
+                  <span className="font-bold">Notice:</span> We strongly recommend using Razorpay for instant payment verification. Manual QR payments require screenshot verification and may take additional time.
+                </div>
+
+                <form onSubmit={handlePayManualUPI} className="w-full space-y-4">
                 <div className="flex flex-col items-center justify-center p-6 bg-white border-2 border-[#1E293B] rounded-xl shadow-geom-soft relative">
                   <div className="absolute top-0 right-0 w-16 h-16 bg-[#F472B6] rounded-bl-full mix-blend-multiply opacity-20 pointer-events-none"></div>
                   <img
@@ -771,6 +791,7 @@ const MembershipForm = () => {
                   ) : 'I Have Paid & Sent Screenshot'}
                 </button>
               </form>
+              </div>
             )}
           </div>
         )}

@@ -60,19 +60,55 @@ export default function PaymentButtons({ amount = 200, name = 'Anonymous', onSuc
   };
 
   return (
-    <div className="flex gap-3 flex-wrap mt-4">
-      {/* 🟢 Google Pay Button */}
-      <button onClick={handleGooglePay} className="px-5 py-2 rounded bg-green-600 hover:bg-green-700 text-white font-semibold shadow">
-        Pay with Google Pay
-      </button>
-      {/* 🟠 Razorpay Button */}
-      <button onClick={handleRazorpay} className="px-5 py-2 rounded bg-orange-500 hover:bg-orange-600 text-white font-semibold shadow">
-        Pay with Razorpay
-      </button>
-      {/* 🔵 QR Code Button */}
-      <button onClick={handleQRCode} className="px-5 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow">
-        Scan QR Code
-      </button>
+    <div className="flex flex-col gap-4 mt-4 w-full">
+      <div className="bg-green-50 border-2 border-green-600 rounded-xl p-6 shadow-sm relative">
+        <div className="absolute -top-3 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+          <span>⭐</span> Recommended
+        </div>
+        
+        <h3 className="text-xl font-bold text-green-900 mb-4 font-outfit mt-2">🔒 Pay Securely (Instant Verification)</h3>
+        
+        <ul className="space-y-2 mb-6 text-green-800 font-jakarta font-medium text-sm">
+          <li className="flex items-center gap-2"><span>✔</span> Instant Confirmation</li>
+          <li className="flex items-center gap-2"><span>✔</span> Auto Verification</li>
+          <li className="flex items-center gap-2"><span>✔</span> No Screenshot Required</li>
+        </ul>
+
+        <button 
+          onClick={handleRazorpay} 
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg text-lg transition-colors flex items-center justify-center gap-2 shadow-md"
+        >
+          Pay Securely with Razorpay
+        </button>
+        
+        <div className="flex items-center justify-center gap-4 mt-4 text-xs font-bold text-green-700/70 uppercase tracking-wide">
+          <span className="flex items-center gap-1">🔒 Secure Payments</span>
+          <span className="flex items-center gap-1">⚡ Instant Verification</span>
+        </div>
+      </div>
+
+      <details className="group border-2 border-slate-200 rounded-xl bg-white mt-2">
+        <summary className="flex items-center justify-between p-4 font-jakarta font-semibold text-slate-600 cursor-pointer hover:bg-slate-50 transition-colors">
+          Having trouble with Razorpay?
+          <span className="text-sm text-slate-500 group-open:hidden underline decoration-dashed underline-offset-4">Use Manual UPI (Requires Screenshot)</span>
+          <span className="text-sm text-slate-500 hidden group-open:block">Close</span>
+        </summary>
+        
+        <div className="p-4 pt-0 border-t-2 border-slate-100 mt-2">
+          <div className="bg-orange-50 border-2 border-orange-200 text-orange-800 text-xs p-3 rounded-xl font-jakarta mb-4 mt-2">
+            <span className="font-bold">Notice:</span> We strongly recommend using Razorpay for instant payment verification. Manual payments require verification and may take additional time.
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button onClick={handleGooglePay} className="flex-1 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold border-2 border-slate-300 transition-colors">
+              Pay with Google Pay
+            </button>
+            <button onClick={handleQRCode} className="flex-1 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold border-2 border-slate-300 transition-colors">
+              Scan QR Code
+            </button>
+          </div>
+        </div>
+      </details>
     </div>
   );
 } 
