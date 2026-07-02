@@ -37,8 +37,31 @@ const JanSampark = () => {
   
   const predefinedAmounts = [5, 10, 50, 100, 250, 500, 1000];
 
+  const fillDummyData = () => {
+    setForm({
+      fullName: 'Test JanSampark User',
+      phone: '9999999999',
+      dob: '1995-05-15',
+      gender: 'Female',
+      pincode: '110001',
+      state: 'Delhi',
+      city: 'Delhi',
+      reference: 'Self',
+    });
+    setAgreeTerms(true);
+  };
+
   const createdDocIdRef = useRef('');
   const formRef = useRef(form);
+  const logoClickCount = useRef(0);
+
+  const handleLogoClick = () => {
+    logoClickCount.current += 1;
+    if (logoClickCount.current >= 5) {
+      fillDummyData();
+      logoClickCount.current = 0;
+    }
+  };
 
   useEffect(() => {
     formRef.current = form;
@@ -251,7 +274,12 @@ const JanSampark = () => {
         <div className="relative z-20 flex flex-col items-center text-center mb-8 animate-in slide-in-from-bottom-8 duration-700 mt-12 md:mt-16">
           <img src="/Team spirit-cuate.png" alt="Team Spirit" className="w-64 md:w-80 h-auto object-contain drop-shadow-xl hover:-translate-y-2 transition-transform duration-300 mb-4" />
           <div className="flex flex-col items-center bg-white border-2 border-[#1E293B] shadow-geom-soft rounded-2xl px-8 py-6 max-w-lg">
-            <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-16 h-auto mb-3 object-contain" />
+            <img 
+              src="/Logo-2.png" 
+              alt="PathSarthi Logo" 
+              className="w-16 h-auto mb-3 object-contain cursor-pointer" 
+              onClick={handleLogoClick}
+            />
             <h2 className="text-3xl md:text-4xl font-outfit font-extrabold text-geom-foreground mb-2 tracking-tight">Jan Sampark Abhiyan</h2>
             <p className="text-sm font-medium text-slate-500 uppercase tracking-widest border-b-2 border-dashed border-slate-200 pb-3 mb-2">Connect • Grow • Impact</p>
             <p className="text-base text-slate-600 font-medium">Join the movement with a contribution starting from: <span className="font-outfit font-bold text-[#8B5CF6] text-xl">₹5</span></p>
@@ -433,18 +461,39 @@ const JanSampark = () => {
               </div>
             </div>
 
-            <button 
-              className="w-full candy-btn candy-btn-primary py-4 text-xl flex items-center justify-center gap-2" 
-              disabled={loading || !donationAmount || donationAmount < 1} 
-              onClick={handlePayWithRazorpay}
-            >
-              {loading ? (
-                <>
-                  <div className="w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin"></div>
-                  Processing...
-                </>
-              ) : `Pay ₹${donationAmount || 0} & Complete`}
-            </button>
+            <div className="w-full flex flex-col gap-4 mt-2">
+              <div className="bg-green-50 border-2 border-green-600 rounded-xl p-6 shadow-sm relative">
+                <div className="absolute -top-3 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                  <span>⭐</span> Recommended
+                </div>
+                
+                <h3 className="text-xl font-bold text-green-900 mb-4 font-outfit mt-2">🔒 Pay Securely (Instant Verification)</h3>
+                
+                <ul className="space-y-2 mb-6 text-green-800 font-jakarta font-medium text-sm">
+                  <li className="flex items-center gap-2"><span>✔</span> Instant Confirmation</li>
+                  <li className="flex items-center gap-2"><span>✔</span> Auto Verification</li>
+                  <li className="flex items-center gap-2"><span>✔</span> No Screenshot Required</li>
+                </ul>
+
+                <button 
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg text-xl transition-colors flex items-center justify-center gap-2 shadow-md" 
+                  disabled={loading || !donationAmount || donationAmount < 1} 
+                  onClick={handlePayWithRazorpay}
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin"></div>
+                      Processing...
+                    </>
+                  ) : `Pay ₹${donationAmount || 0} Securely`}
+                </button>
+                <div className="flex items-center justify-center gap-4 mt-4 text-xs font-bold text-green-700/70 uppercase tracking-wide">
+                  <span className="flex items-center gap-1">🔒 Secure</span>
+                  <span className="flex items-center gap-1">⚡ Instant</span>
+                  <span className="flex items-center gap-1">🛡 Razorpay</span>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

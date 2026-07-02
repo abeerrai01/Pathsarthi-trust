@@ -61,6 +61,25 @@ const MembershipForm = () => {
   const [form, setForm] = useState(initialForm);
   const [step, setStep] = useState('form'); // form | payment | done
   const [loading, setLoading] = useState(false);
+  
+  const fillDummyData = () => {
+    setForm({
+      fullName: 'Test User',
+      dob: '2000-01-01',
+      age: '26',
+      gender: 'Male',
+      city: 'Delhi',
+      state: 'Delhi',
+      pincode: '110001',
+      email: 'test@example.com',
+      phone: '9999999999',
+      reference: 'Self',
+      profilePhotoUrl: '',
+      image: '',
+    });
+    setAgreeTerms(true);
+  };
+
   // No OTP, no recaptcha
   const [toast, setToast] = useState(null);
   const [paymentId, setPaymentId] = useState('');
@@ -74,6 +93,15 @@ const MembershipForm = () => {
 
   const createdDocIdRef = useRef('');
   const formRef = useRef(form);
+  const logoClickCount = useRef(0);
+
+  const handleLogoClick = () => {
+    logoClickCount.current += 1;
+    if (logoClickCount.current >= 5) {
+      fillDummyData();
+      logoClickCount.current = 0;
+    }
+  };
 
   useEffect(() => {
     formRef.current = form;
@@ -452,7 +480,12 @@ const MembershipForm = () => {
         <div className="relative z-20 flex flex-col items-center text-center mb-8 animate-in slide-in-from-bottom-8 duration-700">
           <img src="/Forms-bro.png" alt="Membership Form" className="w-64 md:w-80 h-auto object-contain drop-shadow-xl hover:-translate-y-2 transition-transform duration-300 mb-4" />
           <div className="flex flex-col items-center bg-white border-2 border-[#1E293B] shadow-geom-soft rounded-2xl px-8 py-6 max-w-lg">
-            <img src="/Logo-2.png" alt="PathSarthi Logo" className="w-16 h-auto mb-3 object-contain" />
+            <img 
+              src="/Logo-2.png" 
+              alt="PathSarthi Logo" 
+              className="w-16 h-auto mb-3 object-contain cursor-pointer" 
+              onClick={handleLogoClick}
+            />
             <h2 className="text-3xl md:text-4xl font-outfit font-extrabold text-geom-foreground mb-2 tracking-tight">Become a Member</h2>
             <p className="text-sm font-medium text-slate-500 uppercase tracking-widest border-b-2 border-dashed border-slate-200 pb-3 mb-2">Join PathSarthi Trust</p>
             <p className="text-base text-slate-600 font-medium">Be a catalyst for hope. Registration fee: <span className="font-outfit font-bold text-[#8B5CF6] text-xl">₹100</span></p>

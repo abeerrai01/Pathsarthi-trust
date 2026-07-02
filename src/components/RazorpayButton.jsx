@@ -50,9 +50,33 @@ const RazorpayButton = ({ amount, name = "Anonymous", onSuccess }) => {
   };
 
   return (
-    <button onClick={payNow} className="w-full bg-green-600 text-white px-6 py-3.5 rounded-lg font-semibold shadow-lg hover:bg-green-700 transition-all duration-300 flex items-center justify-center">
-      Pay ₹{amount} by Razorpay
-    </button>
+    <div className="w-full flex flex-col gap-4 mt-2">
+      <div className="bg-green-50 border-2 border-green-600 rounded-xl p-6 shadow-sm relative">
+        <div className="absolute -top-3 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+          <span>⭐</span> Recommended
+        </div>
+        
+        <h3 className="text-xl font-bold text-green-900 mb-4 font-outfit mt-2">🔒 Pay Securely (Instant Verification)</h3>
+        
+        <ul className="space-y-2 mb-6 text-green-800 font-jakarta font-medium text-sm">
+          <li className="flex items-center gap-2"><span>✔</span> Instant Confirmation</li>
+          <li className="flex items-center gap-2"><span>✔</span> Auto Verification</li>
+          <li className="flex items-center gap-2"><span>✔</span> No Screenshot Required</li>
+        </ul>
+
+        <button 
+          onClick={payNow} 
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg text-lg transition-colors flex items-center justify-center gap-2 shadow-md"
+        >
+          Pay ₹{amount} Securely
+        </button>
+        
+        <div className="flex items-center justify-center gap-4 mt-4 text-xs font-bold text-green-700/70 uppercase tracking-wide">
+          <span className="flex items-center gap-1">🔒 Secure Payments</span>
+          <span className="flex items-center gap-1">⚡ Instant Verification</span>
+        </div>
+      </div>
+    </div>
   );
 };
 
