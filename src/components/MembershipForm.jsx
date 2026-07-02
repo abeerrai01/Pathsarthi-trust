@@ -88,6 +88,7 @@ const MembershipForm = () => {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [cities, setCities] = useState([]);
+  const [members, setMembers] = useState([]);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
 
@@ -181,6 +182,46 @@ const MembershipForm = () => {
       script.async = true;
       document.body.appendChild(script);
     }
+  }, []);
+
+  // Fetch approved members and their JanSampark referral count
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        // Fetch JanSampark references count
+        const janSnap = await getDocs(collection(db, "jan_sampark"));
+        const refCounts = {};
+        janSnap.forEach(doc => {
+          const data = doc.data();
+          if (data.reference && data.reference !== "Self") {
+            refCounts[data.reference] = (refCounts[data.reference] || 0) + 1;
+          }
+        });
+
+        // Fetch valid memberships
+        const q = query(collection(db, "memberships"), where("status", "==", "completed"));
+        const snapshot = await getDocs(q);
+        const membersList = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.fullName) {
+            membersList.push(data.fullName);
+          }
+        });
+        
+        // Remove duplicates and attach counts
+        const uniqueMembers = [...new Set(membersList)].sort();
+        const membersWithCounts = uniqueMembers.map(name => ({
+          name,
+          count: refCounts[name] || 0
+        }));
+        
+        setMembers(membersWithCounts);
+      } catch (error) {
+        console.error("Error fetching members:", error);
+      }
+    };
+    fetchMembers();
   }, []);
 
   // Scroll to top on step changes
@@ -536,7 +577,15 @@ const MembershipForm = () => {
               {/* Reference Group */}
               <div className="space-y-4 pt-4 border-t-2 border-dashed border-slate-200">
                 <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide block mb-1">Reference</label>
-                <input name="reference" value={form.reference} onChange={handleChange} placeholder="Referred By (Optional)" type="text" className="w-full px-4 py-3 geom-input" />
+                <select name="reference" value={form.reference} onChange={handleChange} className="w-full px-4 py-3 geom-input h-[50px]">
+                  <option value="">Select Reference (Optional)</option>
+                  <option value="Self">Self</option>
+                  {members.map((member, idx) => (
+                    <option key={idx} value={member.name}>
+                      {member.name} ({member.count})
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Location Details Group */}

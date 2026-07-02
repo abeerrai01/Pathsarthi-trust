@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { db } from '../config/firebase';
-import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, query, where, getDocs } from 'firebase/firestore';
 import { Check, Users } from 'lucide-react';
 
 const indianStates = [
@@ -16,7 +16,7 @@ const indianStates = [
 const initialForm = {
   fullName: '',
   phone: '',
-  dob: '',
+  age: '',
   gender: '',
   pincode: '',
   state: '',
@@ -32,6 +32,7 @@ const JanSampark = () => {
   const [paymentId, setPaymentId] = useState('');
   const [createdDocId, setCreatedDocId] = useState('');
   const [cities, setCities] = useState([]);
+  const [members, setMembers] = useState([]);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [donationAmount, setDonationAmount] = useState(5);
   
@@ -41,7 +42,7 @@ const JanSampark = () => {
     setForm({
       fullName: 'Test JanSampark User',
       phone: '9999999999',
-      dob: '1995-05-15',
+      age: '29',
       gender: 'Female',
       pincode: '110001',
       state: 'Delhi',
@@ -75,6 +76,46 @@ const JanSampark = () => {
       script.async = true;
       document.body.appendChild(script);
     }
+  }, []);
+
+  // Fetch approved members and their JanSampark referral count
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        // Fetch JanSampark references count
+        const janSnap = await getDocs(collection(db, "jan_sampark"));
+        const refCounts = {};
+        janSnap.forEach(doc => {
+          const data = doc.data();
+          if (data.reference && data.reference !== "Self") {
+            refCounts[data.reference] = (refCounts[data.reference] || 0) + 1;
+          }
+        });
+
+        // Fetch valid memberships
+        const q = query(collection(db, "memberships"), where("status", "==", "completed"));
+        const snapshot = await getDocs(q);
+        const membersList = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.fullName) {
+            membersList.push(data.fullName);
+          }
+        });
+        
+        // Remove duplicates and attach counts
+        const uniqueMembers = [...new Set(membersList)].sort();
+        const membersWithCounts = uniqueMembers.map(name => ({
+          name,
+          count: refCounts[name] || 0
+        }));
+        
+        setMembers(membersWithCounts);
+      } catch (error) {
+        console.error("Error fetching members:", error);
+      }
+    };
+    fetchMembers();
   }, []);
 
   // Scroll to top on step changes
@@ -309,8 +350,8 @@ const JanSampark = () => {
                     <input name="phone" value={form.phone} onChange={handleChange} required placeholder="Phone Number*" type="tel" maxLength="10" className="w-full px-4 py-3 geom-input" />
                   </div>
                   <div className="flex flex-col gap-1 w-full min-w-0 overflow-hidden">
-                    <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Date of Birth*</label>
-                    <input name="dob" value={form.dob} onChange={handleChange} required type="date" className="w-full px-4 py-3 geom-input h-[50px] min-w-0" />
+                    <label className="text-xs font-outfit font-bold text-slate-500 uppercase tracking-wide px-1">Age*</label>
+                    <input name="age" value={form.age} onChange={handleChange} required type="number" min="1" max="120" placeholder="Age*" className="w-full px-4 py-3 geom-input h-[50px] min-w-0" />
                   </div>
                 </div>
 
@@ -386,7 +427,15 @@ const JanSampark = () => {
               {/* Reference Group */}
               <div className="space-y-4 pt-4 border-t-2 border-dashed border-slate-200">
                 <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide block mb-1">Reference</label>
-                <input name="reference" value={form.reference} onChange={handleChange} placeholder="Referred By (Optional)" type="text" className="w-full px-4 py-3 geom-input" />
+                <select name="reference" value={form.reference} onChange={handleChange} className="w-full px-4 py-3 geom-input h-[50px]">
+                  <option value="">Select Reference (Optional)</option>
+                  <option value="Self">Self</option>
+                  {members.map((member, idx) => (
+                    <option key={idx} value={member.name}>
+                      {member.name} ({member.count})
+                    </option>
+                  ))}
+                </select>
               </div>
 
             </div>
