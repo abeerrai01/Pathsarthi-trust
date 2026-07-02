@@ -117,22 +117,27 @@ const SponsorNotebooks = () => {
                 <div className="mt-6 space-y-4">
                   <RazorpayButton amount={quantity * pricePerNotebook} name={name || 'Anonymous'} onSuccess={handleSuccess} />
                   
-                  <div className="relative flex py-2 items-center">
-                    <div className="flex-grow border-t border-gray-200"></div>
-                    <span className="flex-shrink mx-4 text-gray-400 text-sm font-semibold">OR</span>
-                    <div className="flex-grow border-t border-gray-200"></div>
-                  </div>
-                  
-                  <button
-                    type="button"
-                    onClick={() => setShowQRModal(true)}
-                    className="w-full bg-indigo-600 text-white px-6 py-3.5 rounded-lg font-semibold shadow-lg hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                    </svg>
-                    Pay via UPI QR Code
-                  </button>
+                  <details className="group border-2 border-slate-200 rounded-xl bg-white mt-2">
+                    <summary className="flex items-center justify-between p-4 font-jakarta font-semibold text-slate-600 cursor-pointer hover:bg-slate-50 transition-colors">
+                      Having trouble with Razorpay?
+                      <span className="text-sm text-slate-500 group-open:hidden underline decoration-dashed underline-offset-4">Use Manual UPI</span>
+                      <span className="text-sm text-slate-500 hidden group-open:block">Close</span>
+                    </summary>
+                    
+                    <div className="p-4 pt-0 border-t-2 border-slate-100 mt-2">
+                      <div className="bg-orange-50 border-2 border-orange-200 text-orange-800 text-xs p-3 rounded-xl font-jakarta mb-4 mt-2">
+                        <span className="font-bold">Notice:</span> We strongly recommend using Razorpay for instant verification. Manual payments take extra time.
+                      </div>
+                      
+                      <button
+                        type="button"
+                        onClick={() => setShowQRModal(true)}
+                        className="w-full bg-slate-100 text-slate-700 border-2 border-slate-300 px-6 py-3.5 rounded-lg font-semibold hover:bg-slate-200 transition-all duration-300 flex items-center justify-center gap-2"
+                      >
+                        Show QR Code
+                      </button>
+                    </div>
+                  </details>
                 </div>
               </>
             ) : (

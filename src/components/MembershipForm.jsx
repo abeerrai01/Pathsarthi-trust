@@ -697,15 +697,15 @@ const MembershipForm = () => {
               <div className="w-full flex flex-col gap-4 mt-2">
                 <div className="bg-green-50 border-2 border-green-600 rounded-xl p-6 shadow-sm relative">
                   <div className="absolute -top-3 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
-                    <span>⭐</span> Recommended
+                    Recommended
                   </div>
                   
-                  <h3 className="text-xl font-bold text-green-900 mb-4 font-outfit mt-2">🔒 Pay Securely (Instant Verification)</h3>
+                  <h3 className="text-xl font-bold text-green-900 mb-4 font-outfit mt-2">Pay Securely (Instant Verification)</h3>
                   
                   <ul className="space-y-2 mb-6 text-green-800 font-jakarta font-medium text-sm">
-                    <li className="flex items-center gap-2"><span>✔</span> Instant Confirmation</li>
-                    <li className="flex items-center gap-2"><span>✔</span> Auto Verification</li>
-                    <li className="flex items-center gap-2"><span>✔</span> No Screenshot Required</li>
+                    <li className="flex items-center gap-2">Instant Confirmation</li>
+                    <li className="flex items-center gap-2">Auto Verification</li>
+                    <li className="flex items-center gap-2">No Screenshot Required</li>
                   </ul>
 
                   <button 
@@ -721,9 +721,9 @@ const MembershipForm = () => {
                     ) : 'Pay ₹100 Securely'}
                   </button>
                   <div className="flex items-center justify-center gap-4 mt-4 text-xs font-bold text-green-700/70 uppercase tracking-wide">
-                    <span className="flex items-center gap-1">🔒 Secure</span>
-                    <span className="flex items-center gap-1">⚡ Instant</span>
-                    <span className="flex items-center gap-1">🛡 Razorpay</span>
+                    <span className="flex items-center gap-1">Secure</span>
+                    <span className="flex items-center gap-1">Instant</span>
+                    <span className="flex items-center gap-1">Razorpay</span>
                   </div>
                 </div>
 
