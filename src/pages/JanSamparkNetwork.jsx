@@ -74,6 +74,19 @@ const JanSamparkNetwork = () => {
   const totalMembers = members.length;
   const totalDistricts = new Set(members.map(m => m.city).filter(Boolean)).size;
 
+  // Calculate top 5 referrers
+  const referrerCounts = {};
+  members.forEach(m => {
+    const ref = m.reference;
+    if (ref && ref !== 'Self') {
+      referrerCounts[ref] = (referrerCounts[ref] || 0) + 1;
+    }
+  });
+  
+  const topReferrers = Object.entries(referrerCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
   // Mask name: Show First Name + Last Initial (e.g. "Rahul K.")
   const formatName = (fullName) => {
     if (!fullName) return 'Unknown';
@@ -160,6 +173,33 @@ const JanSamparkNetwork = () => {
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-4">
         
+        {/* Top 5 Referrers Leaderboard */}
+        {topReferrers.length > 0 && (
+          <div className="mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <h2 className="text-2xl md:text-3xl font-outfit font-extrabold text-[#1E293B] mb-6 flex items-center justify-center gap-3">
+              <span className="text-4xl">🏆</span> Top 5 Contributors
+            </h2>
+            <div className="flex flex-wrap justify-center gap-4">
+              {topReferrers.map(([name, count], idx) => (
+                <div key={name} className="bg-white rounded-2xl border-2 border-[#1E293B] shadow-geom-soft p-5 flex flex-col items-center justify-center text-center relative overflow-hidden group hover:-translate-y-2 hover:shadow-geom transition-all duration-300 w-[160px] md:w-[180px]">
+                  <div className={`absolute top-0 right-0 w-10 h-10 flex items-center justify-center font-bold text-white rounded-bl-xl border-l-2 border-b-2 border-[#1E293B] ${idx === 0 ? 'bg-[#FBBF24] text-[#1E293B] text-xl' : idx === 1 ? 'bg-slate-300 text-[#1E293B] text-lg' : idx === 2 ? 'bg-amber-600 text-lg' : 'bg-[#1E293B] text-sm'}`}>
+                    #{idx + 1}
+                  </div>
+                  <div className={`w-20 h-20 rounded-full border-2 border-[#1E293B] flex items-center justify-center text-white text-3xl font-bold bg-gradient-to-br ${getAvatarGradient(name)} shadow-sm mb-4 mt-2`}>
+                    {formatName(name).charAt(0)}
+                  </div>
+                  <div className="font-outfit font-bold text-[#1E293B] text-base leading-tight mb-2 truncate w-full px-2" title={name}>
+                    {formatName(name)}
+                  </div>
+                  <div className="text-xs font-bold text-[#1E293B] uppercase tracking-widest bg-[#34D399] px-3 py-1.5 rounded-lg border-2 border-[#1E293B] shadow-sm">
+                    {count} Referrals
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Filters */}
         <div className="bg-white rounded-2xl border-2 border-[#1E293B] shadow-geom-soft p-6 mb-10 relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6">
           
