@@ -34,6 +34,7 @@ import { logVisit } from './utils/logVisit';
 import MediaFeed from './components/MediaFeed';
 import PhotoPage from './components/PhotoPage';
 import MembershipForm from './components/MembershipForm';
+import PremiumMembershipForm from './components/PremiumMembershipForm';
 import JanSampark from './pages/JanSampark';
 import JanSamparkNetwork from './pages/JanSamparkNetwork';
 import SplashScreen from './components/SplashScreen';
@@ -266,6 +267,7 @@ function App() {
                 } />
                 <Route path="/verify/:name" element={<VerifyCertificate />} />
                 <Route path="/membership" element={<MembershipForm />} />
+                <Route path="/premium-membership" element={<PremiumMembershipForm />} />
                 <Route path="/jan-sampark" element={<JanSampark />} />
                 <Route path="/jan-sampark-network" element={<JanSamparkNetwork />} />
                 <Route path="/education-support" element={<EducationSupport />} />
