@@ -193,19 +193,20 @@ const MembershipForm = () => {
         const refCounts = {};
         janSnap.forEach(doc => {
           const data = doc.data();
-          if (data.reference && data.reference !== "Self") {
+          const s = (data.status || '').trim().toLowerCase();
+          if ((s === 'completed' || s === 'paid') && data.reference && data.reference !== "Self") {
             refCounts[data.reference] = (refCounts[data.reference] || 0) + 1;
           }
         });
 
-        // Fetch valid memberships
-        const q = query(collection(db, "memberships"), where("status", "==", "completed"));
-        const snapshot = await getDocs(q);
+        // Fetch valid memberships (including both 'completed' and 'Paid')
+        const snapshot = await getDocs(collection(db, "memberships"));
         const membersList = [];
         snapshot.forEach((doc) => {
           const data = doc.data();
-          if (data.fullName) {
-            membersList.push(data.fullName);
+          const s = (data.status || '').trim().toLowerCase();
+          if ((s === 'completed' || s === 'paid') && data.fullName) {
+            membersList.push(data.fullName.trim());
           }
         });
         

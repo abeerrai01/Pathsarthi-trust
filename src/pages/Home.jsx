@@ -5,6 +5,8 @@ import VisitorCounter from "../components/VisitorCounter";
 import SupporterCard from '../components/SupporterCard';
 import TributeModal from '../components/TributeModal';
 import CSRSection from '../components/CSRSection';
+import { db } from '../config/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const Home = () => {
   const stats = [
@@ -39,6 +41,63 @@ const Home = () => {
 
   // Ref for the counter container
   const counterRef = useRef(null);
+
+  const [topReferrers, setTopReferrers] = useState([]);
+  
+  useEffect(() => {
+    const fetchTopReferrers = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, 'jan_sampark'));
+        const referrerCounts = {};
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const s = (data.status || '').trim().toLowerCase();
+          if (s === 'completed' || s === 'paid') {
+            const ref = data.reference;
+            if (ref && ref !== 'Self') {
+              referrerCounts[ref] = (referrerCounts[ref] || 0) + 1;
+            }
+          }
+        });
+        
+        const top = Object.entries(referrerCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5);
+        setTopReferrers(top);
+      } catch (err) {
+        console.error("Error fetching top referrers:", err);
+      }
+    };
+    fetchTopReferrers();
+  }, []);
+
+  // Mask name: Show First Name + Last Initial (e.g. "Rahul K.")
+  const formatName = (fullName) => {
+    if (!fullName) return 'Unknown';
+    const parts = fullName.trim().split(' ');
+    if (parts.length === 1) return parts[0];
+    const firstName = parts[0];
+    const lastInitial = parts[parts.length - 1][0];
+    return `${firstName} ${lastInitial}.`;
+  };
+
+  // Generate a random gradient color based on a string
+  const getAvatarGradient = (str) => {
+    const colors = [
+      'from-blue-500 to-indigo-600',
+      'from-emerald-400 to-teal-500',
+      'from-orange-400 to-red-500',
+      'from-pink-500 to-rose-500',
+      'from-purple-500 to-fuchsia-600',
+      'from-cyan-500 to-blue-500',
+    ];
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % colors.length;
+    return colors[index];
+  };
 
   useEffect(() => {
     // Clean up any previous counter
@@ -226,6 +285,39 @@ const Home = () => {
               🤝 Become a Member
             </Link>
           </motion.div>
+
+          {/* Top 5 Referrers Leaderboard */}
+          {topReferrers.length > 0 && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mt-16"
+            >
+              <h3 className="text-2xl font-bold text-slate-800 mb-8 text-center flex items-center justify-center gap-2">
+                🏆 Top Contributors
+              </h3>
+              <div className="flex flex-wrap justify-center gap-4">
+                {topReferrers.map(([name, count], idx) => (
+                  <div key={name} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col items-center justify-center text-center relative overflow-hidden group hover:-translate-y-2 hover:shadow-md transition-all duration-300 w-[160px] md:w-[180px]">
+                    <div className={`absolute top-0 right-0 w-8 h-8 flex items-center justify-center font-bold text-white rounded-bl-xl ${idx === 0 ? 'bg-[#FBBF24] text-[#1E293B]' : idx === 1 ? 'bg-slate-300 text-[#1E293B]' : idx === 2 ? 'bg-amber-600' : 'bg-[#1E293B]'}`}>
+                      #{idx + 1}
+                    </div>
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold bg-gradient-to-br ${getAvatarGradient(name)} shadow-sm mb-3 mt-2`}>
+                      {formatName(name).charAt(0)}
+                    </div>
+                    <div className="font-outfit font-bold text-gray-800 text-sm leading-tight mb-2 truncate w-full px-2" title={name}>
+                      {formatName(name)}
+                    </div>
+                    <div className="text-xs font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+                      {count} Referrals
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
         </div>
       </section>
 
