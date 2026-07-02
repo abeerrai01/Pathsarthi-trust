@@ -265,7 +265,7 @@ const JanSampark = () => {
   };
 
   const validateForm = () => {
-    if (!form.fullName || !form.dob || !form.gender || !form.city || !form.state || !form.phone || !form.pincode) {
+    if (!form.fullName || !form.age || !form.gender || !form.city || !form.state || !form.phone || !form.pincode) {
       showToast('Please fill all required fields.', 'error');
       return false;
     }
