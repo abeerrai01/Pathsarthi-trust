@@ -34,9 +34,9 @@ const JanSampark = () => {
   const [cities, setCities] = useState([]);
   const [members, setMembers] = useState([]);
   const [agreeTerms, setAgreeTerms] = useState(false);
-  const [donationAmount, setDonationAmount] = useState(5);
+  const [donationAmount, setDonationAmount] = useState(21);
   
-  const predefinedAmounts = [5, 10, 50, 100, 250, 500, 1000];
+  const predefinedAmounts = [21, 51, 101, 251, 501, 1001];
 
   const fillDummyData = () => {
     setForm({
@@ -158,7 +158,7 @@ const JanSampark = () => {
 
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_lrTbKMU5YpM6UD",
-      amount: (donationAmount || 5) * 100, // Amount in paise
+      amount: (donationAmount || 21) * 100, // Amount in paise
       currency: "INR",
       name: "Path Sarthi Trust",
       description: "Jan Sampark Registration",
@@ -172,13 +172,13 @@ const JanSampark = () => {
           if (docId) {
             await updateDoc(doc(db, "jan_sampark", docId), {
               paymentId: generatedId,
-              amount: donationAmount || 5,
+              amount: donationAmount || 21,
               status: 'completed',
             });
           } else {
             await addDoc(collection(db, "jan_sampark"), {
               ...formRef.current,
-              amount: donationAmount || 5,
+              amount: donationAmount || 21,
               paymentId: generatedId,
               createdAt: new Date(),
               status: 'completed',
@@ -331,7 +331,7 @@ const JanSampark = () => {
             />
             <h2 className="text-3xl md:text-4xl font-outfit font-extrabold text-geom-foreground mb-2 tracking-tight">Jan Sampark Abhiyan</h2>
             <p className="text-sm font-medium text-slate-500 uppercase tracking-widest border-b-2 border-dashed border-slate-200 pb-3 mb-2">Connect • Grow • Impact</p>
-            <p className="text-base text-slate-600 font-medium">Join the movement with a contribution starting from: <span className="font-outfit font-bold text-[#8B5CF6] text-xl">₹5</span></p>
+            <p className="text-base text-slate-600 font-medium">Join the movement with a contribution starting from: <span className="font-outfit font-bold text-[#8B5CF6] text-xl">₹21</span></p>
           </div>
         </div>
       )}

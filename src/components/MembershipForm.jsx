@@ -264,7 +264,7 @@ const MembershipForm = () => {
 
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_lrTbKMU5YpM6UD",
-      amount: 100 * 100, // ₹100 in paise
+      amount: 201 * 100, // ₹201 in paise
       currency: "INR",
       name: "Path Sarthi Trust",
       description: "Membership Registration",
@@ -537,7 +537,7 @@ const MembershipForm = () => {
             />
             <h2 className="text-3xl md:text-4xl font-outfit font-extrabold text-geom-foreground mb-2 tracking-tight">Become a Member</h2>
             <p className="text-sm font-medium text-slate-500 uppercase tracking-widest border-b-2 border-dashed border-slate-200 pb-3 mb-2">Join PathSarthi Trust</p>
-            <p className="text-base text-slate-600 font-medium">Be a catalyst for hope. Registration fee: <span className="font-outfit font-bold text-[#8B5CF6] text-xl">₹100</span></p>
+            <p className="text-base text-slate-600 font-medium">Be a catalyst for hope. Registration fee: <span className="font-outfit font-bold text-[#8B5CF6] text-xl">₹201</span></p>
           </div>
         </div>
       )}
@@ -745,7 +745,7 @@ const MembershipForm = () => {
               </div>
               <div className="flex justify-between pt-2 text-lg font-bold text-[#1E293B] items-center">
                 <span className="font-outfit uppercase tracking-wide">Membership Fee</span>
-                <span className="text-[#8B5CF6] text-3xl font-outfit font-extrabold">₹100</span>
+                <span className="text-[#8B5CF6] text-3xl font-outfit font-extrabold">₹201</span>
               </div>
             </div>
 
@@ -775,7 +775,7 @@ const MembershipForm = () => {
                         <div className="w-5 h-5 border-[3px] border-white border-t-transparent rounded-full animate-spin"></div>
                         Processing...
                       </>
-                    ) : 'Pay ₹100 Securely'}
+                    ) : 'Pay ₹201 Securely'}
                   </button>
                   <div className="flex items-center justify-center gap-4 mt-4 text-xs font-bold text-green-700/70 uppercase tracking-wide">
                     <span className="flex items-center gap-1">Secure</span>
@@ -835,7 +835,7 @@ const MembershipForm = () => {
                 </div>
 
                 <div className="bg-[#E0F2FE] border-2 border-[#1E293B] rounded-xl shadow-geom-soft p-4 text-sm text-[#1E293B] font-jakarta font-medium leading-relaxed my-2">
-                  <span className="font-bold">Scan QR or copy UPI ID to pay ₹100.</span>
+                  <span className="font-bold">Scan QR or copy UPI ID to pay ₹201.</span>
                   <br /><br />
                   Please <span className="font-bold underline decoration-dashed text-[#8B5CF6]">send the payment screenshot</span> to our trust number: <span className="font-outfit font-extrabold text-[#1E293B]">8958421200</span>.
                 </div>
@@ -931,14 +931,14 @@ const MembershipForm = () => {
                     />
                   </div>
 
-                  {/* Real World Impact of 100rs */}
+                  {/* Real World Impact of 201rs */}
                   <div className="sticker-card p-6 space-y-4">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-extrabold text-[#1E293B] text-2xl font-outfit tracking-tight">How ₹100 Drives Real Change</h3>
+                      <h3 className="font-extrabold text-[#1E293B] text-2xl font-outfit tracking-tight">How ₹201 Drives Real Change</h3>
                     </div>
                     
                     <p className="text-base font-medium font-jakarta text-slate-600 leading-relaxed">
-                      In a developing nation like India, small contributions compile to solve mammoth-sized challenges. Non-Governmental Organizations (NGOs) and community groups work on-ground to bridge crucial gaps. Your ₹100 membership fee does not just verify your account—it funds immediate local relief:
+                      In a developing nation like India, small contributions compile to solve mammoth-sized challenges. Non-Governmental Organizations (NGOs) and community groups work on-ground to bridge crucial gaps. Your ₹201 membership fee does not just verify your account—it funds immediate local relief:
                     </p>
 
                     <div className="grid grid-cols-1 gap-4 pt-2">
