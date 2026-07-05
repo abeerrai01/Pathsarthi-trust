@@ -373,6 +373,15 @@ const AdminMemberships = () => {
                         {isPaid ? 'Paid' : 'Pending'}
                       </div>
                       <div className="flex gap-2">
+                        {!isPaid && (
+                          <button
+                            onClick={() => handleUpdateStatus(member.id, 'completed', member)}
+                            className="px-3 py-1.5 rounded-xl text-xs font-bold text-green-700 bg-green-50 border border-green-100 hover:bg-green-100 transition-colors flex items-center gap-1"
+                            title="Mark as Paid"
+                          >
+                            Mark Paid
+                          </button>
+                        )}
                         {member.paymentScreenshotUrl && (
                           <button
                             onClick={() => setSelectedScreenshot(member.paymentScreenshotUrl)}

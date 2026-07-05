@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { Users, Search, Trash2, Phone, MapPin, Download, FileText, FileSpreadsheet } from 'lucide-react';
+import { Users, Search, Trash2, Phone, MapPin, Download, FileText, FileSpreadsheet, CheckCircle, XCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -41,6 +41,15 @@ const AdminJanSampark = () => {
         console.error(err);
         alert('Failed to delete.');
       }
+    }
+  };
+
+  const handleUpdateStatus = async (id, newStatus) => {
+    try {
+      await updateDoc(doc(db, 'jan_sampark', id), { status: newStatus });
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update status.');
     }
   };
 
@@ -326,6 +335,25 @@ const AdminJanSampark = () => {
                           <span>Payment ID:</span>
                           <span className="font-mono bg-white px-1.5 py-0.5 rounded border border-slate-200 text-slate-700 select-all truncate max-w-[120px]">{member.paymentId || 'N/A'}</span>
                         </div>
+                      </div>
+                    </div>
+
+                    {/* Footer Actions */}
+                    <div className="flex items-center justify-between gap-2 mt-auto">
+                      <div className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border ${isPaid ? 'text-green-700 bg-green-50 border-green-100' : 'text-yellow-700 bg-yellow-50 border-yellow-100'}`}>
+                        {isPaid ? <CheckCircle size={15} /> : <XCircle size={15} />}
+                        {isPaid ? 'Paid' : 'Pending'}
+                      </div>
+                      <div className="flex gap-2">
+                        {!isPaid && (
+                          <button
+                            onClick={() => handleUpdateStatus(member.id, 'completed')}
+                            className="px-3 py-1.5 rounded-xl text-xs font-bold text-green-700 bg-green-50 border border-green-100 hover:bg-green-100 transition-colors flex items-center gap-1"
+                            title="Mark as Paid"
+                          >
+                            Mark Paid
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
