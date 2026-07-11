@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { X, Send, CheckCircle } from 'lucide-react';
@@ -8,6 +8,7 @@ const QueryWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const widgetRef = useRef(null);
   
   const [form, setForm] = useState({
     name: '',
@@ -18,16 +19,20 @@ const QueryWidget = () => {
   });
 
   useEffect(() => {
-    // Automatically open the widget once per session
-    const hasOpened = sessionStorage.getItem('queryWidgetOpened');
-    if (!hasOpened) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-        sessionStorage.setItem('queryWidgetOpened', 'true');
-      }, 3000); // Pops up after 3 seconds
-      return () => clearTimeout(timer);
+    const handleClickOutside = (event) => {
+      if (widgetRef.current && !widgetRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
     }
-  }, []);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -58,7 +63,7 @@ const QueryWidget = () => {
   };
 
   return (
-    <div className="fixed bottom-24 right-6 z-50 flex flex-col items-end pointer-events-none">
+    <div ref={widgetRef} className="fixed bottom-[110px] sm:bottom-[120px] right-6 z-[9999] flex flex-col items-end pointer-events-none">
       
       {/* Query Popup Window */}
       <AnimatePresence>
@@ -152,7 +157,7 @@ const QueryWidget = () => {
       {/* Floating Toggle Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex justify-center items-center hover:scale-105 transition-transform pointer-events-auto border-2 border-slate-100 overflow-hidden relative group p-0"
+        className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex justify-center items-center hover:scale-105 transition-transform pointer-events-auto border-2 border-slate-100 overflow-hidden relative group p-0"
         title="Ask a Query"
       >
         <img 
@@ -160,8 +165,8 @@ const QueryWidget = () => {
           alt="Query Icon" 
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
         />
-        {/* Unread dot indicator (optional purely visual) */}
-        {!isOpen && !isSubmitted && !sessionStorage.getItem('queryWidgetOpened') && (
+        {/* Unread dot indicator */}
+        {!isOpen && !isSubmitted && (
           <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full animate-pulse"></span>
         )}
       </button>
