@@ -6,7 +6,7 @@ import PhotoUploadAdmin from '../PhotoUploadAdmin';
 import EditGalleryHeadings from '../EditGalleryHeadings';
 import { onSnapshot, doc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { LayoutDashboard, Images, UploadCloud, Users, Target, Activity, Type, Award, ListChecks, LogOut, ChevronRight, Newspaper, GraduationCap } from 'lucide-react';
+import { LayoutDashboard, Images, UploadCloud, Users, Target, Activity, Type, Award, ListChecks, LogOut, ChevronRight, Newspaper, GraduationCap, Briefcase } from 'lucide-react';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -28,6 +28,7 @@ import AnalyticsPanel from './AnalyticsPanel';
 import AdminEducation from './AdminEducation';
 import AdminMemberships from './AdminMemberships';
 import AdminJanSampark from './AdminJanSampark';
+import AdminInternships from './AdminInternships';
 
 ChartJS.register(
   CategoryScale,
@@ -79,6 +80,7 @@ const DashboardLayout = () => {
     { id: "memberships", label: "Membership Database", icon: <Users size={20} /> },
     { id: "jan-sampark", label: "Jan Sampark Database", icon: <Users size={20} /> },
     { id: "education-applications", label: "Education Requests", icon: <GraduationCap size={20} /> },
+    { id: "internships", label: "Internships", icon: <Briefcase size={20} /> },
     { id: "analytics", label: "Website Analytics", icon: <Activity size={20} /> },
     { id: "team", label: "Team & Supporters", icon: <Users size={20} /> },
     { id: "gallery-group-upload", label: "Upload New Photos", icon: <UploadCloud size={20} /> },
@@ -182,6 +184,14 @@ const DashboardLayout = () => {
                     <h3 className="text-xl font-bold text-slate-800 mb-2">Education Requests</h3>
                     <p className="text-slate-500 font-medium text-sm">Review & approve student applications for public showcase.</p>
                   </div>
+
+                  <div onClick={() => handleNav("internships")} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group">
+                    <div className="bg-rose-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-rose-500 group-hover:text-white transition-colors text-rose-600">
+                      <Briefcase size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">Internships</h3>
+                    <p className="text-slate-500 font-medium text-sm">Review & manage internship applications.</p>
+                  </div>
                   
                   <div onClick={() => handleNav("team")} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group">
                     <div className="bg-indigo-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors text-indigo-600">
@@ -242,6 +252,7 @@ const DashboardLayout = () => {
               {activeSection === "analytics" && <AnalyticsPanel />}
               {activeSection === "edit-gallery-headings" && <EditGalleryHeadings />}
               {activeSection === "education-applications" && <AdminEducation />}
+              {activeSection === "internships" && <AdminInternships />}
               {activeSection === "memberships" && <AdminMemberships />}
               {activeSection === "jan-sampark" && <AdminJanSampark />}
             </div>
