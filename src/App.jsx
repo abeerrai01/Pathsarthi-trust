@@ -39,6 +39,7 @@ import JanSampark from './pages/JanSampark';
 import JanSamparkNetwork from './pages/JanSamparkNetwork';
 import SplashScreen from './components/SplashScreen';
 import Chatbot from './components/Chatbot';
+import QueryWidget from './components/QueryWidget';
 import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from './components/ProtectedRoute';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
@@ -279,6 +280,7 @@ function App() {
           </main>
           <Footer />
         </motion.div>
+        <QueryWidget />
         <Chatbot />
         <Analytics />
         <SpeedInsights />
