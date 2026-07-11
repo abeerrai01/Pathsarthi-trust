@@ -127,6 +127,10 @@ const PremiumMembershipForm = () => {
 
   const handlePayManualUPI = async (e) => {
     if (e) e.preventDefault();
+    if (isCustomAmount && amount < 500) {
+      showToast("Custom amount cannot be less than ₹500.", "error");
+      return;
+    }
     if (amount >= 2100) {
       if (!panCard) {
         showToast("PAN Card is required for amounts ₹2100 and above.", "error");
@@ -274,6 +278,10 @@ const PremiumMembershipForm = () => {
   };
 
   const handlePayWithRazorpay = () => {
+    if (isCustomAmount && amount < 500) {
+      showToast("Custom amount cannot be less than ₹500.", "error");
+      return;
+    }
     if (amount >= 2100) {
       if (!panCard) {
         showToast("PAN Card is required for amounts ₹2100 and above.", "error");
@@ -296,6 +304,10 @@ const PremiumMembershipForm = () => {
       name: "Path Sarthi Trust",
       description: "Membership Registration",
       image: "https://www.pathsarthi.in/logo.png",
+      notes: {
+        firestoreDocId: createdDocIdRef.current || createdDocId,
+        collectionName: "memberships"
+      },
       handler: async function (response) {
         setLoading(true);
         try {
@@ -805,7 +817,7 @@ const PremiumMembershipForm = () => {
                         onChange={(e) => setAmount(Number(e.target.value) || 0)}
                         placeholder="Enter custom amount"
                         className="w-full pl-8 pr-4 py-3 geom-input font-bold text-lg text-[#1E293B]"
-                        min="1"
+                        min="500"
                       />
                     </div>
                   </div>

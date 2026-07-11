@@ -163,6 +163,10 @@ const JanSampark = () => {
       name: "Path Sarthi Trust",
       description: "Jan Sampark Registration",
       image: "https://www.pathsarthi.in/logo.png",
+      notes: {
+        firestoreDocId: createdDocIdRef.current || createdDocId,
+        collectionName: "jan_sampark"
+      },
       handler: async function (response) {
         setLoading(true);
         try {

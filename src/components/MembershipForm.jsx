@@ -269,6 +269,10 @@ const MembershipForm = () => {
       name: "Path Sarthi Trust",
       description: "Membership Registration",
       image: "https://www.pathsarthi.in/logo.png",
+      notes: {
+        firestoreDocId: createdDocIdRef.current || createdDocId,
+        collectionName: "memberships"
+      },
       handler: async function (response) {
         setLoading(true);
         try {
