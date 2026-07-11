@@ -46,6 +46,7 @@ const CertificateList = () => {
                 <th className="py-2 px-4 border-b">Date(s)</th>
                 <th className="py-2 px-4 border-b">Field</th>
                 <th className="py-2 px-4 border-b">Timestamp</th>
+                <th className="py-2 px-4 border-b">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -63,6 +64,21 @@ const CertificateList = () => {
                     {cert.createdAt && cert.createdAt.toDate
                       ? cert.createdAt.toDate().toLocaleString()
                       : "-"}
+                  </td>
+                  <td className="py-2 px-4">
+                    {cert.certificateUrl ? (
+                      <a
+                        href={cert.certificateUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-600 hover:underline text-sm font-semibold"
+                        download
+                      >
+                        Download
+                      </a>
+                    ) : (
+                      <span className="text-gray-400 text-sm">Not saved</span>
+                    )}
                   </td>
                 </tr>
               ))}

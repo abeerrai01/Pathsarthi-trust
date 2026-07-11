@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
+import { uploadToCloudinary } from '../../utils/cloudinary';
 
 const CertificateGenerator = () => {
   const [name, setName] = useState("");
@@ -12,6 +13,7 @@ const CertificateGenerator = () => {
   const [appreciationDate, setAppreciationDate] = useState("");
   const [title, setTitle] = useState("");
   const [html2canvas, setHtml2canvas] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const navigate = useNavigate();
 
@@ -68,30 +70,40 @@ const CertificateGenerator = () => {
       return;
     }
 
-    const cert = document.getElementById("cert-template");
-    if (!cert) {
-      alert("Certificate template not found");
-      return;
-    }
+    setIsGenerating(true);
 
-    // Wait for all images (QR code) to load
-    await waitForImagesToLoad(cert);
-
-    const canvas = await html2canvas(cert, {
-      useCORS: true,
-      scale: 2,
-    });
-
-    const imgData = canvas.toDataURL("image/png");
-
-    // Download PNG
-    const link = document.createElement("a");
-    link.href = imgData;
-    link.download = `${name}_${type.toLowerCase()}_certificate.png`;
-    link.click();
-
-    // Save data to Firebase
     try {
+      const cert = document.getElementById("cert-template");
+      if (!cert) {
+        alert("Certificate template not found");
+        setIsGenerating(false);
+        return;
+      }
+
+      // Wait for all images (QR code) to load
+      await waitForImagesToLoad(cert);
+
+      const canvas = await html2canvas(cert, {
+        useCORS: true,
+        scale: 2,
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+
+      // Download PNG
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = `${name}_${type.toLowerCase()}_certificate.png`;
+      link.click();
+
+      // Upload to Cloudinary
+      const res = await fetch(imgData);
+      const blob = await res.blob();
+      const file = new File([blob], `${name}_${type.toLowerCase()}_certificate.png`, { type: "image/png" });
+      const uploadResult = await uploadToCloudinary(file);
+      const certificateUrl = uploadResult.imageUrl;
+
+      // Save data to Firebase
       const certificateData = {
         name,
         type,
@@ -104,6 +116,7 @@ const CertificateGenerator = () => {
             ? appreciationDate
             : new Date().toISOString().split("T")[0],
         verified: true,
+        certificateUrl: certificateUrl,
         createdAt: serverTimestamp(),
       };
 
@@ -123,6 +136,9 @@ const CertificateGenerator = () => {
       console.log("Certificate saved to Firebase");
     } catch (error) {
       console.error("Error saving to Firebase:", error);
+      alert("Failed to save certificate. " + error.message);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -286,14 +302,14 @@ const CertificateGenerator = () => {
 
         <button 
           onClick={generateImage} 
-          disabled={!html2canvas}
+          disabled={!html2canvas || isGenerating}
           className={`block mx-auto px-6 py-3 rounded-md font-medium transition-colors ${
-            html2canvas 
+            html2canvas && !isGenerating
               ? "bg-green-600 text-white hover:bg-green-700" 
               : "bg-gray-400 text-gray-200 cursor-not-allowed"
           }`}
         >
-          {html2canvas ? `Generate ${type} Certificate` : "Loading..."}
+          {isGenerating ? "Generating & Saving..." : html2canvas ? `Generate ${type} Certificate` : "Loading..."}
         </button>
       </div>
 
