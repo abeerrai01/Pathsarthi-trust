@@ -78,7 +78,7 @@ const FloatingAssistant = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleAssistantClick}
-            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full shadow-2xl flex items-center justify-center transition-all border-4 border-white overflow-hidden group shadow-indigo-200 pointer-events-auto bg-black relative"
+            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full shadow-2xl flex items-center justify-center transition-all overflow-hidden group shadow-indigo-200 pointer-events-auto relative"
           >
             <video 
               src="/assitant.mp4" 
@@ -88,16 +88,6 @@ const FloatingAssistant = () => {
               playsInline 
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
             />
-            
-            <div className="absolute inset-x-0 bottom-0 bg-indigo-600/80 backdrop-blur-[4px] py-1">
-              <p className="text-[8px] sm:text-[10px] font-black tracking-widest text-white text-center">SARTHI</p>
-            </div>
-            
-            {/* Notification Pulse */}
-            <span className="absolute top-1 sm:top-2 right-1 sm:right-2 flex h-3 w-3 sm:h-4 sm:w-4">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 sm:h-4 sm:w-4 bg-yellow-500 border-2 border-white"></span>
-            </span>
           </motion.button>
         )}
       </div>
