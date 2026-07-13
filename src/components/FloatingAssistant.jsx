@@ -59,6 +59,15 @@ const FloatingAssistant = () => {
       />
 
       {/* Floating Buttons Container */}
+      <style>
+        {`
+          .assistant-video::-webkit-media-controls-start-playback-button,
+          .assistant-video::-webkit-media-controls {
+            display: none !important;
+            -webkit-appearance: none;
+          }
+        `}
+      </style>
       <div className="fixed bottom-6 right-6 z-[9998] flex flex-col items-center gap-4 pointer-events-none">
         
         {/* Query Floating Button */}
@@ -97,7 +106,9 @@ const FloatingAssistant = () => {
               loop 
               muted 
               playsInline 
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+              controls={false}
+              disablePictureInPicture
+              className="assistant-video w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 pointer-events-none" 
             />
           </motion.button>
         )}
