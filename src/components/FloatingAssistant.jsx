@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Chatbot from './Chatbot';
 import QueryWidget from './QueryWidget';
@@ -6,6 +6,16 @@ import QueryWidget from './QueryWidget';
 const FloatingAssistant = () => {
   const [activeWidget, setActiveWidget] = useState(null); // 'chat' or 'query' or null
   const [isExpanded, setIsExpanded] = useState(true);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    // Force video to play on mobile devices where autoplay might be blocked
+    if (!activeWidget && videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.log("Video autoplay prevented by browser:", error);
+      });
+    }
+  }, [activeWidget]);
 
   // Handle scroll to collapse the query button into the assistant
   useEffect(() => {
@@ -81,6 +91,7 @@ const FloatingAssistant = () => {
             className="w-16 h-16 sm:w-20 sm:h-20 rounded-full shadow-2xl flex items-center justify-center transition-all overflow-hidden group shadow-indigo-200 pointer-events-auto relative"
           >
             <video 
+              ref={videoRef}
               src="/assitant.mp4" 
               autoPlay 
               loop 

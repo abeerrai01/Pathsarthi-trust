@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PathSarthi QR Code Generator</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
+<style>
+  body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    background: #f8fafc; 
+    padding: 40px 20px; 
+    margin: 0;
+  }
+  h1 {
+    color: #1e293b;
+    margin-bottom: 30px;
+  }
+  #qrs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+  }
+  .qr-container { 
+    background: white; 
+    padding: 20px; 
+    border-radius: 16px; 
+    text-align: center; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+  }
+  .qr-container:hover {
+    transform: translateY(-5px);
+  }
+  canvas { 
+    border: 1px solid #e2e8f0; 
+    border-radius: 8px; 
+    margin-bottom: 15px;
+  }
+  .download-btn {
+    display: inline-block;
+    background: #4f46e5;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+  .download-btn:hover {
+    background: #4338ca;
+  }
+  .auto-download-msg {
+    color: #10b981;
+    font-weight: bold;
+    margin-bottom: 20px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<h1>Generated QR Codes</h1>
+<div id="auto-msg" class="auto-download-msg">✅ Downloads started automatically!</div>
+<div id="qrs"></div>
+<script>
+  const pages = [
+    { title: "PREMIUM MEMBERSHIP", url: "https://pathsarthi.in/premium-membership", filename: "Premium-Membership-QR.png" },
+    { title: "JAN SAMPARK", url: "https://pathsarthi.in/jan-sampark", filename: "Jan-Sampark-QR.png" },
+    { title: "NORMAL MEMBERSHIP", url: "https://pathsarthi.in/membership", filename: "Normal-Membership-QR.png" }
+  ];
+
+  const logoUrl = "./Logo-2.png";
+  
+  async function generateQRs() {
+    const logo = new Image();
+    logo.src = logoUrl;
+    
+    await new Promise((resolve, reject) => {
+      logo.onload = resolve;
+      logo.onerror = () => {
+        alert("Could not load Logo-2.png. Make sure it exists in the public folder!");
+        reject();
+      }
+    });
+    
+    const container = document.getElementById('qrs');
+
+    for (const page of pages) {
+      // 1. Generate QR code on a temporary canvas
+      const qrCanvas = document.createElement('canvas');
+      await QRCode.toCanvas(qrCanvas, page.url, {
+        width: 400,
+        margin: 2,
+        color: {
+          dark: '#1e293b', // Slate 800 for a slightly softer black
+          light: '#ffffff'
+        },
+        errorCorrectionLevel: 'H' // High error correction so logo doesn't break it
+      });
+
+      // 2. Create final canvas (with space for title)
+      const finalCanvas = document.createElement('canvas');
+      const ctx = finalCanvas.getContext('2d');
+      const padding = 30;
+      const titleHeight = 80;
+      finalCanvas.width = qrCanvas.width + padding * 2;
+      finalCanvas.height = qrCanvas.height + padding * 2 + titleHeight;
+
+      // Draw white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+      // Draw Title Background (optional subtle gradient or solid color)
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath();
+      ctx.roundRect(padding, padding, qrCanvas.width, titleHeight - 20, 10);
+      ctx.fill();
+
+      // Draw Title
+      ctx.fillStyle = '#1e293b'; 
+      ctx.font = 'bold 26px "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(page.title, finalCanvas.width / 2, padding + (titleHeight - 20) / 2);
+
+      // Draw QR Code
+      ctx.drawImage(qrCanvas, padding, padding + titleHeight);
+
+      // Draw Logo in the center of QR code
+      const logoSize = qrCanvas.width * 0.22; // 22% of QR code size
+      const logoX = padding + (qrCanvas.width - logoSize) / 2;
+      const logoY = padding + titleHeight + (qrCanvas.height - logoSize) / 2;
+      
+      // Draw a white circle behind logo to make it clear
+      ctx.beginPath();
+      ctx.arc(logoX + logoSize/2, logoY + logoSize/2, logoSize/2 + 8, 0, 2 * Math.PI);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      
+      // Add a subtle border to the white circle
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#f1f5f9';
+      ctx.stroke();
+
+      // Draw Logo
+      ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+
+      // Add to DOM
+      const div = document.createElement('div');
+      div.className = 'qr-container';
+      
+      const link = document.createElement('a');
+      link.href = finalCanvas.toDataURL("image/png");
+      link.download = page.filename;
+      link.className = 'download-btn';
+      link.innerHTML = `<svg style="width:16px;height:16px;vertical-align:middle;margin-right:8px;display:inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>Download PNG`;
+      
+      div.appendChild(finalCanvas);
+      div.appendChild(document.createElement('br'));
+      div.appendChild(link);
+      container.appendChild(div);
+      
+      // Automatically trigger download
+      const tempLink = document.createElement('a');
+      tempLink.href = finalCanvas.toDataURL("image/png");
+      tempLink.download = page.filename;
+      tempLink.click();
+    }
+    
+    document.getElementById('auto-msg').style.display = 'block';
+  }
+
+  generateQRs();
+</script>
+</body>
+</html>
