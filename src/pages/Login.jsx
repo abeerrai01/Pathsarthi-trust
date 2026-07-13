@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
 const Login = () => {
@@ -9,13 +9,21 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate('/admin-dashboard', { replace: true });
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, pass);
-      alert('Logged in!');
-      navigate('/admin-dashboard');
+      navigate('/admin-dashboard', { replace: true });
     } catch (err) {
       alert('Login failed: ' + err.message);
     }

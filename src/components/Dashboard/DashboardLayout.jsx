@@ -5,7 +5,8 @@ import GalleryManager from "./GalleryManager";
 import PhotoUploadAdmin from '../PhotoUploadAdmin';
 import EditGalleryHeadings from '../EditGalleryHeadings';
 import { onSnapshot, doc, collection, getDocs } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import { signOut } from 'firebase/auth';
+import { auth, db } from '../../config/firebase';
 import { LayoutDashboard, Images, UploadCloud, Users, Target, Activity, Type, Award, ListChecks, LogOut, ChevronRight, Newspaper, GraduationCap, Briefcase, MessageCircle } from 'lucide-react';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import {
@@ -65,9 +66,14 @@ const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("token");
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Logout error", error);
+    }
   };
 
   const handleMenuClick = () => setSidebarOpen((open) => !open);

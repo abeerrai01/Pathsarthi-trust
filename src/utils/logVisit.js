@@ -74,7 +74,8 @@ export const logVisit = async (page = '/') => {
       });
     }
     // Per-page analytics
-    const pageRef = doc(db, 'analytics', 'pathsarthi-in', 'pages', page);
+    const pageId = page === '/' ? 'home' : page.replace(/\//g, '_');
+    const pageRef = doc(db, 'analytics', 'pathsarthi-in', 'pages', pageId);
     const pageSnap = await getDoc(pageRef);
     const pageEntry = { deviceType, browser, userAgent, referrer, previousPage, ...geo };
     if (!pageSnap.exists()) {
