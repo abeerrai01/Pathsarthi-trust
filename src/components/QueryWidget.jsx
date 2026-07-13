@@ -4,8 +4,7 @@ import { db } from '../config/firebase';
 import { X, Send, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const QueryWidget = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const QueryWidget = ({ isOpen, onClose }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const widgetRef = useRef(null);
@@ -21,7 +20,7 @@ const QueryWidget = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (widgetRef.current && !widgetRef.current.contains(event.target)) {
-        setIsOpen(false);
+        if (onClose) onClose();
       }
     };
     
@@ -85,7 +84,7 @@ const QueryWidget = () => {
                 </div>
               </div>
               <button 
-                onClick={() => setIsOpen(false)}
+                onClick={() => { if (onClose) onClose(); }}
                 className="text-white hover:bg-white/20 p-1.5 rounded-full transition-colors flex items-center justify-center"
               >
                 <X size={18} strokeWidth={2.5} />
@@ -105,7 +104,7 @@ const QueryWidget = () => {
                   </p>
                   <button 
                     onClick={() => {
-                      setIsOpen(false);
+                      if (onClose) onClose();
                       setTimeout(() => setIsSubmitted(false), 300);
                     }}
                     className="mt-6 px-6 py-2 bg-indigo-600 text-white rounded-full text-sm font-bold hover:bg-indigo-700 transition-colors shadow-sm"
@@ -154,22 +153,6 @@ const QueryWidget = () => {
         )}
       </AnimatePresence>
 
-      {/* Floating Toggle Button */}
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex justify-center items-center hover:scale-105 transition-transform pointer-events-auto border-2 border-slate-100 overflow-hidden relative group p-0"
-        title="Ask a Query"
-      >
-        <img 
-          src="/Computer Icons Symbol Question Mark PNG.jpg" 
-          alt="Query Icon" 
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-        />
-        {/* Unread dot indicator */}
-        {!isOpen && !isSubmitted && (
-          <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full animate-pulse"></span>
-        )}
-      </button>
     </div>
   );
 };

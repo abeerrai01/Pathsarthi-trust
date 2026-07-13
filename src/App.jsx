@@ -38,8 +38,7 @@ import PremiumMembershipForm from './components/PremiumMembershipForm';
 import JanSampark from './pages/JanSampark';
 import JanSamparkNetwork from './pages/JanSamparkNetwork';
 import SplashScreen from './components/SplashScreen';
-import Chatbot from './components/Chatbot';
-import QueryWidget from './components/QueryWidget';
+import FloatingAssistant from './components/FloatingAssistant';
 import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from './components/ProtectedRoute';
 const CertificateGenerator = lazy(() => import('./components/Dashboard/CertificateGenerator'));
@@ -280,8 +279,7 @@ function App() {
           </main>
           <Footer />
         </motion.div>
-        <QueryWidget />
-        <Chatbot />
+        <FloatingAssistant />
         <Analytics />
         <SpeedInsights />
       </AuthProvider>

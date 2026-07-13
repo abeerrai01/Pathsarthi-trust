@@ -43,10 +43,9 @@ ${pageContent || "The user is on a transition or loading screen."}
 - Navigation: To move the user, add [NAVIGATE: /path] to your message.
 `;
 
-const Chatbot = () => {
+const Chatbot = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isOpen, setIsOpen] = useState(false);
   const [pageText, setPageText] = useState("");
   const [messages, setMessages] = useState(() => {
     // Persistence: Try to load from sessionStorage
@@ -217,7 +216,7 @@ const Chatbot = () => {
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setIsOpen(false);
+                  if (onClose) onClose();
                 }} 
                 className="hover:bg-white/10 p-1.5 sm:p-2 rounded-full transition-colors text-white/80 hover:text-white z-50 focus:outline-none"
                 aria-label="Close Chat"
@@ -282,26 +281,6 @@ const Chatbot = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {!isOpen && (
-        <motion.button
-          whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-          onClick={() => setIsOpen(true)}
-          className="bg-indigo-600 text-white w-16 h-16 sm:w-20 sm:h-20 rounded-full shadow-2xl flex items-center justify-center hover:bg-indigo-700 transition-all border-4 border-white overflow-hidden group shadow-indigo-200"
-        >
-          <div className="relative w-full h-full">
-            <img src="/f5ab5a0d-8eef-436f-ac82-8a0957d11c57.jpg" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Sarthi" />
-            <div className="absolute inset-0 bg-indigo-800/20 group-hover:bg-transparent transition-colors"></div>
-            <div className="absolute inset-x-0 bottom-0 bg-indigo-600/80 backdrop-blur-[4px] py-1">
-              <p className="text-[8px] sm:text-[10px] font-black tracking-widest text-white text-center">SARTHI</p>
-            </div>
-            <span className="absolute top-1 sm:top-2 right-1 sm:right-2 flex h-3 w-3 sm:h-4 sm:w-4">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 sm:h-4 sm:w-4 bg-yellow-500 border-2 border-white"></span>
-            </span>
-          </div>
-        </motion.button>
-      )}
     </div>
   );
 };
