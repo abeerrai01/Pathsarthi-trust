@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
 
@@ -7,6 +7,18 @@ const CertificateList = () => {
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const handleDelete = async (certId) => {
+    if (window.confirm("Are you sure you want to delete this certificate? This action cannot be undone.")) {
+      try {
+        await deleteDoc(doc(db, "certificates", certId));
+        setCertificates(prev => prev.filter(cert => cert.id !== certId));
+      } catch (err) {
+        console.error("Error deleting certificate:", err);
+        alert("Failed to delete certificate.");
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchCertificates = async () => {
@@ -65,7 +77,7 @@ const CertificateList = () => {
                       ? cert.createdAt.toDate().toLocaleString()
                       : "-"}
                   </td>
-                  <td className="py-2 px-4">
+                  <td className="py-2 px-4 flex items-center gap-4">
                     {cert.certificateUrl ? (
                       <a
                         href={cert.certificateUrl}
@@ -79,6 +91,12 @@ const CertificateList = () => {
                     ) : (
                       <span className="text-gray-400 text-sm">Not saved</span>
                     )}
+                    <button
+                      onClick={() => handleDelete(cert.id)}
+                      className="text-red-600 hover:underline text-sm font-semibold"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
