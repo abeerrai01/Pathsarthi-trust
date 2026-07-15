@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Copy, Check, QrCode, ArrowRight } from "lucide-react";
+import { db } from "../config/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-const UPIPaymentModal = ({ isOpen, onClose, amount, name, onSuccess }) => {
+const UPIPaymentModal = ({ isOpen, onClose, amount, name = "Anonymous", email = "", onSuccess }) => {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +24,16 @@ const UPIPaymentModal = ({ isOpen, onClose, amount, name, onSuccess }) => {
     e.preventDefault();
     setLoading(true);
     try {
+      // Record manual UPI donation to database
+      await addDoc(collection(db, "donations"), {
+        name,
+        email,
+        amount,
+        paymentId: "UPI-QR-MANUAL",
+        status: "completed",
+        timestamp: serverTimestamp(),
+      });
+
       await onSuccess();
       onClose();
     } catch (err) {

@@ -70,8 +70,9 @@ export const sendEmail = async (apiKey: string, data: EmailData) => {
   // Validate request parameters first
   validateEmailData(data);
 
+  const cleanApiKey = (apiKey || "").trim();
   const apiInstance = new brevo.TransactionalEmailsApi();
-  apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, apiKey);
+  apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, cleanApiKey);
 
   const payload: brevo.SendSmtpEmail = {
     templateId: BREVO_CONFIG.MASTER_TEMPLATE_ID,

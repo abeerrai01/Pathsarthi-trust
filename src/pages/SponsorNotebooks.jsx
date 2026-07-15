@@ -6,6 +6,7 @@ import UPIPaymentModal from '../components/UPIPaymentModal';
 const SponsorNotebooks = () => {
   const [quantity, setQuantity] = useState(1);
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [thankYou, setThankYou] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [isQrSponsorship, setIsQrSponsorship] = useState(false);
@@ -82,6 +83,16 @@ const SponsorNotebooks = () => {
                     className="w-full border-2 border-gray-200 rounded-lg p-2"
                   />
                 </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 mb-2">Email ID</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="Enter your email ID"
+                    className="w-full border-2 border-gray-200 rounded-lg p-2"
+                  />
+                </div>
                 <div className="mb-8">
                   <h2 className="text-2xl font-semibold mb-4">Select Quantity</h2>
                   <div className="flex items-center justify-center space-x-4">
@@ -115,7 +126,7 @@ const SponsorNotebooks = () => {
                   <p className="text-2xl font-bold text-indigo-600">Total: ₹{quantity * pricePerNotebook}</p>
                 </div>
                 <div className="mt-6 space-y-4">
-                  <RazorpayButton amount={quantity * pricePerNotebook} name={name || 'Anonymous'} onSuccess={handleSuccess} />
+                  <RazorpayButton amount={quantity * pricePerNotebook} name={name || 'Anonymous'} email={email} onSuccess={handleSuccess} />
                   
                   <details className="group border-2 border-slate-200 rounded-xl bg-white mt-2">
                     <summary className="flex items-center justify-between p-4 font-jakarta font-semibold text-slate-600 cursor-pointer hover:bg-slate-50 transition-colors">
@@ -197,6 +208,7 @@ const SponsorNotebooks = () => {
         onClose={() => setShowQRModal(false)}
         amount={quantity * pricePerNotebook}
         name={name || 'Anonymous'}
+        email={email}
         onSuccess={handleQRSuccess}
       />
     </div>

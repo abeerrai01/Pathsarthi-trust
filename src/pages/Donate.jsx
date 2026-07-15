@@ -264,6 +264,7 @@ const Donate = () => {
         onClose={() => setShowQRModal(false)}
         amount={getAmount()}
         name={name || 'Anonymous'}
+        email={email}
         onSuccess={handleQRSuccess}
       />
     </div>
