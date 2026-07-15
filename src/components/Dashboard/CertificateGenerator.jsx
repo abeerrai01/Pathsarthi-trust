@@ -3,6 +3,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
 import { uploadToCloudinary } from '../../utils/cloudinary';
+import { jsPDF } from "jspdf";
 
 const CertificateGenerator = () => {
   const [name, setName] = useState("");
@@ -14,6 +15,7 @@ const CertificateGenerator = () => {
   const [title, setTitle] = useState("");
   const [position, setPosition] = useState("");
   const [positionLeftOffset, setPositionLeftOffset] = useState(130);
+  const [exportFormat, setExportFormat] = useState("png");
   const [html2canvas, setHtml2canvas] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -96,20 +98,35 @@ const CertificateGenerator = () => {
         scale: 2,
       });
 
-      const imgData = canvas.toDataURL("image/png");
+      let certificateUrl = "";
+      
+      if (exportFormat === "pdf") {
+        const pdfImgData = canvas.toDataURL("image/jpeg", 1.0);
+        const pdf = new jsPDF({
+          orientation: "portrait",
+          unit: "px",
+          format: [1086, 1536]
+        });
+        pdf.addImage(pdfImgData, "JPEG", 0, 0, 1086, 1536);
+        pdf.save(`${name}_${type.toLowerCase()}_certificate.pdf`);
+      } else {
+        const mimeType = exportFormat === "jpg" ? "image/jpeg" : "image/png";
+        const fileExt = exportFormat === "jpg" ? "jpg" : "png";
+        const imgData = canvas.toDataURL(mimeType, 1.0);
 
-      // Download PNG
-      const link = document.createElement("a");
-      link.href = imgData;
-      link.download = `${name}_${type.toLowerCase()}_certificate.png`;
-      link.click();
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = `${name}_${type.toLowerCase()}_certificate.${fileExt}`;
+        link.click();
+      }
 
-      // Upload to Cloudinary
-      const res = await fetch(imgData);
+      // Upload a PNG preview to Cloudinary for database storage
+      const previewImgData = canvas.toDataURL("image/png");
+      const res = await fetch(previewImgData);
       const blob = await res.blob();
       const file = new File([blob], `${name}_${type.toLowerCase()}_certificate.png`, { type: "image/png" });
       const uploadResult = await uploadToCloudinary(file);
-      const certificateUrl = uploadResult.imageUrl;
+      certificateUrl = uploadResult.imageUrl;
 
       // Save data to Firebase
       const certificateData = {
@@ -353,6 +370,21 @@ const CertificateGenerator = () => {
             </div>
           </div>
         )}
+
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Export Format
+          </label>
+          <select
+            value={exportFormat}
+            onChange={(e) => setExportFormat(e.target.value)}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <option value="png">PNG Image</option>
+            <option value="jpg">JPG Image</option>
+            <option value="pdf">PDF Document</option>
+          </select>
+        </div>
 
         <button 
           onClick={generateImage} 
