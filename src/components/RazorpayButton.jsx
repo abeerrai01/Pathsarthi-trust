@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { db } from "../config/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-const RazorpayButton = ({ amount, name = "Anonymous", onSuccess }) => {
+const RazorpayButton = ({ amount, name = "Anonymous", email = "", onSuccess }) => {
   useEffect(() => {
     if (!window.Razorpay) {
       const script = document.createElement("script");
@@ -29,6 +29,7 @@ const RazorpayButton = ({ amount, name = "Anonymous", onSuccess }) => {
       handler: async function (response) {
         await addDoc(collection(db, "donations"), {
           name,
+          email,
           amount,
           paymentId: response.razorpay_payment_id,
           timestamp: serverTimestamp(),
@@ -37,7 +38,7 @@ const RazorpayButton = ({ amount, name = "Anonymous", onSuccess }) => {
       },
       prefill: {
         name,
-        email: "",
+        email,
         contact: "",
       },
       theme: {

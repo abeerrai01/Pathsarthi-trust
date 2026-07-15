@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
 import { uploadToCloudinary } from '../../utils/cloudinary';
@@ -7,6 +7,7 @@ import { jsPDF } from "jspdf";
 
 const CertificateGenerator = () => {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [type, setType] = useState("Appreciation");
   const [field, setField] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -20,6 +21,58 @@ const CertificateGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleNameBlur = async () => {
+    if (!name || name.trim().length < 3) return;
+    try {
+      const cleanName = name.trim().toLowerCase();
+      let foundEmail = "";
+
+      // 1. Check memberships (fullName field)
+      const memQ = query(collection(db, "memberships"));
+      const memSnap = await getDocs(memQ);
+      memSnap.forEach((doc) => {
+        const data = doc.data();
+        const fullName = (data.fullName || "").trim().toLowerCase();
+        if (fullName === cleanName || fullName.includes(cleanName) || cleanName.includes(fullName)) {
+          if (data.email) foundEmail = data.email;
+        }
+      });
+
+      // 2. Check applications (firstName, middleName, lastName)
+      if (!foundEmail) {
+        const appQ = query(collection(db, "applications"));
+        const appSnap = await getDocs(appQ);
+        appSnap.forEach((doc) => {
+          const data = doc.data();
+          const fullName = `${data.firstName || ""} ${data.middleName || ""} ${data.lastName || ""}`.trim().toLowerCase();
+          if (fullName === cleanName || fullName.includes(cleanName) || cleanName.includes(fullName)) {
+            if (data.email) foundEmail = data.email;
+          }
+        });
+      }
+
+      // 3. Check internship applications (name field)
+      if (!foundEmail) {
+        const intQ = query(collection(db, "internship_applications"));
+        const intSnap = await getDocs(intQ);
+        intSnap.forEach((doc) => {
+          const data = doc.data();
+          const fullName = (data.name || "").trim().toLowerCase();
+          if (fullName === cleanName || fullName.includes(cleanName) || cleanName.includes(fullName)) {
+            if (data.email) foundEmail = data.email;
+          }
+        });
+      }
+
+      if (foundEmail) {
+        setEmail(foundEmail);
+        console.log(`[Fuzzy Lookup] Email found: ${foundEmail}`);
+      }
+    } catch (err) {
+      console.error("Error fuzzy looking up email by name:", err);
+    }
+  };
 
   // Lazy load html2canvas only on client side
   useEffect(() => {
@@ -47,6 +100,10 @@ const CertificateGenerator = () => {
   const generateImage = async () => {
     if (!name.trim()) {
       alert("Please enter a name");
+      return;
+    }
+    if (!email.trim() || !email.includes("@")) {
+      alert("Please enter a valid recipient email address to send the certificate.");
       return;
     }
 
@@ -131,6 +188,7 @@ const CertificateGenerator = () => {
       // Save data to Firebase
       const certificateData = {
         name,
+        email,
         type,
         dateIssued:
           type === "Appreciation"
@@ -192,7 +250,7 @@ const CertificateGenerator = () => {
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Certificate Generator</h1>
       
       <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Certificate Type
@@ -219,6 +277,20 @@ const CertificateGenerator = () => {
               placeholder="Enter full name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              onBlur={handleNameBlur}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Recipient Email ID
+            </label>
+            <input
+              type="email"
+              placeholder="Enter email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>

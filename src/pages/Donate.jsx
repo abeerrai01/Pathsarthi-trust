@@ -7,6 +7,7 @@ const Donate = () => {
   const [selectedAmount, setSelectedAmount] = useState('500');
   const [customAmount, setCustomAmount] = useState('');
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [thankYou, setThankYou] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [isQrDonation, setIsQrDonation] = useState(false);
@@ -105,6 +106,16 @@ const Donate = () => {
                       className="w-full border-2 border-gray-200 rounded-lg p-2"
                     />
                   </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2">Email ID</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder="Enter your email ID"
+                      className="w-full border-2 border-gray-200 rounded-lg p-2"
+                    />
+                  </div>
                   <div className="mb-6">
                     <label className="block text-gray-700 mb-4">Select Amount</label>
                     <div className="grid grid-cols-2 gap-4">
@@ -144,7 +155,7 @@ const Donate = () => {
                     </div>
                   </div>
                   <div className="mt-6 space-y-4">
-                    <RazorpayButton amount={getAmount()} name={name || 'Anonymous'} onSuccess={handleSuccess} />
+                    <RazorpayButton amount={getAmount()} name={name || 'Anonymous'} email={email} onSuccess={handleSuccess} />
                     
                     <details className="group border-2 border-slate-200 rounded-xl bg-white mt-2">
                       <summary className="flex items-center justify-between p-4 font-jakarta font-semibold text-slate-600 cursor-pointer hover:bg-slate-50 transition-colors">

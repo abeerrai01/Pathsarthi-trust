@@ -15,6 +15,7 @@ const indianStates = [
 
 const initialForm = {
   fullName: '',
+  email: '',
   phone: '',
   age: '',
   gender: '',
@@ -355,6 +356,7 @@ const JanSampark = () => {
               <div className="space-y-4">
                 <label className="text-sm font-outfit font-bold text-geom-foreground uppercase tracking-wide block mb-1">Personal Details</label>
                 <input name="fullName" value={form.fullName} onChange={handleChange} required placeholder="Full Name*" className="w-full px-4 py-3 geom-input" />
+                <input name="email" value={form.email} onChange={handleChange} required placeholder="Email ID*" type="email" className="w-full px-4 py-3 geom-input" />
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1 w-full">

@@ -48,6 +48,13 @@ export const razorpayWebhook = onRequest(
             paymentId: payment.id,
           };
 
+          if (payment.email) {
+            updateData.email = payment.email;
+          }
+          if (payment.contact) {
+            updateData.phone = payment.contact;
+          }
+
           // Memberships need validity dates
           if (collectionName === "memberships") {
             const validFrom = new Date();

@@ -21,7 +21,8 @@ const CSRSection = () => {
     companyName: '',
     budget: '',
     contactPerson: '',
-    contactInfo: ''
+    contactInfo: '',
+    email: ''
   });
 
   const handleInputChange = (e) => {
@@ -41,7 +42,7 @@ const CSRSection = () => {
       });
       alert('Thank you for your interest! Our team will contact you shortly.');
       setIsFormOpen(false);
-      setFormData({companyName: '', budget: '', contactPerson: '', contactInfo: ''});
+      setFormData({companyName: '', budget: '', contactPerson: '', contactInfo: '', email: ''});
     } catch (error) {
       console.error("Error adding document: ", error);
       alert('There was an error submitting your request. Please try again.');
@@ -317,16 +318,28 @@ const CSRSection = () => {
                     placeholder="Full name"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Email or Phone</label>
+                 <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Phone Number</label>
                   <input 
-                    type="text" 
+                    type="tel" 
                     name="contactInfo"
                     value={formData.contactInfo}
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                    placeholder="How should we reach you?"
+                    placeholder="Enter phone number"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+                  <input 
+                    type="email" 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                    placeholder="Enter email address"
                   />
                 </div>
                 

@@ -36,6 +36,7 @@ export interface EmailData {
   additionalMessage?: string;
   emailType: EmailType;
   certificateType?: string; // Optional: Recognition, Appointment, Internship, etc.
+  certificateUrl?: string; // Optional: download/preview link to attach
 }
 
 // ─── Reusable Email Helper ───────────────────────────────────────────────────
@@ -89,6 +90,15 @@ export const sendEmail = async (apiKey: string, data: EmailData) => {
       certificateType: data.certificateType || "",
     },
   };
+
+  if (data.certificateUrl) {
+    payload.attachment = [
+      {
+        url: data.certificateUrl,
+        name: `${data.name.replace(/\s+/g, "_")}_certificate.png`,
+      },
+    ];
+  }
 
   try {
     const result = await apiInstance.sendTransacEmail(payload);

@@ -29,7 +29,7 @@ const requireFields = (data: any, fields: string[]) => {
   }
 };
 
-// ─── 1. Donation Page ────────────────────────────────────────────────────────
+// ─── 1. Donation Triggers ───────────────────────────────────────────────────
 
 export const sendDonationEmail = onCall(
   { secrets: [brevoApiKey, adminEmailSecret] },
@@ -66,7 +66,52 @@ export const sendDonationEmail = onCall(
   }
 );
 
-// ─── 2. Sponsor Page ─────────────────────────────────────────────────────────
+export const onNewDonation = onDocumentCreated(
+  { document: "donations/{id}", secrets: [brevoApiKey, adminEmailSecret] },
+  async (event) => {
+    const snap = event.data;
+    if (!snap) return;
+    const data = snap.data();
+    if (!data) return;
+
+    const docId = event.params.id;
+    const email = data.email || "";
+    const name = data.name || "Donor";
+    const amount = data.amount || "Donation";
+    const refId = data.paymentId || docId;
+
+    try {
+      if (email && email.includes("@")) {
+        await sendEmail(brevoApiKey.value(), {
+          email,
+          name,
+          subject: "Thank You for Supporting Path Sarthi Trust",
+          preview: "Your contribution is helping us create meaningful change.",
+          status: "Donation Successful",
+          message: "Thank you for your generous contribution to Path Sarthi Trust. Your support enables us to continue working towards education, youth empowerment, community welfare, and social development.",
+          additionalMessage: `Your donation of ₹${amount} has been recorded successfully. If applicable, your receipt and future updates regarding our initiatives will be shared with you.`,
+          referenceId: refId,
+          date: today(),
+          emailType: EmailType.DONATION,
+        });
+      } else {
+        console.log(`[onNewDonation] Skipped donor email: no email address present in document ${docId}`);
+      }
+
+      // Always notify admin
+      await sendAdminNotification(
+        brevoApiKey.value(),
+        adminEmailSecret.value(),
+        "Donation",
+        refId
+      );
+    } catch (error) {
+      console.error(`[onNewDonation] Error processing trigger for ${docId}:`, error);
+    }
+  }
+);
+
+// ─── 2. Sponsor Triggers ────────────────────────────────────────────────────
 
 export const sendSponsorEmail = onCall(
   { secrets: [brevoApiKey, adminEmailSecret] },
@@ -103,7 +148,52 @@ export const sendSponsorEmail = onCall(
   }
 );
 
-// ─── 3. Membership Page ──────────────────────────────────────────────────────
+export const onNewSponsor = onDocumentCreated(
+  { document: "csr_partnerships/{id}", secrets: [brevoApiKey, adminEmailSecret] },
+  async (event) => {
+    const snap = event.data;
+    if (!snap) return;
+    const data = snap.data();
+    if (!data) return;
+
+    const docId = event.params.id;
+    const name = data.contactPerson || data.companyName || "Sponsor";
+    // Check if contactInfo contains email format
+    const contactInfo = data.contactInfo || "";
+    const email = contactInfo.includes("@") ? contactInfo : "";
+
+    try {
+      if (email) {
+        await sendEmail(brevoApiKey.value(), {
+          email,
+          name,
+          subject: "Sponsorship Request Received",
+          preview: "Thank you for choosing to support our mission.",
+          status: "Request Received",
+          message: "We have successfully received your sponsorship request. We sincerely appreciate your willingness to partner with Path Sarthi Trust.",
+          additionalMessage: "Our team will carefully review your submission and contact you shortly to discuss the next steps.",
+          referenceId: docId,
+          date: today(),
+          emailType: EmailType.SPONSOR,
+        });
+      } else {
+        console.log(`[onNewSponsor] Skipped sponsor email: no valid email address in contactInfo for document ${docId}`);
+      }
+
+      // Always notify admin
+      await sendAdminNotification(
+        brevoApiKey.value(),
+        adminEmailSecret.value(),
+        "Sponsor",
+        docId
+      );
+    } catch (error) {
+      console.error(`[onNewSponsor] Error processing trigger for ${docId}:`, error);
+    }
+  }
+);
+
+// ─── 3. Membership / Premium Membership Triggers ─────────────────────────────
 
 export const sendMembershipEmail = onCall(
   { secrets: [brevoApiKey, adminEmailSecret] },
@@ -140,8 +230,6 @@ export const sendMembershipEmail = onCall(
   }
 );
 
-// ─── 4. Premium Membership ───────────────────────────────────────────────────
-
 export const sendPremiumMembershipEmail = onCall(
   { secrets: [brevoApiKey, adminEmailSecret] },
   async (request) => {
@@ -177,7 +265,68 @@ export const sendPremiumMembershipEmail = onCall(
   }
 );
 
-// ─── 5. Jan Sampark ──────────────────────────────────────────────────────────
+export const onNewMembership = onDocumentCreated(
+  { document: "memberships/{id}", secrets: [brevoApiKey, adminEmailSecret] },
+  async (event) => {
+    const snap = event.data;
+    if (!snap) return;
+    const data = snap.data();
+    if (!data) return;
+
+    const docId = event.params.id;
+    const email = data.email || "";
+    const name = data.fullName || data.name || "Member";
+    
+    // Distinguish standard vs premium based on amount being set (premium is custom >= 500, standard is not saved or 201)
+    const isPremium = data.amount && Number(data.amount) >= 500;
+
+    try {
+      if (email && email.includes("@")) {
+        if (isPremium) {
+          await sendEmail(brevoApiKey.value(), {
+            email,
+            name,
+            subject: "Premium Membership Application Received",
+            preview: "Thank you for becoming part of our mission.",
+            status: "Application Under Review",
+            message: "Your premium membership application has been successfully received.",
+            additionalMessage: "Our team will verify your application and communicate the next steps shortly.",
+            referenceId: docId,
+            date: today(),
+            emailType: EmailType.PREMIUM_MEMBERSHIP,
+          });
+        } else {
+          await sendEmail(brevoApiKey.value(), {
+            email,
+            name,
+            subject: "Membership Application Received",
+            preview: "Thank you for joining Path Sarthi Trust.",
+            status: "Application Received",
+            message: "Your membership application has been successfully submitted.",
+            additionalMessage: "Our team is currently reviewing your application and will update you as soon as the verification process is completed.",
+            referenceId: docId,
+            date: today(),
+            emailType: EmailType.MEMBERSHIP,
+          });
+        }
+      } else {
+        console.log(`[onNewMembership] Skipped member email: no email address present in document ${docId}`);
+      }
+
+      // Always notify admin
+      await sendAdminNotification(
+        brevoApiKey.value(),
+        adminEmailSecret.value(),
+        isPremium ? "Premium Membership" : "Membership",
+        docId
+      );
+    } catch (error) {
+      console.error(`[onNewMembership] Error processing trigger for ${docId}:`, error);
+    }
+  }
+);
+
+// ─── 4. Jan Sampark Triggers ────────────────────────────────────────────────
 
 export const sendJanSamparkEmail = onCall(
   { secrets: [brevoApiKey, adminEmailSecret] },
@@ -214,7 +363,50 @@ export const sendJanSamparkEmail = onCall(
   }
 );
 
-// ─── 6. Internship ───────────────────────────────────────────────────────────
+export const onNewJanSampark = onDocumentCreated(
+  { document: "jan_sampark/{id}", secrets: [brevoApiKey, adminEmailSecret] },
+  async (event) => {
+    const snap = event.data;
+    if (!snap) return;
+    const data = snap.data();
+    if (!data) return;
+
+    const docId = event.params.id;
+    const email = data.email || "";
+    const name = data.fullName || data.name || "User";
+
+    try {
+      if (email && email.includes("@")) {
+        await sendEmail(brevoApiKey.value(), {
+          email,
+          name,
+          subject: "Your Request Has Been Received",
+          preview: "Thank you for reaching out to Path Sarthi Trust.",
+          status: "Request Received",
+          message: "Thank you for contacting us through Jan Sampark.",
+          additionalMessage: "Our team is reviewing your request and will get back to you as soon as possible.",
+          referenceId: docId,
+          date: today(),
+          emailType: EmailType.JAN_SAMPARK,
+        });
+      } else {
+        console.log(`[onNewJanSampark] Skipped user email: no email address present in document ${docId}`);
+      }
+
+      // Always notify admin
+      await sendAdminNotification(
+        brevoApiKey.value(),
+        adminEmailSecret.value(),
+        "Jan Sampark",
+        docId
+      );
+    } catch (error) {
+      console.error(`[onNewJanSampark] Error processing trigger for ${docId}:`, error);
+    }
+  }
+);
+
+// ─── 5. Internship Triggers ─────────────────────────────────────────────────
 
 export const sendInternshipEmail = onCall(
   { secrets: [brevoApiKey, adminEmailSecret] },
@@ -251,7 +443,50 @@ export const sendInternshipEmail = onCall(
   }
 );
 
-// ─── 7. Query Bot ────────────────────────────────────────────────────────────
+export const onNewInternship = onDocumentCreated(
+  { document: "internship_applications/{id}", secrets: [brevoApiKey, adminEmailSecret] },
+  async (event) => {
+    const snap = event.data;
+    if (!snap) return;
+    const data = snap.data();
+    if (!data) return;
+
+    const docId = event.params.id;
+    const email = data.email || "";
+    const name = data.name || "Applicant";
+
+    try {
+      if (email && email.includes("@")) {
+        await sendEmail(brevoApiKey.value(), {
+          email,
+          name,
+          subject: "Internship Application Received",
+          preview: "Thank you for applying.",
+          status: "Application Received",
+          message: "Your internship application has been successfully submitted.",
+          additionalMessage: "Our recruitment team will review your profile and notify you regarding further steps.",
+          referenceId: docId,
+          date: today(),
+          emailType: EmailType.INTERNSHIP,
+        });
+      } else {
+        console.log(`[onNewInternship] Skipped applicant email: no email address present in document ${docId}`);
+      }
+
+      // Always notify admin
+      await sendAdminNotification(
+        brevoApiKey.value(),
+        adminEmailSecret.value(),
+        "Internship",
+        docId
+      );
+    } catch (error) {
+      console.error(`[onNewInternship] Error processing trigger for ${docId}:`, error);
+    }
+  }
+);
+
+// ─── 6. Query Bot Triggers ──────────────────────────────────────────────────
 
 export const sendQueryEmail = onCall(
   { secrets: [brevoApiKey, adminEmailSecret] },
@@ -288,7 +523,50 @@ export const sendQueryEmail = onCall(
   }
 );
 
-// ─── 8. Certificate ──────────────────────────────────────────────────────────
+export const onNewQuery = onDocumentCreated(
+  { document: "queries/{id}", secrets: [brevoApiKey, adminEmailSecret] },
+  async (event) => {
+    const snap = event.data;
+    if (!snap) return;
+    const data = snap.data();
+    if (!data) return;
+
+    const docId = event.params.id;
+    const email = data.email || "";
+    const name = data.name || "User";
+
+    try {
+      if (email && email.includes("@")) {
+        await sendEmail(brevoApiKey.value(), {
+          email,
+          name,
+          subject: "We Have Received Your Query",
+          preview: "Our support team is here to help.",
+          status: "Open",
+          message: "Thank you for contacting Path Sarthi Trust.",
+          additionalMessage: "Our support team is reviewing your query and will respond as soon as possible.",
+          referenceId: docId,
+          date: today(),
+          emailType: EmailType.QUERY,
+        });
+      } else {
+        console.log(`[onNewQuery] Skipped user email: no email address present in document ${docId}`);
+      }
+
+      // Always notify admin
+      await sendAdminNotification(
+        brevoApiKey.value(),
+        adminEmailSecret.value(),
+        "Query",
+        docId
+      );
+    } catch (error) {
+      console.error(`[onNewQuery] Error processing trigger for ${docId}:`, error);
+    }
+  }
+);
+
+// ─── 7. Certificate Triggers ────────────────────────────────────────────────
 
 export const sendCertificateEmail = onCall(
   { secrets: [brevoApiKey] },
@@ -307,7 +585,7 @@ export const sendCertificateEmail = onCall(
       referenceId: data.certificateNumber,
       date: today(),
       emailType: EmailType.CERTIFICATE,
-      certificateType: data.certificateType, // e.g. "Appreciation Certificate", "Recognition Certificate"
+      certificateType: data.certificateType,
     };
 
     try {
@@ -320,14 +598,96 @@ export const sendCertificateEmail = onCall(
   }
 );
 
-// ─── 9. Firestore Trigger: New Application ───────────────────────────────────
+export const onNewCertificate = onDocumentCreated(
+  { document: "certificates/{id}", secrets: [brevoApiKey] },
+  async (event) => {
+    const snap = event.data;
+    if (!snap) return;
+    const data = snap.data();
+    if (!data) return;
+
+    const docId = event.params.id;
+    const email = data.email || "";
+    const name = data.name || "Recipient";
+    const certType = data.type || "Certificate";
+
+    try {
+      if (email && email.includes("@")) {
+        await sendEmail(brevoApiKey.value(), {
+          email,
+          name,
+          subject: "Your Certificate Has Been Issued",
+          preview: "Your certificate is now ready.",
+          status: "Certificate Generated",
+          message: `Congratulations.\n\nYour certificate has been successfully generated by Path Sarthi Trust.`,
+          additionalMessage: `Please download your certificate using the following link:\n${data.certificateUrl || ""}`,
+          referenceId: data.certificateNumber || docId,
+          date: today(),
+          emailType: EmailType.CERTIFICATE,
+          certificateType: certType,
+          certificateUrl: data.certificateUrl || "",
+        });
+      } else {
+        console.log(`[onNewCertificate] Skipped certificate email: no email address present in document ${docId}`);
+      }
+    } catch (error) {
+      console.error(`[onNewCertificate] Error processing trigger for ${docId}:`, error);
+    }
+  }
+);
+
+// ─── 8. Volunteer Welcome Trigger ───────────────────────────────────────────
+
+export const onNewVolunteer = onDocumentCreated(
+  { document: "joinus_registrations/{id}", secrets: [brevoApiKey, adminEmailSecret] },
+  async (event) => {
+    const snap = event.data;
+    if (!snap) return;
+    const data = snap.data();
+    if (!data) return;
+
+    const docId = event.params.id;
+    const email = data.email || "";
+    const name = data.name || "Volunteer";
+
+    try {
+      if (email && email.includes("@")) {
+        await sendEmail(brevoApiKey.value(), {
+          email,
+          name,
+          subject: "Welcome to Path Sarthi Trust",
+          preview: "Thank you for choosing to volunteer with us.",
+          status: "Welcome",
+          message: "Thank you for registering as a volunteer with Path Sarthi Trust. We are excited to have you join our mission.",
+          additionalMessage: "Our team will review your registration and get in touch with you shortly to coordinate onboarding.",
+          referenceId: docId,
+          date: today(),
+          emailType: EmailType.MEMBERSHIP, // Map volunteer welcomes under MEMBERSHIP analytics
+        });
+      } else {
+        console.log(`[onNewVolunteer] Skipped welcome email: no email address present in document ${docId}`);
+      }
+
+      // Always notify admin
+      await sendAdminNotification(
+        brevoApiKey.value(),
+        adminEmailSecret.value(),
+        "Volunteer",
+        docId
+      );
+    } catch (error) {
+      console.error(`[onNewVolunteer] Error processing trigger for ${docId}:`, error);
+    }
+  }
+);
+
+// ─── 9. Education Support Application Trigger ────────────────────────────────
 
 export const sendEmailOnNewApplication = onDocumentCreated(
   { document: "applications/{id}", secrets: [brevoApiKey, adminEmailSecret] },
   async (event) => {
     const snap = event.data;
     if (!snap) return;
-
     const data = snap.data();
     if (!data) return;
 
