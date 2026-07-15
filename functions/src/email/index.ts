@@ -28,7 +28,4 @@ export {
 
   // Scheduled automations
   birthdayWishScheduler,
-
-  // Test / Debug functions (remove after verification)
-  testBirthdayWish,
 } from "./functions";
