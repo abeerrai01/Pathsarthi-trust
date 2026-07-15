@@ -61,13 +61,20 @@ exports.onNewDonation = (0, firestore_1.onDocumentCreated)({ document: "donation
             const donationImpact = amount && !isNaN(Number(amount))
                 ? `Your generous contribution of ₹${amount} will directly fund our active programs, such as purchasing educational notebooks for school children, providing medical supplies, and supporting women's skill development workshops.`
                 : "Your contribution will directly fund our child education and community welfare initiatives.";
+            const paymentSummaryBlock = [
+                `Payment Summary:`,
+                `• Contributor Name: ${name}`,
+                `• Amount Paid: ₹${amount}`,
+                `• Reference / Payment ID: ${refId}`,
+                `• Payment Channel: ${refId.startsWith("pay_") ? "Razorpay Gateway (Instant)" : "Manual UPI Transfer"}`
+            ].join("\n");
             await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                 email,
                 name,
                 subject: "Thank You for Your Generous Contribution! 💖",
                 preview: `Your support of ₹${amount} is transforming lives.`,
                 status: "Donation Received & Verified",
-                message: `We are deeply grateful for your generous donation to Path Sarthi Trust.\n\n${donationImpact}\n\nAt Path Sarthi, we believe that real change begins when citizens join hands. Your kindness acts as a guiding light for children and families who need support the most. Thank you for placing your trust in us.`,
+                message: `We are deeply grateful for your generous donation to Path Sarthi Trust.\n\n${donationImpact}\n\n${paymentSummaryBlock}\n\nAt Path Sarthi, we believe that real change begins when citizens join hands. Your kindness acts as a guiding light for children and families who need support the most. Thank you for placing your trust in us.`,
                 additionalMessage: `Your official donation receipt has been recorded under the reference ID below. If you are eligible for tax benefits under Section 80G, our compliance team will email you the tax certificate within the next 7-10 working days.`,
                 referenceId: refId,
                 date: today(),
@@ -123,13 +130,21 @@ exports.onNewSponsor = (0, firestore_1.onDocumentCreated)({ document: "csr_partn
     const email = data.email || (contactInfo.includes("@") ? contactInfo : "");
     try {
         if (email) {
+            const sponsorDetailsBlock = [
+                `Sponsorship Proposal Details:`,
+                `• Company Name: ${data.companyName || "N/A"}`,
+                `• Contact Person: ${name}`,
+                `• Contact Email: ${email}`,
+                `• Contact Number: ${contactInfo || "N/A"}`,
+                `• Proposed Support Budget: ₹${data.budget || "N/A"}`
+            ].join("\n");
             await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                 email,
                 name,
                 subject: "Partnering for Change: Sponsorship Request Received 🤝",
                 preview: "Thank you for choosing to empower our community.",
                 status: "Sponsorship Under Review",
-                message: `Thank you for reaching out to partner with Path Sarthi Trust. We have successfully received your sponsorship proposal.\n\nCorporate and individual sponsorships are critical in helping us scale our initiatives—from running digital classrooms in remote villages to driving environmental and healthcare drives. Your willingness to collaborate plays a major role in expanding this circle of impact.`,
+                message: `Thank you for reaching out to partner with Path Sarthi Trust. We have successfully received your sponsorship proposal.\n\nCorporate and individual sponsorships are critical in helping us scale our initiatives—from running digital classrooms in remote villages to driving environmental and healthcare drives. Your willingness to collaborate plays a major role in expanding this circle of impact.\n\n${sponsorDetailsBlock}`,
                 additionalMessage: `Our partnerships team will review the details of your proposal and reach out to you within 3 working days to coordinate the next steps and set up a brief introductory call. We look forward to creating lasting progress together!`,
                 referenceId: docId,
                 date: today(),
@@ -211,6 +226,16 @@ exports.onNewMembership = (0, firestore_1.onDocumentCreated)({ document: "member
     const isPremium = data.amount && Number(data.amount) >= 500;
     try {
         if (email && email.includes("@")) {
+            const detailsBlock = [
+                `Submitted Membership Application Details:`,
+                `• Full Name: ${data.fullName || data.name || "N/A"}`,
+                `• Email Address: ${email}`,
+                `• Phone Number: ${data.phone || "N/A"}`,
+                `• Age / Gender: ${data.age || "N/A"} / ${data.gender || "N/A"}`,
+                `• Regional Details: ${data.city || "N/A"}, ${data.state || "N/A"} (Pincode: ${data.pincode || "N/A"})`,
+                `• Payment Reference / ID: ${data.paymentId || "N/A"}`,
+                `• Membership Amount Paid: ₹${data.amount || "0"}`
+            ].join("\n");
             if (isPremium) {
                 await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                     email,
@@ -218,7 +243,7 @@ exports.onNewMembership = (0, firestore_1.onDocumentCreated)({ document: "member
                     subject: "Premium Membership Application Received! 🌟",
                     preview: "Thank you for taking a significant leadership step with us.",
                     status: "Application Under Review",
-                    message: `Thank you for choosing to join us as a Premium Member of Path Sarthi Trust. Premium members play a vital leadership role in guiding our community welfare initiatives, mentoring youth, and helping us govern regional projects.`,
+                    message: `Thank you for choosing to join us as a Premium Member of Path Sarthi Trust. Premium members play a vital leadership role in guiding our community welfare initiatives, mentoring youth, and helping us govern regional projects.\n\n${detailsBlock}`,
                     additionalMessage: `We have received your premium membership application. Our leadership team will review the details and reach out to schedule a brief introductory call. We look forward to working closely with you to drive collective progress!`,
                     referenceId: docId,
                     date: today(),
@@ -232,7 +257,7 @@ exports.onNewMembership = (0, firestore_1.onDocumentCreated)({ document: "member
                     subject: "Welcome to the Path Sarthi Trust Family! 🤝",
                     preview: "You are now an official member of our community.",
                     status: "Application Received",
-                    message: `We are absolutely thrilled to welcome you as a member of Path Sarthi Trust. Outlining our shared values of compassion, responsibility, and collective progress, our members are the driving force behind everything we do.`,
+                    message: `We are absolutely thrilled to welcome you as a member of Path Sarthi Trust. Outlining our shared values of compassion, responsibility, and collective progress, our members are the driving force behind everything we do.\n\n${detailsBlock}`,
                     additionalMessage: `Your application has been received and is under review by our community board. Once approved, your official membership details and regional group invites will be shared with you. Welcome aboard!`,
                     referenceId: docId,
                     date: today(),
@@ -288,13 +313,22 @@ exports.onNewJanSampark = (0, firestore_1.onDocumentCreated)({ document: "jan_sa
     const name = data.fullName || data.name || "User";
     try {
         if (email && email.includes("@")) {
+            const samparkDetailsBlock = [
+                `Submitted Jan Sampark Details:`,
+                `• Full Name: ${data.fullName || data.name || "N/A"}`,
+                `• Email Address: ${email}`,
+                `• Phone Number: ${data.phone || "N/A"}`,
+                `• Age / Gender: ${data.age || "N/A"} / ${data.gender || "N/A"}`,
+                `• Regional Details: ${data.city || "N/A"}, ${data.state || "N/A"} (Pincode: ${data.pincode || "N/A"})`,
+                `• How did you hear about us: ${data.reference || "N/A"}`
+            ].join("\n");
             await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                 email,
                 name,
                 subject: "Connecting with Path Sarthi Trust (Jan Sampark) 📞",
                 preview: "We have received your contact details.",
                 status: "Request Received",
-                message: `Thank you for connecting with us through our Jan Sampark public outreach initiative. We believe in building transparent, accessible, and responsive channels to support and engage with every citizen who wishes to collaborate, seek guidance, or contribute.`,
+                message: `Thank you for connecting with us through our Jan Sampark public outreach initiative. We believe in building transparent, accessible, and responsive channels to support and engage with every citizen who wishes to collaborate, seek guidance, or contribute.\n\n${samparkDetailsBlock}`,
                 additionalMessage: `Our public relations coordinator for your region will review your details and contact you via phone or email within the next 24-48 hours. We look forward to speaking with you!`,
                 referenceId: docId,
                 date: today(),
