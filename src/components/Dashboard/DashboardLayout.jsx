@@ -7,7 +7,7 @@ import EditGalleryHeadings from '../EditGalleryHeadings';
 import { onSnapshot, doc, collection, getDocs } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { auth, db } from '../../config/firebase';
-import { LayoutDashboard, Images, UploadCloud, Users, Target, Activity, Type, Award, ListChecks, LogOut, ChevronRight, Newspaper, GraduationCap, Briefcase, MessageCircle } from 'lucide-react';
+import { LayoutDashboard, Images, UploadCloud, Users, Target, Activity, Type, Award, ListChecks, LogOut, ChevronRight, Newspaper, GraduationCap, Briefcase, MessageCircle, Mail } from 'lucide-react';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -31,6 +31,7 @@ import AdminMemberships from './AdminMemberships';
 import AdminJanSampark from './AdminJanSampark';
 import AdminInternships from './AdminInternships';
 import AdminQueries from './AdminQueries';
+import AdminEmailComposer from './AdminEmailComposer';
 
 ChartJS.register(
   CategoryScale,
@@ -89,6 +90,7 @@ const DashboardLayout = () => {
     { id: "queries", label: "User Queries", icon: <MessageCircle size={20} /> },
     { id: "education-applications", label: "Education Requests", icon: <GraduationCap size={20} /> },
     { id: "internships", label: "Internships", icon: <Briefcase size={20} /> },
+    { id: "email-composer", label: "Email Composer 📧", icon: <Mail size={20} /> },
     { id: "analytics", label: "Website Analytics", icon: <Activity size={20} /> },
     { id: "team", label: "Team & Supporters", icon: <Users size={20} /> },
     { id: "gallery-group-upload", label: "Upload New Photos", icon: <UploadCloud size={20} /> },
@@ -272,6 +274,7 @@ const DashboardLayout = () => {
               {activeSection === "queries" && <AdminQueries />}
               {activeSection === "memberships" && <AdminMemberships />}
               {activeSection === "jan-sampark" && <AdminJanSampark />}
+              {activeSection === "email-composer" && <AdminEmailComposer />}
             </div>
             
           </div>

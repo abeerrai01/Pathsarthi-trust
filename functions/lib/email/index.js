@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEmailOnNewApplication = exports.onNewVolunteer = exports.onNewCertificate = exports.onNewQuery = exports.onNewInternship = exports.onNewJanSampark = exports.onNewMembership = exports.onNewSponsor = exports.onNewDonation = exports.sendCertificateEmail = exports.sendQueryEmail = exports.sendInternshipEmail = exports.sendJanSamparkEmail = exports.sendPremiumMembershipEmail = exports.sendMembershipEmail = exports.sendSponsorEmail = exports.sendDonationEmail = void 0;
+exports.birthdayWishScheduler = exports.sendCustomEmail = exports.sendEmailOnNewApplication = exports.onNewVolunteer = exports.onNewCertificate = exports.onNewQuery = exports.onNewInternship = exports.onNewJanSampark = exports.onNewMembership = exports.onNewSponsor = exports.onNewDonation = exports.sendCertificateEmail = exports.sendQueryEmail = exports.sendInternshipEmail = exports.sendJanSamparkEmail = exports.sendPremiumMembershipEmail = exports.sendMembershipEmail = exports.sendSponsorEmail = exports.sendDonationEmail = void 0;
 /**
  * Email barrel — re-exports all email Cloud Functions (Callables and Firestore triggers).
  */
@@ -24,4 +24,8 @@ Object.defineProperty(exports, "onNewQuery", { enumerable: true, get: function (
 Object.defineProperty(exports, "onNewCertificate", { enumerable: true, get: function () { return functions_1.onNewCertificate; } });
 Object.defineProperty(exports, "onNewVolunteer", { enumerable: true, get: function () { return functions_1.onNewVolunteer; } });
 Object.defineProperty(exports, "sendEmailOnNewApplication", { enumerable: true, get: function () { return functions_1.sendEmailOnNewApplication; } });
+// Admin tools
+Object.defineProperty(exports, "sendCustomEmail", { enumerable: true, get: function () { return functions_1.sendCustomEmail; } });
+// Scheduled automations
+Object.defineProperty(exports, "birthdayWishScheduler", { enumerable: true, get: function () { return functions_1.birthdayWishScheduler; } });
 //# sourceMappingURL=index.js.map

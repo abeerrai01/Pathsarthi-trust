@@ -1,5 +1,7 @@
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { onSchedule } from "firebase-functions/v2/scheduler";
+import * as admin from "firebase-admin";
 import {
   brevoApiKey,
   adminEmailSecret,
@@ -836,3 +838,177 @@ export const sendEmailOnNewApplication = onDocumentCreated(
     }
   }
 );
+
+// ─── 10. Admin Custom Email Composer ─────────────────────────────────────────
+
+/**
+ * Callable: Admin sends a fully custom email to any recipient.
+ * Must be called by an authenticated Firebase user (admin).
+ */
+export const sendCustomEmail = onCall(
+  { secrets: [brevoApiKey] },
+  async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "Must be signed in as admin.");
+    }
+
+    const data = request.data;
+    requireFields(data, ["recipientEmail", "recipientName", "subject", "message"]);
+
+    const emailData: EmailData = {
+      email: data.recipientEmail,
+      name: data.recipientName,
+      subject: data.subject,
+      preview: data.preview || data.subject,
+      status: data.status || "Message from Path Sarthi Trust",
+      message: data.message,
+      additionalMessage: data.additionalMessage || "Thank you for your continued association with Path Sarthi Trust. We are glad to have you as part of our community.",
+      referenceId: `ADMIN-${Date.now()}`,
+      date: today(),
+      emailType: EmailType.QUERY,
+    };
+
+    try {
+      await sendEmail(brevoApiKey.value(), emailData);
+      console.log(`[sendCustomEmail] Admin sent custom email to ${data.recipientEmail}`);
+      return { success: true };
+    } catch (error: any) {
+      console.error("[sendCustomEmail] Failed:", error);
+      throw new HttpsError("internal", error?.message || "Failed to send custom email.");
+    }
+  }
+);
+
+// ─── 11. Birthday Wish Scheduler ─────────────────────────────────────────────
+
+/**
+ * Scheduled function: Runs daily at midnight IST (18:30 UTC).
+ * Reads all membership documents, finds members whose birthday is today,
+ * and sends them a warm personalized birthday wish email.
+ *
+ * Supported DOB formats stored in Firestore:
+ *   - ISO string:      "1998-07-16"   (YYYY-MM-DD)
+ *   - Indian format:   "16/07/1998"   (DD/MM/YYYY)
+ *   - Firestore Timestamp (auto-detected)
+ */
+export const birthdayWishScheduler = onSchedule(
+  { schedule: "30 18 * * *", timeZone: "UTC", secrets: [brevoApiKey] },
+  async () => {
+    console.log("[birthdayWishScheduler] Starting daily birthday scan...");
+
+    // Today's date in IST (midnight)
+    const now = new Date();
+    const istOffset = 5.5 * 60 * 60 * 1000;
+    const istNow = new Date(now.getTime() + istOffset);
+    const todayMonth = istNow.getUTCMonth() + 1; // 1-12
+    const todayDay = istNow.getUTCDate();
+
+    /** Parses a DOB field into { month, day } regardless of format */
+    const parseDob = (dob: any): { month: number; day: number } | null => {
+      if (!dob) return null;
+
+      // Firestore Timestamp
+      if (typeof dob?.toDate === "function") {
+        const d = dob.toDate();
+        return { month: d.getMonth() + 1, day: d.getDate() };
+      }
+
+      const str = String(dob).trim();
+
+      // ISO format: 1998-07-16
+      const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (isoMatch) {
+        return { month: parseInt(isoMatch[2]), day: parseInt(isoMatch[3]) };
+      }
+
+      // Indian format: 16/07/1998 or 16-07-1998
+      const indMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+      if (indMatch) {
+        return { month: parseInt(indMatch[2]), day: parseInt(indMatch[1]) };
+      }
+
+      return null;
+    };
+
+    let scanned = 0;
+    let sent = 0;
+    let errors = 0;
+
+    try {
+      const snapshot = await admin.firestore().collection("memberships").get();
+      scanned = snapshot.size;
+
+      for (const docSnap of snapshot.docs) {
+        const member = docSnap.data();
+        const parsed = parseDob(member.dob || member.dateOfBirth || member.birthdate);
+        if (!parsed) continue;
+
+        if (parsed.month !== todayMonth || parsed.day !== todayDay) continue;
+
+        // 🎂 It's this member's birthday!
+        const name = member.fullName || member.name || "Valued Member";
+        const email = member.email || "";
+        const isPremium = member.amount && Number(member.amount) >= 500;
+        const tier = isPremium ? "Premium Member" : "Standard Member";
+        const amount = member.amount ? `₹${member.amount}` : "your generous contribution";
+
+        if (!email || !email.includes("@")) {
+          console.warn(`[birthdayWishScheduler] Skipping ${name}: no valid email.`);
+          continue;
+        }
+
+        const birthdayDetailsBlock = `
+          <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, #fff7f2 0%, #fff0f9 100%); border: 2px solid #ffd7bf; border-radius: 12px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 10px;">🎂🎉🎈</div>
+            <h2 style="color: #009ba2; font-family: Arial, sans-serif; margin: 0 0 8px;">Happy Birthday, ${name}!</h2>
+            <p style="color: #555; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.7; margin: 0;">
+              On your special day, the entire Path Sarthi Trust family sends you warm wishes, good health, and boundless happiness!
+            </p>
+          </div>
+
+          <div style="margin: 20px 0; padding: 18px; background: #f0fafa; border-left: 4px solid #009ba2; border-radius: 6px;">
+            <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.8; margin: 0;">
+              As a <strong>${tier}</strong> of Path Sarthi Trust, your support of <strong>${amount}</strong> has directly contributed to our ongoing programs — educating children, caring for elders, and improving rural healthcare access.
+            </p>
+            <p style="color: #555; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.8; margin: 12px 0 0;">
+              People like you are the reason communities grow stronger. Your trust in us is our greatest strength, and on your birthday, we celebrate not just you — but the positive change you help create every single day. 🌟
+            </p>
+          </div>
+
+          <div style="margin: 20px 0; padding: 16px; background: #fafafa; border: 1px solid #eeeeee; border-radius: 8px; text-align: center;">
+            <p style="color: #009ba2; font-family: Arial, sans-serif; font-size: 13px; font-style: italic; margin: 0;">
+              "A birthday is the beginning of a whole new year. May this year bring you joy, purpose, and meaningful connections."
+            </p>
+          </div>
+        `;
+
+        const emailData: EmailData = {
+          email,
+          name,
+          subject: `🎂 Happy Birthday, ${name}! From Path Sarthi Trust`,
+          preview: `Wishing you a wonderful birthday filled with joy and love!`,
+          status: "Birthday Wishes 🎉",
+          message: `We are delighted to celebrate this special day with you!<br/><br/>${birthdayDetailsBlock}`,
+          additionalMessage: `May this year bring you abundant happiness, good health, and the fulfillment of all your dreams. Thank you for being an integral part of the Path Sarthi Trust family. We look forward to continuing this journey of service and impact together. 🙏`,
+          referenceId: `BDAY-${docSnap.id}`,
+          date: today(),
+          emailType: EmailType.MEMBERSHIP,
+        };
+
+        try {
+          await sendEmail(brevoApiKey.value(), emailData);
+          sent++;
+          console.log(`[birthdayWishScheduler] 🎂 Birthday email sent to ${name} (${email})`);
+        } catch (err) {
+          errors++;
+          console.error(`[birthdayWishScheduler] Failed to send to ${name} (${email}):`, err);
+        }
+      }
+
+      console.log(`[birthdayWishScheduler] Done. Scanned: ${scanned}, Sent: ${sent}, Errors: ${errors}`);
+    } catch (err) {
+      console.error("[birthdayWishScheduler] Fatal error scanning memberships:", err);
+    }
+  }
+);
+

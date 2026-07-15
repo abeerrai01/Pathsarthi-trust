@@ -22,4 +22,10 @@ export {
   onNewCertificate,
   onNewVolunteer,
   sendEmailOnNewApplication,
+
+  // Admin tools
+  sendCustomEmail,
+
+  // Scheduled automations
+  birthdayWishScheduler,
 } from "./functions";
