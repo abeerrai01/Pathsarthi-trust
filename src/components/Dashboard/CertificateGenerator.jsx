@@ -13,6 +13,7 @@ const CertificateGenerator = () => {
   const [appreciationDate, setAppreciationDate] = useState("");
   const [title, setTitle] = useState("");
   const [position, setPosition] = useState("");
+  const [positionLeftOffset, setPositionLeftOffset] = useState(130);
   const [html2canvas, setHtml2canvas] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -270,6 +271,17 @@ const CertificateGenerator = () => {
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Position Left Offset (px)
+              </label>
+              <input
+                type="number"
+                value={positionLeftOffset}
+                onChange={e => setPositionLeftOffset(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
           </>
         )}
 
@@ -389,7 +401,7 @@ const CertificateGenerator = () => {
             style={{
               position: "absolute",
               top: "891px",
-              left: "130px",
+              left: `${positionLeftOffset}px`,
               width: "100%",
               textAlign: "center",
               fontSize: "30px",
