@@ -948,9 +948,6 @@ export const birthdayWishScheduler = onSchedule(
         // 🎂 It's this member's birthday!
         const name = member.fullName || member.name || "Valued Member";
         const email = member.email || "";
-        const isPremium = member.amount && Number(member.amount) >= 500;
-        const tier = isPremium ? "Premium Member" : "Standard Member";
-        const amount = member.amount ? `₹${member.amount}` : "your generous contribution";
 
         if (!email || !email.includes("@")) {
           console.warn(`[birthdayWishScheduler] Skipping ${name}: no valid email.`);
@@ -958,26 +955,32 @@ export const birthdayWishScheduler = onSchedule(
         }
 
         const birthdayDetailsBlock = `
-          <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, #fff7f2 0%, #fff0f9 100%); border: 2px solid #ffd7bf; border-radius: 12px; text-align: center;">
-            <div style="font-size: 48px; margin-bottom: 10px;">🎂🎉🎈</div>
-            <h2 style="color: #009ba2; font-family: Arial, sans-serif; margin: 0 0 8px;">Happy Birthday, ${name}!</h2>
-            <p style="color: #555; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.7; margin: 0;">
-              On your special day, the entire Path Sarthi Trust family sends you warm wishes, good health, and boundless happiness!
+          <div style="margin: 20px 0; padding: 28px 20px; background: linear-gradient(135deg, #fff7f2 0%, #fff0f9 100%); border: 2px solid #ffd7bf; border-radius: 14px; text-align: center;">
+            <div style="font-size: 52px; margin-bottom: 12px;">🎂 🎉 🎈</div>
+            <h2 style="color: #009ba2; font-family: Arial, sans-serif; font-size: 22px; margin: 0 0 10px;">Happy Birthday, ${name}! 🥳</h2>
+            <p style="color: #555; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.8; margin: 0 auto; max-width: 480px;">
+              On this beautiful day, the entire <strong style="color: #009ba2;">Path Sarthi Trust</strong> family comes together to wish you a birthday overflowing with love, laughter, good health, and joy!
             </p>
           </div>
 
-          <div style="margin: 20px 0; padding: 18px; background: #f0fafa; border-left: 4px solid #009ba2; border-radius: 6px;">
-            <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.8; margin: 0;">
-              As a <strong>${tier}</strong> of Path Sarthi Trust, your support of <strong>${amount}</strong> has directly contributed to our ongoing programs — educating children, caring for elders, and improving rural healthcare access.
+          <div style="margin: 20px 0; padding: 20px; background: #f0fafa; border-left: 4px solid #009ba2; border-radius: 8px;">
+            <p style="color: #333; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.9; margin: 0;">
+              You are not just a member — you are a <strong>beacon of hope</strong> for the communities we serve together. Your belief in Path Sarthi Trust's mission warms our hearts every day.
             </p>
-            <p style="color: #555; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.8; margin: 12px 0 0;">
-              People like you are the reason communities grow stronger. Your trust in us is our greatest strength, and on your birthday, we celebrate not just you — but the positive change you help create every single day. 🌟
+            <p style="color: #555; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.8; margin: 14px 0 0;">
+              Today is your day — to celebrate, to rest, and to be surrounded by those who love you. May every wish you make come true, and may this new year of your life bring you everything your heart desires. 🌟
             </p>
           </div>
 
-          <div style="margin: 20px 0; padding: 16px; background: #fafafa; border: 1px solid #eeeeee; border-radius: 8px; text-align: center;">
-            <p style="color: #009ba2; font-family: Arial, sans-serif; font-size: 13px; font-style: italic; margin: 0;">
-              "A birthday is the beginning of a whole new year. May this year bring you joy, purpose, and meaningful connections."
+          <div style="margin: 20px 0; padding: 18px; background: #fffbf0; border: 1px solid #ffe4a0; border-radius: 8px; text-align: center;">
+            <p style="color: #b07d00; font-family: Arial, sans-serif; font-size: 14px; font-style: italic; line-height: 1.7; margin: 0;">
+              "Count your life by smiles, not tears. Count your age by friends, not years. Wishing you a year full of moments that make your heart sing!" 🌸
+            </p>
+          </div>
+
+          <div style="margin: 20px 0; padding: 18px 20px; background: #f8fff8; border: 1px solid #c3e6c3; border-radius: 8px; text-align: center;">
+            <p style="color: #2d7a2d; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.8; margin: 0;">
+              🙏 <strong>A heartfelt thank you</strong> for walking this journey of kindness and service with us. Your presence in our family means the world to everyone at Path Sarthi Trust.
             </p>
           </div>
         `;
@@ -985,11 +988,11 @@ export const birthdayWishScheduler = onSchedule(
         const emailData: EmailData = {
           email,
           name,
-          subject: `🎂 Happy Birthday, ${name}! From Path Sarthi Trust`,
-          preview: `Wishing you a wonderful birthday filled with joy and love!`,
-          status: "Birthday Wishes 🎉",
-          message: `We are delighted to celebrate this special day with you!<br/><br/>${birthdayDetailsBlock}`,
-          additionalMessage: `May this year bring you abundant happiness, good health, and the fulfillment of all your dreams. Thank you for being an integral part of the Path Sarthi Trust family. We look forward to continuing this journey of service and impact together. 🙏`,
+          subject: `🎂 Happy Birthday, ${name}! With Love from Path Sarthi Trust`,
+          preview: `Wishing you a beautiful birthday filled with joy, love, and happiness! 🎉`,
+          status: "Happy Birthday! 🎂",
+          message: `Today is a very special day — it's your birthday! 🎊<br/><br/>${birthdayDetailsBlock}`,
+          additionalMessage: `From every corner of our team, with all our hearts — wishing you the happiest birthday and a wonderful year ahead. Thank you for being a cherished part of our Path Sarthi Trust family. May you always be surrounded by love, warmth, and beautiful moments. 💙`,
           referenceId: `BDAY-${docSnap.id}`,
           date: today(),
           emailType: EmailType.MEMBERSHIP,
