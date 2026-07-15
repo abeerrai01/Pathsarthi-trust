@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.birthdayWishScheduler = exports.sendCustomEmail = exports.sendEmailOnNewApplication = exports.onNewVolunteer = exports.onNewCertificate = exports.onNewQuery = exports.onNewInternship = exports.onNewJanSampark = exports.onNewMembership = exports.onNewSponsor = exports.onNewDonation = exports.sendCertificateEmail = exports.sendQueryEmail = exports.sendInternshipEmail = exports.sendJanSamparkEmail = exports.sendPremiumMembershipEmail = exports.sendMembershipEmail = exports.sendSponsorEmail = exports.sendDonationEmail = void 0;
+exports.testBirthdayWish = exports.birthdayWishScheduler = exports.sendCustomEmail = exports.sendEmailOnNewApplication = exports.onNewVolunteer = exports.onNewCertificate = exports.onNewQuery = exports.onNewInternship = exports.onNewJanSampark = exports.onNewMembership = exports.onNewSponsor = exports.onNewDonation = exports.sendCertificateEmail = exports.sendQueryEmail = exports.sendInternshipEmail = exports.sendJanSamparkEmail = exports.sendPremiumMembershipEmail = exports.sendMembershipEmail = exports.sendSponsorEmail = exports.sendDonationEmail = void 0;
 /**
  * Email barrel — re-exports all email Cloud Functions (Callables and Firestore triggers).
  */
@@ -28,4 +28,6 @@ Object.defineProperty(exports, "sendEmailOnNewApplication", { enumerable: true, 
 Object.defineProperty(exports, "sendCustomEmail", { enumerable: true, get: function () { return functions_1.sendCustomEmail; } });
 // Scheduled automations
 Object.defineProperty(exports, "birthdayWishScheduler", { enumerable: true, get: function () { return functions_1.birthdayWishScheduler; } });
+// Test / Debug functions (remove after verification)
+Object.defineProperty(exports, "testBirthdayWish", { enumerable: true, get: function () { return functions_1.testBirthdayWish; } });
 //# sourceMappingURL=index.js.map

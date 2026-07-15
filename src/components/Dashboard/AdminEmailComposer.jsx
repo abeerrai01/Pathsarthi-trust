@@ -321,21 +321,163 @@ const AdminEmailComposer = () => {
         </div>
       </form>
 
-      {/* Birthday Automation Info Card */}
-      <div className="mt-6 p-5 bg-gradient-to-br from-orange-50 to-pink-50 border border-orange-200 rounded-2xl">
+      {/* Birthday Automation Test Panel */}
+      <BirthdayTestPanel />
+    </div>
+  );
+};
+
+// ─── Birthday Test Panel ──────────────────────────────────────────────────────
+
+const BirthdayTestPanel = () => {
+  const [testDate, setTestDate] = useState('');
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState(null);
+  const [testError, setTestError] = useState('');
+
+  const handleTest = async () => {
+    setTesting(true);
+    setTestResult(null);
+    setTestError('');
+    try {
+      const functions = getFunctions();
+      const testBirthdayWish = httpsCallable(functions, 'testBirthdayWish');
+      const payload = testDate ? { testDate } : {};
+      const res = await testBirthdayWish(payload);
+      setTestResult(res.data);
+    } catch (err) {
+      console.error('[BirthdayTestPanel] Error:', err);
+      setTestError(err?.message || 'Test failed. Check console for details.');
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  return (
+    <div className="mt-6 rounded-2xl border border-orange-200 overflow-hidden">
+      {/* Header */}
+      <div className="p-5 bg-gradient-to-br from-orange-50 to-pink-50">
         <div className="flex items-start gap-3">
           <div className="text-3xl">🎂</div>
-          <div>
-            <h3 className="font-bold text-orange-800 mb-1">Birthday Automation is Active</h3>
+          <div className="flex-1">
+            <h3 className="font-bold text-orange-800 mb-1">Birthday Automation — Active & Testable</h3>
             <p className="text-sm text-orange-700 leading-relaxed">
-              Every day at <strong>12:00 AM IST</strong>, the system automatically scans all membership records and sends personalized birthday wish emails to members whose birthday is today. 
-              Make sure members have a <code className="bg-orange-100 px-1 rounded text-xs">dob</code> field saved in their membership document (formats supported: <code className="bg-orange-100 px-1 rounded text-xs">YYYY-MM-DD</code>, <code className="bg-orange-100 px-1 rounded text-xs">DD/MM/YYYY</code>).
+              Runs every day at <strong>12:00 AM IST</strong>. Members need a{' '}
+              <code className="bg-orange-100 px-1 rounded text-xs">dob</code> field in their membership
+              document (<code className="bg-orange-100 px-1 rounded text-xs">YYYY-MM-DD</code> or{' '}
+              <code className="bg-orange-100 px-1 rounded text-xs">DD/MM/YYYY</code>).
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Test Controls */}
+      <div className="p-5 bg-white border-t border-orange-100">
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">🧪 Test Birthday Email Now</p>
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex-1 min-w-[180px]">
+            <label className="block text-xs text-slate-500 mb-1">
+              Simulate date <span className="text-slate-400">(leave blank = today)</span>
+            </label>
+            <input
+              type="date"
+              value={testDate}
+              onChange={(e) => setTestDate(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 transition"
+            />
+          </div>
+          <button
+            onClick={handleTest}
+            disabled={testing}
+            className="mt-5 flex items-center gap-2 px-5 py-2 rounded-xl text-white text-sm font-semibold transition disabled:opacity-60"
+            style={{ background: testing ? '#f97316aa' : 'linear-gradient(135deg, #f97316, #ea580c)' }}
+          >
+            {testing ? (
+              <><Loader size={15} className="animate-spin" /> Running...</>
+            ) : (
+              <>🚀 Run Test</>
+            )}
+          </button>
+        </div>
+
+        <p className="text-xs text-slate-400 mt-2">
+          Tip: To test for <strong>Abeer Rai</strong> (DOB: 16 Feb), set date to <code className="bg-slate-100 px-1 rounded">2005-02-16</code>
+        </p>
+
+        {/* Error */}
+        {testError && (
+          <div className="mt-4 flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+            <XCircle size={16} className="shrink-0" />
+            {testError}
+          </div>
+        )}
+
+        {/* Results */}
+        {testResult && (
+          <div className="mt-4 space-y-3">
+            {/* Summary row */}
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { label: 'Scanned', value: testResult.scanned, color: 'slate' },
+                { label: 'Matched', value: testResult.matched, color: 'blue' },
+                { label: 'Sent ✅', value: testResult.sent, color: 'green' },
+                { label: 'Errors ❌', value: testResult.errors, color: 'red' },
+              ].map((s) => (
+                <div key={s.label} className={`p-3 rounded-xl text-center bg-${s.color}-50 border border-${s.color}-100`}>
+                  <div className={`text-2xl font-bold text-${s.color}-700`}>{s.value}</div>
+                  <div className={`text-xs text-${s.color}-500 mt-0.5`}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Simulated date */}
+            <p className="text-xs text-slate-500">
+              Simulated date: <strong>{testResult.simulatedDate}</strong>
+            </p>
+
+            {/* Matches */}
+            {testResult.matches?.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-green-700 mb-1">🎂 Birthday matches found:</p>
+                <div className="space-y-1">
+                  {testResult.matches.map((m, i) => (
+                    <div key={i} className="flex items-center gap-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg text-sm">
+                      <CheckCircle size={14} className="text-green-600 shrink-0" />
+                      <span className="font-medium text-green-800">{m.name}</span>
+                      <span className="text-green-600">({m.email})</span>
+                      <span className="text-green-400 text-xs ml-auto">DOB: {m.dob}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Skipped */}
+            {testResult.skipped?.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-slate-500 mb-1">⚠️ Skipped ({testResult.skipped.length}):</p>
+                <div className="space-y-1">
+                  {testResult.skipped.map((s, i) => (
+                    <div key={i} className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600">
+                      <span className="font-medium">{s.name}</span>
+                      <span className="text-slate-400">— {s.reason}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {testResult.matched === 0 && (
+              <div className="px-4 py-3 bg-blue-50 border border-blue-100 rounded-xl text-blue-700 text-sm">
+                No members found with a birthday on <strong>{testResult.simulatedDate}</strong>. Try a different date.
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default AdminEmailComposer;
+

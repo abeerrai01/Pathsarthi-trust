@@ -1015,3 +1015,165 @@ export const birthdayWishScheduler = onSchedule(
   }
 );
 
+
+// ─── 12. Birthday Wish Test Function ─────────────────────────────────────────
+
+/**
+ * Callable TEST function — runs the full birthday email logic on demand.
+ * Admin-only (must be authenticated).
+ *
+ * Usage:
+ *   Pass { testDate: "YYYY-MM-DD" } to simulate a specific date (e.g. "2026-07-16")
+ *   Pass {} or nothing to use TODAY's actual date
+ *
+ * Returns a summary: { scanned, sent, errors, matches: [{ name, email, dob }] }
+ */
+export const testBirthdayWish = onCall(
+  { secrets: [brevoApiKey] },
+  async (request) => {
+    // Auth check removed intentionally — this is a temporary test function.
+    // Remove this function from index.ts after verifying the birthday flow works.
+
+    const data = request.data || {};
+
+    // Allow overriding the date for testing
+    let targetDate: Date;
+    if (data.testDate && typeof data.testDate === "string") {
+      targetDate = new Date(data.testDate + "T00:00:00.000Z");
+      if (isNaN(targetDate.getTime())) {
+        throw new HttpsError("invalid-argument", "testDate must be in YYYY-MM-DD format.");
+      }
+    } else {
+      // Use IST "now"
+      const now = new Date();
+      const istOffset = 5.5 * 60 * 60 * 1000;
+      targetDate = new Date(now.getTime() + istOffset);
+    }
+
+    const targetMonth = targetDate.getUTCMonth() + 1;
+    const targetDay = targetDate.getUTCDate();
+
+    console.log(`[testBirthdayWish] Running test for date: ${targetDay}/${targetMonth}`);
+
+    /** Parses a DOB field into { month, day } regardless of format */
+    const parseDob = (dob: any): { month: number; day: number } | null => {
+      if (!dob) return null;
+      if (typeof dob?.toDate === "function") {
+        const d = dob.toDate();
+        return { month: d.getMonth() + 1, day: d.getDate() };
+      }
+      const str = String(dob).trim();
+      const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (isoMatch) return { month: parseInt(isoMatch[2]), day: parseInt(isoMatch[3]) };
+      const indMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+      if (indMatch) return { month: parseInt(indMatch[2]), day: parseInt(indMatch[1]) };
+      return null;
+    };
+
+    let scanned = 0;
+    let sent = 0;
+    let errors = 0;
+    const matches: { name: string; email: string; dob: string }[] = [];
+    const skipped: { name: string; reason: string }[] = [];
+
+    const snapshot = await admin.firestore().collection("memberships").get();
+    scanned = snapshot.size;
+
+    for (const docSnap of snapshot.docs) {
+      const member = docSnap.data();
+      const dobRaw = member.dob || member.dateOfBirth || member.birthdate;
+      const parsed = parseDob(dobRaw);
+
+      if (!parsed) {
+        skipped.push({ name: member.fullName || member.name || docSnap.id, reason: "No valid dob field found" });
+        continue;
+      }
+
+      if (parsed.month !== targetMonth || parsed.day !== targetDay) continue;
+
+      // ✅ Birthday match!
+      const name = member.fullName || member.name || "Valued Member";
+      const email = member.email || "";
+
+      matches.push({ name, email, dob: String(dobRaw) });
+
+      if (!email || !email.includes("@")) {
+        skipped.push({ name, reason: "No valid email address" });
+        continue;
+      }
+
+      const birthdayDetailsBlock = `
+        <div style="margin: 20px 0; padding: 28px 20px; background: linear-gradient(135deg, #fff7f2 0%, #fff0f9 100%); border: 2px solid #ffd7bf; border-radius: 14px; text-align: center;">
+          <div style="font-size: 52px; margin-bottom: 12px;">🎂 🎉 🎈</div>
+          <h2 style="color: #009ba2; font-family: Arial, sans-serif; font-size: 22px; margin: 0 0 10px;">Happy Birthday, ${name}! 🥳</h2>
+          <p style="color: #555; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.8; margin: 0 auto; max-width: 480px;">
+            On this beautiful day, the entire <strong style="color: #009ba2;">Path Sarthi Trust</strong> family comes together to wish you a birthday overflowing with love, laughter, good health, and joy!
+          </p>
+        </div>
+
+        <div style="margin: 20px 0; padding: 20px; background: #f0fafa; border-left: 4px solid #009ba2; border-radius: 8px;">
+          <p style="color: #333; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.9; margin: 0;">
+            You are not just a member — you are a <strong>beacon of hope</strong> for the communities we serve together. Your belief in Path Sarthi Trust's mission warms our hearts every day.
+          </p>
+          <p style="color: #555; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.8; margin: 14px 0 0;">
+            Today is your day — to celebrate, to rest, and to be surrounded by those who love you. May every wish you make come true, and may this new year of your life bring you everything your heart desires. 🌟
+          </p>
+        </div>
+
+        <div style="margin: 20px 0; padding: 18px; background: #fffbf0; border: 1px solid #ffe4a0; border-radius: 8px; text-align: center;">
+          <p style="color: #b07d00; font-family: Arial, sans-serif; font-size: 14px; font-style: italic; line-height: 1.7; margin: 0;">
+            "Count your life by smiles, not tears. Count your age by friends, not years. Wishing you a year full of moments that make your heart sing!" 🌸
+          </p>
+        </div>
+
+        <div style="margin: 20px 0; padding: 18px 20px; background: #f8fff8; border: 1px solid #c3e6c3; border-radius: 8px; text-align: center;">
+          <p style="color: #2d7a2d; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.8; margin: 0;">
+            🙏 <strong>A heartfelt thank you</strong> for walking this journey of kindness and service with us. Your presence in our family means the world to everyone at Path Sarthi Trust.
+          </p>
+        </div>
+
+        <div style="margin: 12px 0; padding: 12px 16px; background: #e8f4ff; border: 1px dashed #90c5ff; border-radius: 6px; text-align: center;">
+          <p style="color: #1a5faa; font-family: Arial, sans-serif; font-size: 12px; margin: 0;">
+            🧪 <strong>[TEST EMAIL]</strong> — Sent via testBirthdayWish for date ${targetDay}/${targetMonth}
+          </p>
+        </div>
+      `;
+
+      const emailData: EmailData = {
+        email,
+        name,
+        subject: `🎂 [TEST] Happy Birthday, ${name}! With Love from Path Sarthi Trust`,
+        preview: `Wishing you a beautiful birthday filled with joy, love, and happiness! 🎉`,
+        status: "Happy Birthday! 🎂",
+        message: `Today is a very special day — it's your birthday! 🎊<br/><br/>${birthdayDetailsBlock}`,
+        additionalMessage: `From every corner of our team, with all our hearts — wishing you the happiest birthday and a wonderful year ahead. Thank you for being a cherished part of our Path Sarthi Trust family. May you always be surrounded by love, warmth, and beautiful moments. 💙`,
+        referenceId: `TEST-BDAY-${docSnap.id}`,
+        date: today(),
+        emailType: EmailType.MEMBERSHIP,
+      };
+
+      try {
+        await sendEmail(brevoApiKey.value(), emailData);
+        sent++;
+        console.log(`[testBirthdayWish] ✅ Test birthday email sent to ${name} (${email})`);
+      } catch (err: any) {
+        errors++;
+        console.error(`[testBirthdayWish] ❌ Failed to send to ${name} (${email}):`, err);
+      }
+    }
+
+    const result = {
+      success: true,
+      simulatedDate: `${targetDay}/${targetMonth}`,
+      scanned,
+      matched: matches.length,
+      sent,
+      errors,
+      matches,
+      skipped,
+    };
+
+    console.log("[testBirthdayWish] Result:", JSON.stringify(result));
+    return result;
+  }
+);
