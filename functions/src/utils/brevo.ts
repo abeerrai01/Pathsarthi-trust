@@ -77,13 +77,13 @@ export const sendEmail = async (apiKey: string, data: EmailData) => {
     templateId: BREVO_CONFIG.MASTER_TEMPLATE_ID,
     to: [{ email: data.email, name: data.name }],
     params: {
-      name: data.name,
-      subject: data.subject,
-      preview: data.preview,
-      message: data.message,
-      referenceId: data.referenceId,
-      status: data.status,
-      date: data.date,
+      name: data.name || "",
+      subject: data.subject || "",
+      preview: data.preview || "",
+      message: data.message || "",
+      referenceId: data.referenceId || "",
+      status: data.status || "",
+      date: data.date || "",
       additionalMessage: data.additionalMessage || "",
       year: new Date().getFullYear(),
       emailType: data.emailType,
@@ -129,7 +129,11 @@ export const sendEmail = async (apiKey: string, data: EmailData) => {
 
     return result;
   } catch (error: any) {
-    const errorMessage = error?.response?.body?.message || error?.message || "Unknown Brevo API error";
+    const errorBody = error?.response?.body || error?.body || error?.response || {};
+    const errorMessage = errorBody.message || error?.message || "Unknown Brevo API error";
+    const fullErrorDetails = error?.response?.body 
+      ? `Brevo API Error (${error.response.statusCode || error.response.status}): ${JSON.stringify(error.response.body)}` 
+      : (error?.message || JSON.stringify(error));
 
     // Structured FAILURE Log (Console)
     console.error(
@@ -137,7 +141,8 @@ export const sendEmail = async (apiKey: string, data: EmailData) => {
       `Type: ${data.emailType}\n` +
       `Recipient: ${data.email}\n` +
       `Reference: ${data.referenceId}\n` +
-      `Reason: ${errorMessage}`
+      `Reason: ${errorMessage}\n` +
+      `Full Body Details: ${fullErrorDetails}`
     );
 
     // Write Failure Log to Firestore
@@ -149,7 +154,7 @@ export const sendEmail = async (apiKey: string, data: EmailData) => {
         referenceId: data.referenceId,
         status: "failed",
         sentAt: admin.firestore.FieldValue.serverTimestamp(),
-        error: errorMessage,
+        error: fullErrorDetails,
       });
     } catch (dbError) {
       console.error("[Firestore Log Failed] Failed to record failure email log to database:", dbError);

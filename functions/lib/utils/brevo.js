@@ -82,13 +82,13 @@ const sendEmail = async (apiKey, data) => {
         templateId: exports.BREVO_CONFIG.MASTER_TEMPLATE_ID,
         to: [{ email: data.email, name: data.name }],
         params: {
-            name: data.name,
-            subject: data.subject,
-            preview: data.preview,
-            message: data.message,
-            referenceId: data.referenceId,
-            status: data.status,
-            date: data.date,
+            name: data.name || "",
+            subject: data.subject || "",
+            preview: data.preview || "",
+            message: data.message || "",
+            referenceId: data.referenceId || "",
+            status: data.status || "",
+            date: data.date || "",
             additionalMessage: data.additionalMessage || "",
             year: new Date().getFullYear(),
             emailType: data.emailType,
@@ -129,13 +129,18 @@ const sendEmail = async (apiKey, data) => {
         return result;
     }
     catch (error) {
-        const errorMessage = ((_b = (_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.body) === null || _b === void 0 ? void 0 : _b.message) || (error === null || error === void 0 ? void 0 : error.message) || "Unknown Brevo API error";
+        const errorBody = ((_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.body) || (error === null || error === void 0 ? void 0 : error.body) || (error === null || error === void 0 ? void 0 : error.response) || {};
+        const errorMessage = errorBody.message || (error === null || error === void 0 ? void 0 : error.message) || "Unknown Brevo API error";
+        const fullErrorDetails = ((_b = error === null || error === void 0 ? void 0 : error.response) === null || _b === void 0 ? void 0 : _b.body)
+            ? `Brevo API Error (${error.response.statusCode || error.response.status}): ${JSON.stringify(error.response.body)}`
+            : ((error === null || error === void 0 ? void 0 : error.message) || JSON.stringify(error));
         // Structured FAILURE Log (Console)
         console.error(`[Brevo Email Failed]\n` +
             `Type: ${data.emailType}\n` +
             `Recipient: ${data.email}\n` +
             `Reference: ${data.referenceId}\n` +
-            `Reason: ${errorMessage}`);
+            `Reason: ${errorMessage}\n` +
+            `Full Body Details: ${fullErrorDetails}`);
         // Write Failure Log to Firestore
         try {
             await admin.firestore().collection("emailLogs").add({
@@ -145,7 +150,7 @@ const sendEmail = async (apiKey, data) => {
                 referenceId: data.referenceId,
                 status: "failed",
                 sentAt: admin.firestore.FieldValue.serverTimestamp(),
-                error: errorMessage,
+                error: fullErrorDetails,
             });
         }
         catch (dbError) {
