@@ -12,6 +12,7 @@ const CertificateGenerator = () => {
   const [endDate, setEndDate] = useState("");
   const [appreciationDate, setAppreciationDate] = useState("");
   const [title, setTitle] = useState("");
+  const [position, setPosition] = useState("");
   const [html2canvas, setHtml2canvas] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -61,6 +62,12 @@ const CertificateGenerator = () => {
     if (type === "Political") {
       if (!appreciationDate || !title.trim()) {
         alert("Please fill all political details");
+        return;
+      }
+    }
+    if (type === "Appointment") {
+      if (!position.trim() || !appreciationDate) {
+        alert("Please fill all appointment details");
         return;
       }
     }
@@ -114,6 +121,8 @@ const CertificateGenerator = () => {
             ? appreciationDate
             : type === "Political"
             ? appreciationDate
+            : type === "Appointment"
+            ? appreciationDate
             : new Date().toISOString().split("T")[0],
         verified: true,
         certificateUrl: certificateUrl,
@@ -131,6 +140,9 @@ const CertificateGenerator = () => {
       if (type === "Political") {
         certificateData.title = title;
       }
+      if (type === "Appointment") {
+        certificateData.position = position;
+      }
 
       await addDoc(collection(db, "certificates"), certificateData);
       console.log("Certificate saved to Firebase");
@@ -147,6 +159,7 @@ const CertificateGenerator = () => {
     if (type === "Internship") return "/certs/internship.jpg";
     if (type === "Recognition") return "/certs/recognition.jpg";
     if (type === "Political") return "/certs/political.jpg";
+    if (type === "Appointment") return "/certs/Appointment Certificate.jpg";
     return "/certs/appreciation.jpg";
   };
 
@@ -175,6 +188,7 @@ const CertificateGenerator = () => {
               <option value="Internship">Internship Certificate</option>
               <option value="Recognition">Recognition Certificate</option>
               <option value="Political">Political Certificate</option>
+              <option value="Appointment">Appointment Certificate</option>
             </select>
           </div>
           
@@ -231,6 +245,34 @@ const CertificateGenerator = () => {
             />
           </div>
         )}
+        {type === "Appointment" && (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Position
+              </label>
+              <input
+                type="text"
+                placeholder="e.g., President, Secretary"
+                value={position}
+                onChange={e => setPosition(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Issue Date
+              </label>
+              <input
+                type="date"
+                value={appreciationDate}
+                onChange={e => setAppreciationDate(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+          </>
+        )}
+
         {type === "Political" && (
           <>
             <div className="mb-4">
@@ -328,7 +370,7 @@ const CertificateGenerator = () => {
         <div
           style={{
             position: "absolute",
-            top: type === "Political" ? "700px" : "750px",
+            top: type === "Political" ? "700px" : type === "Appointment" ? "650px" : "750px",
             left: "0",
             width: "100%",
             textAlign: "center",
@@ -342,6 +384,24 @@ const CertificateGenerator = () => {
         >
           {name}
         </div>
+        {type === "Appointment" && position && (
+          <div
+            style={{
+              position: "absolute",
+              top: "750px",
+              left: "0",
+              width: "100%",
+              textAlign: "center",
+              fontSize: "32px",
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontWeight: 500,
+              color: "#6b4f2a",
+              letterSpacing: "0.5px",
+            }}
+          >
+            {position}
+          </div>
+        )}
         {type === "Political" && title && (
           <div
             style={{
@@ -411,6 +471,22 @@ const CertificateGenerator = () => {
           </div>
         )}
         {type === "Political" && appreciationDate && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "125px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              fontSize: "20px",
+              fontWeight: 600,
+              fontFamily: "'Playfair Display', serif",
+              color: "#000000",
+            }}
+          >
+            {`DATE : ${appreciationDate.split('-').reverse().join('-')}`}
+          </div>
+        )}
+        {type === "Appointment" && appreciationDate && (
           <div
             style={{
               position: "absolute",
