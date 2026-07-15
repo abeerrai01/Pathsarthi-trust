@@ -82,14 +82,18 @@ export const onNewDonation = onDocumentCreated(
 
     try {
       if (email && email.includes("@")) {
+        const donationImpact = amount && !isNaN(Number(amount))
+          ? `Your generous contribution of ₹${amount} will directly fund our active programs, such as purchasing educational notebooks for school children, providing medical supplies, and supporting women's skill development workshops.`
+          : "Your contribution will directly fund our child education and community welfare initiatives.";
+
         await sendEmail(brevoApiKey.value(), {
           email,
           name,
-          subject: "Thank You for Supporting Path Sarthi Trust",
-          preview: "Your contribution is helping us create meaningful change.",
-          status: "Donation Successful",
-          message: "Thank you for your generous contribution to Path Sarthi Trust. Your support enables us to continue working towards education, youth empowerment, community welfare, and social development.",
-          additionalMessage: `Your donation of ₹${amount} has been recorded successfully. If applicable, your receipt and future updates regarding our initiatives will be shared with you.`,
+          subject: "Thank You for Your Generous Contribution! 💖",
+          preview: `Your support of ₹${amount} is transforming lives.`,
+          status: "Donation Received & Verified",
+          message: `We are deeply grateful for your generous donation to Path Sarthi Trust.\n\n${donationImpact}\n\nAt Path Sarthi, we believe that real change begins when citizens join hands. Your kindness acts as a guiding light for children and families who need support the most. Thank you for placing your trust in us.`,
+          additionalMessage: `Your official donation receipt has been recorded under the reference ID below. If you are eligible for tax benefits under Section 80G, our compliance team will email you the tax certificate within the next 7-10 working days.`,
           referenceId: refId,
           date: today(),
           emailType: EmailType.DONATION,
@@ -158,20 +162,19 @@ export const onNewSponsor = onDocumentCreated(
 
     const docId = event.params.id;
     const name = data.contactPerson || data.companyName || "Sponsor";
-    // Check if contactInfo contains email format
     const contactInfo = data.contactInfo || "";
-    const email = contactInfo.includes("@") ? contactInfo : "";
+    const email = data.email || (contactInfo.includes("@") ? contactInfo : "");
 
     try {
       if (email) {
         await sendEmail(brevoApiKey.value(), {
           email,
           name,
-          subject: "Sponsorship Request Received",
-          preview: "Thank you for choosing to support our mission.",
-          status: "Request Received",
-          message: "We have successfully received your sponsorship request. We sincerely appreciate your willingness to partner with Path Sarthi Trust.",
-          additionalMessage: "Our team will carefully review your submission and contact you shortly to discuss the next steps.",
+          subject: "Partnering for Change: Sponsorship Request Received 🤝",
+          preview: "Thank you for choosing to empower our community.",
+          status: "Sponsorship Under Review",
+          message: `Thank you for reaching out to partner with Path Sarthi Trust. We have successfully received your sponsorship proposal.\n\nCorporate and individual sponsorships are critical in helping us scale our initiatives—from running digital classrooms in remote villages to driving environmental and healthcare drives. Your willingness to collaborate plays a major role in expanding this circle of impact.`,
+          additionalMessage: `Our partnerships team will review the details of your proposal and reach out to you within 3 working days to coordinate the next steps and set up a brief introductory call. We look forward to creating lasting progress together!`,
           referenceId: docId,
           date: today(),
           emailType: EmailType.SPONSOR,
@@ -286,11 +289,11 @@ export const onNewMembership = onDocumentCreated(
           await sendEmail(brevoApiKey.value(), {
             email,
             name,
-            subject: "Premium Membership Application Received",
-            preview: "Thank you for becoming part of our mission.",
+            subject: "Premium Membership Application Received! 🌟",
+            preview: "Thank you for taking a significant leadership step with us.",
             status: "Application Under Review",
-            message: "Your premium membership application has been successfully received.",
-            additionalMessage: "Our team will verify your application and communicate the next steps shortly.",
+            message: `Thank you for choosing to join us as a Premium Member of Path Sarthi Trust. Premium members play a vital leadership role in guiding our community welfare initiatives, mentoring youth, and helping us govern regional projects.`,
+            additionalMessage: `We have received your premium membership application. Our leadership team will review the details and reach out to schedule a brief introductory call. We look forward to working closely with you to drive collective progress!`,
             referenceId: docId,
             date: today(),
             emailType: EmailType.PREMIUM_MEMBERSHIP,
@@ -299,11 +302,11 @@ export const onNewMembership = onDocumentCreated(
           await sendEmail(brevoApiKey.value(), {
             email,
             name,
-            subject: "Membership Application Received",
-            preview: "Thank you for joining Path Sarthi Trust.",
+            subject: "Welcome to the Path Sarthi Trust Family! 🤝",
+            preview: "You are now an official member of our community.",
             status: "Application Received",
-            message: "Your membership application has been successfully submitted.",
-            additionalMessage: "Our team is currently reviewing your application and will update you as soon as the verification process is completed.",
+            message: `We are absolutely thrilled to welcome you as a member of Path Sarthi Trust. Outlining our shared values of compassion, responsibility, and collective progress, our members are the driving force behind everything we do.`,
+            additionalMessage: `Your application has been received and is under review by our community board. Once approved, your official membership details and regional group invites will be shared with you. Welcome aboard!`,
             referenceId: docId,
             date: today(),
             emailType: EmailType.MEMBERSHIP,
@@ -380,11 +383,11 @@ export const onNewJanSampark = onDocumentCreated(
         await sendEmail(brevoApiKey.value(), {
           email,
           name,
-          subject: "Your Request Has Been Received",
-          preview: "Thank you for reaching out to Path Sarthi Trust.",
+          subject: "Connecting with Path Sarthi Trust (Jan Sampark) 📞",
+          preview: "We have received your contact details.",
           status: "Request Received",
-          message: "Thank you for contacting us through Jan Sampark.",
-          additionalMessage: "Our team is reviewing your request and will get back to you as soon as possible.",
+          message: `Thank you for connecting with us through our Jan Sampark public outreach initiative. We believe in building transparent, accessible, and responsive channels to support and engage with every citizen who wishes to collaborate, seek guidance, or contribute.`,
+          additionalMessage: `Our public relations coordinator for your region will review your details and contact you via phone or email within the next 24-48 hours. We look forward to speaking with you!`,
           referenceId: docId,
           date: today(),
           emailType: EmailType.JAN_SAMPARK,
@@ -460,11 +463,11 @@ export const onNewInternship = onDocumentCreated(
         await sendEmail(brevoApiKey.value(), {
           email,
           name,
-          subject: "Internship Application Received",
-          preview: "Thank you for applying.",
+          subject: "Welcome to the Path Sarthi Trust Internship Program! 🎓",
+          preview: "Your journey to making a real-world impact starts here.",
           status: "Application Received",
-          message: "Your internship application has been successfully submitted.",
-          additionalMessage: "Our recruitment team will review your profile and notify you regarding further steps.",
+          message: `We have successfully received your internship application!\n\nOur internship program is designed to provide you with hands-on experience, professional mentorship, and a platform to work directly on community development, education, and public service projects. We are excited about your interest in dedicating your skills to social impact.`,
+          additionalMessage: `Our internship coordination team will review your application profile and contact you within 5 working days with induction details, project allocations, and orientation schedules. Get ready to learn, lead, and serve!`,
           referenceId: docId,
           date: today(),
           emailType: EmailType.INTERNSHIP,
@@ -540,11 +543,11 @@ export const onNewQuery = onDocumentCreated(
         await sendEmail(brevoApiKey.value(), {
           email,
           name,
-          subject: "We Have Received Your Query",
-          preview: "Our support team is here to help.",
+          subject: "We Have Received Your Support Query ✉️",
+          preview: "Our support team is here to help you.",
           status: "Open",
-          message: "Thank you for contacting Path Sarthi Trust.",
-          additionalMessage: "Our support team is reviewing your query and will respond as soon as possible.",
+          message: `Thank you for reaching out to the support desk at Path Sarthi Trust. We have received your query and want to assure you that addressing your questions and resolving any issues is our top priority.`,
+          additionalMessage: `A support representative has been assigned to your ticket. We will review the details and respond with a resolution or follow-up questions within 24 hours. Thank you for your patience!`,
           referenceId: docId,
           date: today(),
           emailType: EmailType.QUERY,
@@ -613,14 +616,48 @@ export const onNewCertificate = onDocumentCreated(
 
     try {
       if (email && email.includes("@")) {
+        let subject = "Congratulations! Your Certificate has been Issued 🏆";
+        let preview = "Recognizing your valuable contribution to society.";
+        let message = `Congratulations!\n\nYour official certificate has been successfully generated and signed by Path Sarthi Trust. This certificate is a testament to your hard work, dedication, and valuable service towards our social and community initiatives.`;
+        let additionalMessage = `Please find your certificate file attached to this email. You can also download or view the verified digital copy using the link below. We encourage you to share your accomplishment on LinkedIn and tag Path Sarthi Trust so we can celebrate your impact together!`;
+
+        const typeNormalized = certType.toLowerCase();
+
+        if (typeNormalized === "appreciation") {
+          subject = "Certificate of Appreciation Issued! 🏆";
+          preview = "Recognizing your valuable contribution to society.";
+          message = "Thank you for your outstanding contribution. This Certificate of Appreciation is awarded in recognition of your selfless service, dedication, and active participation in our community support and social welfare programs. Your efforts have made a tangible difference in the lives of many.";
+          additionalMessage = `Please find your certificate file attached to this email. You can also view or download it anytime using the link below. We are honored to recognize your impact and hope you continue to inspire others!`;
+        } else if (typeNormalized === "internship") {
+          subject = "Certificate of Internship Completion Ready! 🎓";
+          preview = "Celebrating your successful internship completion.";
+          message = "Congratulations on successfully completing your internship program with Path Sarthi Trust! During your tenure, you demonstrated professionalism, quick learning, and a commendable work ethic while contributing to our community projects. We appreciate your dedication and energy.";
+          additionalMessage = `Your official Internship Certificate is attached to this email. We wish you the very best in your academic and professional endeavors! Feel free to share your success on LinkedIn and tag Path Sarthi Trust.`;
+        } else if (typeNormalized === "recognition") {
+          subject = "Certificate of Recognition Issued! 🌟";
+          preview = "Honoring your exceptional leadership and service.";
+          message = "We are proud to award you this Certificate of Recognition for your exceptional leadership, commitment, and stellar performance in driving our community development initiatives. Your guidance has helped scale our operations and empowered many beneficiaries.";
+          additionalMessage = `Please find your Certificate of Recognition attached. Thank you for your leadership and vision. We look forward to your continued support and collaboration!`;
+        } else if (typeNormalized === "political") {
+          subject = "Political Contribution Certificate Issued! 🗳️";
+          preview = "Recognizing your public service and civic engagement.";
+          message = "This certificate is issued to recognize your active civic engagement, public service contribution, and commitment to driving democratic awareness and community empowerment. Your dedication to raising public awareness and serving the citizens is highly commendable.";
+          additionalMessage = `Your verified Political Contribution Certificate is attached. Thank you for your leadership in civic engagement and public welfare!`;
+        } else if (typeNormalized === "appointment") {
+          subject = "Official Appointment Letter & Certificate! 📜";
+          preview = "Welcome to your official role at Path Sarthi Trust.";
+          message = "We are pleased to issue your official Appointment Certificate for your designated role at Path Sarthi Trust. We believe that your skills, background, and dedication will be a valuable asset to our team as we work together to serve the community.";
+          additionalMessage = `Please find your official Appointment Certificate/Letter attached to this email. We welcome you aboard and look forward to achieving great milestones together!`;
+        }
+
         await sendEmail(brevoApiKey.value(), {
           email,
           name,
-          subject: "Your Certificate Has Been Issued",
-          preview: "Your certificate is now ready.",
+          subject,
+          preview,
           status: "Certificate Generated",
-          message: `Congratulations.\n\nYour certificate has been successfully generated by Path Sarthi Trust.`,
-          additionalMessage: `Please download your certificate using the following link:\n${data.certificateUrl || ""}`,
+          message,
+          additionalMessage: `${additionalMessage}\n\nDownload Link:\n${data.certificateUrl || ""}`,
           referenceId: data.certificateNumber || docId,
           date: today(),
           emailType: EmailType.CERTIFICATE,
@@ -655,11 +692,11 @@ export const onNewVolunteer = onDocumentCreated(
         await sendEmail(brevoApiKey.value(), {
           email,
           name,
-          subject: "Welcome to Path Sarthi Trust",
-          preview: "Thank you for choosing to volunteer with us.",
+          subject: "Welcome to the Team! Volunteer Registration Received 🌟",
+          preview: "Ready to make a difference? Welcome aboard!",
           status: "Welcome",
-          message: "Thank you for registering as a volunteer with Path Sarthi Trust. We are excited to have you join our mission.",
-          additionalMessage: "Our team will review your registration and get in touch with you shortly to coordinate onboarding.",
+          message: `We are excited to welcome you to the volunteer community at Path Sarthi Trust!\n\nVolunteers are the absolute backbone of our trust. By choosing to dedicate your time, energy, and talents, you are playing a direct role in teaching children, helping families, and driving social welfare campaigns in your area.`,
+          additionalMessage: `Our volunteer coordinator will contact you shortly to schedule a brief orientation call and guide you through our active local groups. Thank you for stepping forward to serve!`,
           referenceId: docId,
           date: today(),
           emailType: EmailType.MEMBERSHIP, // Map volunteer welcomes under MEMBERSHIP analytics
