@@ -79,9 +79,33 @@ const sendEmail = async (apiKey, data) => {
     const cleanApiKey = (apiKey || "").trim();
     const apiInstance = new brevo.TransactionalEmailsApi();
     apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, cleanApiKey);
+    // Plain-text version stripped of HTML — signals transactional (not promotional) to Gmail
+    const plainText = (data.message || "")
+        .replace(/<br\s*\/?>/gi, "\n")
+        .replace(/<[^>]+>/g, "")
+        .replace(/&nbsp;/g, " ")
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .trim();
+    const fullPlainText = `Dear ${data.name},\n\n` +
+        plainText +
+        (data.additionalMessage ? `\n\n${data.additionalMessage.replace(/<[^>]+>/g, "")}` : "") +
+        `\n\nReference ID: ${data.referenceId}` +
+        `\nDate: ${data.date}` +
+        `\n\nWith regards,\nPath Sarthi Trust\nhttps://www.pathsarthi.in`;
     const payload = {
         templateId: exports.BREVO_CONFIG.MASTER_TEMPLATE_ID,
         to: [{ email: data.email, name: data.name }],
+        // Plain-text alternative — critical for Gmail Primary inbox classification
+        textContent: fullPlainText,
+        // Transactional email headers — tell Gmail this is NOT a marketing email
+        headers: {
+            "X-Priority": "1",
+            "X-Mailer": "PathSarthiMailer/1.0",
+            "Precedence": "transactional",
+            "X-PM-Message-Flow": "transactional",
+        },
         params: {
             name: data.name || "",
             subject: data.subject || "",
