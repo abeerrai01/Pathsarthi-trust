@@ -6,7 +6,7 @@ import { uploadToCloudinary } from '../utils/cloudinary';
 import { UploadCloud, User, QrCode, Copy, Check } from 'lucide-react';
 // Remove import RazorpayButton from './RazorpayButton';
 
-const RAZORPAY_KEY = process.env.REACT_APP_RAZORPAY_KEY_ID;
+const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_lrTbKMU5YpM6UD";
 
 const indianStates = [
   "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 

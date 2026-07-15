@@ -19,8 +19,8 @@ export async function uploadToCloudinary(file) {
 // Delete image from Cloudinary by publicId
 export async function deleteFromCloudinary(publicId) {
   const cloudName = 'dgmhz64fs';
-  const apiKey = process.env.REACT_APP_CLOUDINARY_API_KEY;
-  const apiSecret = process.env.REACT_APP_CLOUDINARY_API_SECRET;
+  const apiKey = import.meta.env.VITE_CLOUDINARY_API_KEY;
+  const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET;
   const url = `https://api.cloudinary.com/v1_1/${cloudName}/delete_by_token`;
 
   // For security, actual deletion should be done server-side. This is a placeholder for client-side demo only.

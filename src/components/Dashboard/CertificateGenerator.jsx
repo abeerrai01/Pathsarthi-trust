@@ -370,7 +370,7 @@ const CertificateGenerator = () => {
         <div
           style={{
             position: "absolute",
-            top: type === "Political" ? "700px" : type === "Appointment" ? "650px" : "750px",
+            top: type === "Political" ? "700px" : type === "Appointment" ? "690px" : "750px",
             left: "0",
             width: "100%",
             textAlign: "center",
@@ -388,11 +388,11 @@ const CertificateGenerator = () => {
           <div
             style={{
               position: "absolute",
-              top: "750px",
-              left: "0",
+              top: "891px",
+              left: "130px",
               width: "100%",
               textAlign: "center",
-              fontSize: "32px",
+              fontSize: "30px",
               fontFamily: "'Playfair Display', Georgia, serif",
               fontWeight: 500,
               color: "#6b4f2a",
@@ -490,16 +490,16 @@ const CertificateGenerator = () => {
           <div
             style={{
               position: "absolute",
-              bottom: "125px",
-              left: "50%",
+              bottom: "465px",
+              left: "642px",
               transform: "translateX(-50%)",
-              fontSize: "20px",
+              fontSize: "26px",
               fontWeight: 600,
               fontFamily: "'Playfair Display', serif",
               color: "#000000",
             }}
           >
-            {`DATE : ${appreciationDate.split('-').reverse().join('-')}`}
+            {appreciationDate.split('-').reverse().join('-')}
           </div>
         )}
         
