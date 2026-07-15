@@ -171,7 +171,8 @@ export const sendAdminNotification = async (
   apiKey: string,
   adminEmailAddress: string,
   formType: string,
-  referenceId: string
+  referenceId: string,
+  detailsHtml?: string
 ) => {
   const todayStr = new Date().toLocaleDateString("en-IN", {
     day: "2-digit",
@@ -186,7 +187,7 @@ export const sendAdminNotification = async (
     name: adminName,
     subject: `New ${formType} Submission Received`,
     preview: `A new ${formType} submission requires your attention.`,
-    message: `A new ${formType} submission has been received.`,
+    message: `A new ${formType} submission has been received.<br/><br/>${detailsHtml || ""}`,
     referenceId,
     status: "New",
     date: todayStr,

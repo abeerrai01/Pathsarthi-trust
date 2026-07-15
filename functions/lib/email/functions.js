@@ -11,6 +11,26 @@ const today = () => new Date().toLocaleDateString("en-IN", {
     month: "long",
     year: "numeric",
 });
+/** Formats a list of key-value pairs into a clean, premium HTML details table */
+const formatDetailsTable = (title, pairs) => {
+    const rows = pairs
+        .map((p) => `
+      <tr style="border-bottom: 1px solid #eeeeee;">
+        <td style="font-weight: bold; width: 40%; color: #666666; padding: 10px; font-family: Arial, sans-serif; font-size: 14px; text-align: left; vertical-align: top;">${p.label}</td>
+        <td style="color: #333333; padding: 10px; font-family: Arial, sans-serif; font-size: 14px; text-align: left; vertical-align: top;">${p.value}</td>
+      </tr>`)
+        .join("");
+    return `
+    <div style="margin-top: 20px; margin-bottom: 20px; text-align: left;">
+      <strong style="color: #009ba2; font-size: 16px; font-family: Arial, sans-serif;">${title}</strong>
+      <table cellpadding="0" cellspacing="0" width="100%" style="margin-top: 10px; width: 100%; border-collapse: collapse; background-color: #fafafa; border-radius: 8px; border: 1px solid #eeeeee; overflow: hidden;">
+        <tbody>
+          ${rows}
+        </tbody>
+      </table>
+    </div>
+  `;
+};
 /** Validates that required fields are present in a callable request */
 const requireFields = (data, fields) => {
     const missing = fields.filter((f) => !data || !data[f] || (typeof data[f] === "string" && !data[f].trim()));
@@ -57,24 +77,23 @@ exports.onNewDonation = (0, firestore_1.onDocumentCreated)({ document: "donation
     const amount = data.amount || "Donation";
     const refId = data.paymentId || docId;
     try {
+        const paymentSummaryBlock = formatDetailsTable("Payment Summary", [
+            { label: "Contributor Name", value: name },
+            { label: "Amount Paid", value: `₹${amount}` },
+            { label: "Reference / Payment ID", value: refId },
+            { label: "Payment Channel", value: refId.startsWith("pay_") ? "Razorpay Gateway (Instant)" : "Manual UPI Transfer" }
+        ]);
         if (email && email.includes("@")) {
             const donationImpact = amount && !isNaN(Number(amount))
                 ? `Your generous contribution of ₹${amount} will directly fund our active programs, such as purchasing educational notebooks for school children, providing medical supplies, and supporting women's skill development workshops.`
                 : "Your contribution will directly fund our child education and community welfare initiatives.";
-            const paymentSummaryBlock = [
-                `Payment Summary:`,
-                `• Contributor Name: ${name}`,
-                `• Amount Paid: ₹${amount}`,
-                `• Reference / Payment ID: ${refId}`,
-                `• Payment Channel: ${refId.startsWith("pay_") ? "Razorpay Gateway (Instant)" : "Manual UPI Transfer"}`
-            ].join("\n");
             await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                 email,
                 name,
                 subject: "Thank You for Your Generous Contribution! 💖",
                 preview: `Your support of ₹${amount} is transforming lives.`,
                 status: "Donation Received & Verified",
-                message: `We are deeply grateful for your generous donation to Path Sarthi Trust.\n\n${donationImpact}\n\n${paymentSummaryBlock}\n\nAt Path Sarthi, we believe that real change begins when citizens join hands. Your kindness acts as a guiding light for children and families who need support the most. Thank you for placing your trust in us.`,
+                message: `We are deeply grateful for your generous donation to Path Sarthi Trust.<br/><br/>${donationImpact}<br/><br/>${paymentSummaryBlock}<br/><br/>At Path Sarthi, we believe that real change begins when citizens join hands. Your kindness acts as a guiding light for children and families who need support the most. Thank you for placing your trust in us.`,
                 additionalMessage: `Your official donation receipt has been recorded under the reference ID below. If you are eligible for tax benefits under Section 80G, our compliance team will email you the tax certificate within the next 7-10 working days.`,
                 referenceId: refId,
                 date: today(),
@@ -85,7 +104,7 @@ exports.onNewDonation = (0, firestore_1.onDocumentCreated)({ document: "donation
             console.log(`[onNewDonation] Skipped donor email: no email address present in document ${docId}`);
         }
         // Always notify admin
-        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Donation", refId);
+        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Donation", refId, paymentSummaryBlock);
     }
     catch (error) {
         console.error(`[onNewDonation] Error processing trigger for ${docId}:`, error);
@@ -129,22 +148,21 @@ exports.onNewSponsor = (0, firestore_1.onDocumentCreated)({ document: "csr_partn
     const contactInfo = data.contactInfo || "";
     const email = data.email || (contactInfo.includes("@") ? contactInfo : "");
     try {
+        const sponsorDetailsBlock = formatDetailsTable("Sponsorship Proposal Details", [
+            { label: "Company Name", value: data.companyName || "N/A" },
+            { label: "Contact Person", value: name },
+            { label: "Contact Email", value: email },
+            { label: "Contact Number", value: contactInfo || "N/A" },
+            { label: "Proposed Support Budget", value: `₹${data.budget || "N/A"}` }
+        ]);
         if (email) {
-            const sponsorDetailsBlock = [
-                `Sponsorship Proposal Details:`,
-                `• Company Name: ${data.companyName || "N/A"}`,
-                `• Contact Person: ${name}`,
-                `• Contact Email: ${email}`,
-                `• Contact Number: ${contactInfo || "N/A"}`,
-                `• Proposed Support Budget: ₹${data.budget || "N/A"}`
-            ].join("\n");
             await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                 email,
                 name,
                 subject: "Partnering for Change: Sponsorship Request Received 🤝",
                 preview: "Thank you for choosing to empower our community.",
                 status: "Sponsorship Under Review",
-                message: `Thank you for reaching out to partner with Path Sarthi Trust. We have successfully received your sponsorship proposal.\n\nCorporate and individual sponsorships are critical in helping us scale our initiatives—from running digital classrooms in remote villages to driving environmental and healthcare drives. Your willingness to collaborate plays a major role in expanding this circle of impact.\n\n${sponsorDetailsBlock}`,
+                message: `Thank you for reaching out to partner with Path Sarthi Trust. We have successfully received your sponsorship proposal.<br/><br/>Corporate and individual sponsorships are critical in helping us scale our initiatives—from running digital classrooms in remote villages to driving environmental and healthcare drives. Your willingness to collaborate plays a major role in expanding this circle of impact.<br/><br/>${sponsorDetailsBlock}`,
                 additionalMessage: `Our partnerships team will review the details of your proposal and reach out to you within 3 working days to coordinate the next steps and set up a brief introductory call. We look forward to creating lasting progress together!`,
                 referenceId: docId,
                 date: today(),
@@ -155,7 +173,7 @@ exports.onNewSponsor = (0, firestore_1.onDocumentCreated)({ document: "csr_partn
             console.log(`[onNewSponsor] Skipped sponsor email: no valid email address in contactInfo for document ${docId}`);
         }
         // Always notify admin
-        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Sponsor", docId);
+        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Sponsor", docId, sponsorDetailsBlock);
     }
     catch (error) {
         console.error(`[onNewSponsor] Error processing trigger for ${docId}:`, error);
@@ -225,17 +243,16 @@ exports.onNewMembership = (0, firestore_1.onDocumentCreated)({ document: "member
     // Distinguish standard vs premium based on amount being set (premium is custom >= 500, standard is not saved or 201)
     const isPremium = data.amount && Number(data.amount) >= 500;
     try {
+        const detailsBlock = formatDetailsTable("Submitted Membership Application Details", [
+            { label: "Full Name", value: data.fullName || data.name || "N/A" },
+            { label: "Email Address", value: email },
+            { label: "Phone Number", value: data.phone || "N/A" },
+            { label: "Age / Gender", value: `${data.age || "N/A"} / ${data.gender || "N/A"}` },
+            { label: "Regional Details", value: `${data.city || "N/A"}, ${data.state || "N/A"} (Pincode: ${data.pincode || "N/A"})` },
+            { label: "Payment Reference ID", value: data.paymentId || "N/A" },
+            { label: "Membership Amount Paid", value: `₹${data.amount || "0"}` }
+        ]);
         if (email && email.includes("@")) {
-            const detailsBlock = [
-                `Submitted Membership Application Details:`,
-                `• Full Name: ${data.fullName || data.name || "N/A"}`,
-                `• Email Address: ${email}`,
-                `• Phone Number: ${data.phone || "N/A"}`,
-                `• Age / Gender: ${data.age || "N/A"} / ${data.gender || "N/A"}`,
-                `• Regional Details: ${data.city || "N/A"}, ${data.state || "N/A"} (Pincode: ${data.pincode || "N/A"})`,
-                `• Payment Reference / ID: ${data.paymentId || "N/A"}`,
-                `• Membership Amount Paid: ₹${data.amount || "0"}`
-            ].join("\n");
             if (isPremium) {
                 await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                     email,
@@ -243,7 +260,7 @@ exports.onNewMembership = (0, firestore_1.onDocumentCreated)({ document: "member
                     subject: "Premium Membership Application Received! 🌟",
                     preview: "Thank you for taking a significant leadership step with us.",
                     status: "Application Under Review",
-                    message: `Thank you for choosing to join us as a Premium Member of Path Sarthi Trust. Premium members play a vital leadership role in guiding our community welfare initiatives, mentoring youth, and helping us govern regional projects.\n\n${detailsBlock}`,
+                    message: `Thank you for choosing to join us as a Premium Member of Path Sarthi Trust. Premium members play a vital leadership role in guiding our community welfare initiatives, mentoring youth, and helping us govern regional projects.<br/><br/>${detailsBlock}`,
                     additionalMessage: `We have received your premium membership application. Our leadership team will review the details and reach out to schedule a brief introductory call. We look forward to working closely with you to drive collective progress!`,
                     referenceId: docId,
                     date: today(),
@@ -257,7 +274,7 @@ exports.onNewMembership = (0, firestore_1.onDocumentCreated)({ document: "member
                     subject: "Welcome to the Path Sarthi Trust Family! 🤝",
                     preview: "You are now an official member of our community.",
                     status: "Application Received",
-                    message: `We are absolutely thrilled to welcome you as a member of Path Sarthi Trust. Outlining our shared values of compassion, responsibility, and collective progress, our members are the driving force behind everything we do.\n\n${detailsBlock}`,
+                    message: `We are absolutely thrilled to welcome you as a member of Path Sarthi Trust. Outlining our shared values of compassion, responsibility, and collective progress, our members are the driving force behind everything we do.<br/><br/>${detailsBlock}`,
                     additionalMessage: `Your application has been received and is under review by our community board. Once approved, your official membership details and regional group invites will be shared with you. Welcome aboard!`,
                     referenceId: docId,
                     date: today(),
@@ -269,7 +286,7 @@ exports.onNewMembership = (0, firestore_1.onDocumentCreated)({ document: "member
             console.log(`[onNewMembership] Skipped member email: no email address present in document ${docId}`);
         }
         // Always notify admin
-        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), isPremium ? "Premium Membership" : "Membership", docId);
+        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), isPremium ? "Premium Membership" : "Membership", docId, detailsBlock);
     }
     catch (error) {
         console.error(`[onNewMembership] Error processing trigger for ${docId}:`, error);
@@ -312,23 +329,22 @@ exports.onNewJanSampark = (0, firestore_1.onDocumentCreated)({ document: "jan_sa
     const email = data.email || "";
     const name = data.fullName || data.name || "User";
     try {
+        const samparkDetailsBlock = formatDetailsTable("Submitted Jan Sampark Details", [
+            { label: "Full Name", value: data.fullName || data.name || "N/A" },
+            { label: "Email Address", value: email },
+            { label: "Phone Number", value: data.phone || "N/A" },
+            { label: "Age / Gender", value: `${data.age || "N/A"} / ${data.gender || "N/A"}` },
+            { label: "Regional Details", value: `${data.city || "N/A"}, ${data.state || "N/A"} (Pincode: ${data.pincode || "N/A"})` },
+            { label: "How did you hear about us", value: data.reference || "N/A" }
+        ]);
         if (email && email.includes("@")) {
-            const samparkDetailsBlock = [
-                `Submitted Jan Sampark Details:`,
-                `• Full Name: ${data.fullName || data.name || "N/A"}`,
-                `• Email Address: ${email}`,
-                `• Phone Number: ${data.phone || "N/A"}`,
-                `• Age / Gender: ${data.age || "N/A"} / ${data.gender || "N/A"}`,
-                `• Regional Details: ${data.city || "N/A"}, ${data.state || "N/A"} (Pincode: ${data.pincode || "N/A"})`,
-                `• How did you hear about us: ${data.reference || "N/A"}`
-            ].join("\n");
             await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                 email,
                 name,
                 subject: "Connecting with Path Sarthi Trust (Jan Sampark) 📞",
                 preview: "We have received your contact details.",
                 status: "Request Received",
-                message: `Thank you for connecting with us through our Jan Sampark public outreach initiative. We believe in building transparent, accessible, and responsive channels to support and engage with every citizen who wishes to collaborate, seek guidance, or contribute.\n\n${samparkDetailsBlock}`,
+                message: `Thank you for connecting with us through our Jan Sampark public outreach initiative. We believe in building transparent, accessible, and responsive channels to support and engage with every citizen who wishes to collaborate, seek guidance, or contribute.<br/><br/>${samparkDetailsBlock}`,
                 additionalMessage: `Our public relations coordinator for your region will review your details and contact you via phone or email within the next 24-48 hours. We look forward to speaking with you!`,
                 referenceId: docId,
                 date: today(),
@@ -339,7 +355,7 @@ exports.onNewJanSampark = (0, firestore_1.onDocumentCreated)({ document: "jan_sa
             console.log(`[onNewJanSampark] Skipped user email: no email address present in document ${docId}`);
         }
         // Always notify admin
-        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Jan Sampark", docId);
+        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Jan Sampark", docId, samparkDetailsBlock);
     }
     catch (error) {
         console.error(`[onNewJanSampark] Error processing trigger for ${docId}:`, error);
@@ -382,6 +398,16 @@ exports.onNewInternship = (0, firestore_1.onDocumentCreated)({ document: "intern
     const email = data.email || "";
     const name = data.name || "Applicant";
     try {
+        const internshipDetailsBlock = formatDetailsTable("Submitted Internship Application Details", [
+            { label: "Applicant Name", value: name },
+            { label: "Email Address", value: email },
+            { label: "Phone Number", value: data.phone || "N/A" },
+            { label: "College / Institution", value: data.college || "N/A" },
+            { label: "Branch / Stream", value: data.branch || "N/A" },
+            { label: "Year of Study", value: data.year || "N/A" },
+            { label: "Internship Role / Field", value: data.fieldOfInternship || data.role || "N/A" },
+            { label: "Preferred Duration", value: data.duration || "N/A" }
+        ]);
         if (email && email.includes("@")) {
             await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                 email,
@@ -389,7 +415,7 @@ exports.onNewInternship = (0, firestore_1.onDocumentCreated)({ document: "intern
                 subject: "Welcome to the Path Sarthi Trust Internship Program! 🎓",
                 preview: "Your journey to making a real-world impact starts here.",
                 status: "Application Received",
-                message: `We have successfully received your internship application!\n\nOur internship program is designed to provide you with hands-on experience, professional mentorship, and a platform to work directly on community development, education, and public service projects. We are excited about your interest in dedicating your skills to social impact.`,
+                message: `We have successfully received your internship application!<br/><br/>Our internship program is designed to provide you with hands-on experience, professional mentorship, and a platform to work directly on community development, education, and public service projects. We are excited about your interest in dedicating your skills to social impact.<br/><br/>${internshipDetailsBlock}`,
                 additionalMessage: `Our internship coordination team will review your application profile and contact you within 5 working days with induction details, project allocations, and orientation schedules. Get ready to learn, lead, and serve!`,
                 referenceId: docId,
                 date: today(),
@@ -400,7 +426,7 @@ exports.onNewInternship = (0, firestore_1.onDocumentCreated)({ document: "intern
             console.log(`[onNewInternship] Skipped applicant email: no email address present in document ${docId}`);
         }
         // Always notify admin
-        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Internship", docId);
+        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Internship", docId, internshipDetailsBlock);
     }
     catch (error) {
         console.error(`[onNewInternship] Error processing trigger for ${docId}:`, error);
@@ -443,6 +469,11 @@ exports.onNewQuery = (0, firestore_1.onDocumentCreated)({ document: "queries/{id
     const email = data.email || "";
     const name = data.name || "User";
     try {
+        const queryDetailsBlock = formatDetailsTable("Submitted Support Query Details", [
+            { label: "User Name", value: name },
+            { label: "Email Address", value: email },
+            { label: "Message / Query", value: data.message || data.query || "N/A" }
+        ]);
         if (email && email.includes("@")) {
             await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                 email,
@@ -450,7 +481,7 @@ exports.onNewQuery = (0, firestore_1.onDocumentCreated)({ document: "queries/{id
                 subject: "We Have Received Your Support Query ✉️",
                 preview: "Our support team is here to help you.",
                 status: "Open",
-                message: `Thank you for reaching out to the support desk at Path Sarthi Trust. We have received your query and want to assure you that addressing your questions and resolving any issues is our top priority.`,
+                message: `Thank you for reaching out to the support desk at Path Sarthi Trust. We have received your query and want to assure you that addressing your questions and resolving any issues is our top priority.<br/><br/>${queryDetailsBlock}`,
                 additionalMessage: `A support representative has been assigned to your ticket. We will review the details and respond with a resolution or follow-up questions within 24 hours. Thank you for your patience!`,
                 referenceId: docId,
                 date: today(),
@@ -461,7 +492,7 @@ exports.onNewQuery = (0, firestore_1.onDocumentCreated)({ document: "queries/{id
             console.log(`[onNewQuery] Skipped user email: no email address present in document ${docId}`);
         }
         // Always notify admin
-        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Query", docId);
+        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Query", docId, queryDetailsBlock);
     }
     catch (error) {
         console.error(`[onNewQuery] Error processing trigger for ${docId}:`, error);
@@ -576,6 +607,13 @@ exports.onNewVolunteer = (0, firestore_1.onDocumentCreated)({ document: "joinus_
     const email = data.email || "";
     const name = data.name || "Volunteer";
     try {
+        const volunteerDetailsBlock = formatDetailsTable("Submitted Volunteer Details", [
+            { label: "Volunteer Name", value: name },
+            { label: "Email Address", value: email },
+            { label: "Phone Number", value: data.phone || "N/A" },
+            { label: "Age / Gender", value: `${data.age || "N/A"} / ${data.gender || "N/A"}` },
+            { label: "Location", value: `${data.city || "N/A"}, ${data.state || "N/A"} (Pincode: ${data.pincode || "N/A"})` }
+        ]);
         if (email && email.includes("@")) {
             await (0, brevo_1.sendEmail)(brevo_1.brevoApiKey.value(), {
                 email,
@@ -583,7 +621,7 @@ exports.onNewVolunteer = (0, firestore_1.onDocumentCreated)({ document: "joinus_
                 subject: "Welcome to the Team! Volunteer Registration Received 🌟",
                 preview: "Ready to make a difference? Welcome aboard!",
                 status: "Welcome",
-                message: `We are excited to welcome you to the volunteer community at Path Sarthi Trust!\n\nVolunteers are the absolute backbone of our trust. By choosing to dedicate your time, energy, and talents, you are playing a direct role in teaching children, helping families, and driving social welfare campaigns in your area.`,
+                message: `We are excited to welcome you to the volunteer community at Path Sarthi Trust!<br/><br/>Volunteers are the absolute backbone of our trust. By choosing to dedicate your time, energy, and talents, you are playing a direct role in teaching children, helping families, and driving social welfare campaigns in your area.<br/><br/>${volunteerDetailsBlock}`,
                 additionalMessage: `Our volunteer coordinator will contact you shortly to schedule a brief orientation call and guide you through our active local groups. Thank you for stepping forward to serve!`,
                 referenceId: docId,
                 date: today(),
@@ -594,7 +632,7 @@ exports.onNewVolunteer = (0, firestore_1.onDocumentCreated)({ document: "joinus_
             console.log(`[onNewVolunteer] Skipped welcome email: no email address present in document ${docId}`);
         }
         // Always notify admin
-        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Volunteer", docId);
+        await (0, brevo_1.sendAdminNotification)(brevo_1.brevoApiKey.value(), brevo_1.adminEmailSecret.value(), "Volunteer", docId, volunteerDetailsBlock);
     }
     catch (error) {
         console.error(`[onNewVolunteer] Error processing trigger for ${docId}:`, error);

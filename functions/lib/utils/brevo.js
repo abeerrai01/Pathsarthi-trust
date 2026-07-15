@@ -162,7 +162,7 @@ const sendEmail = async (apiKey, data) => {
 };
 exports.sendEmail = sendEmail;
 // ─── Admin Notification Helper ───────────────────────────────────────────────
-const sendAdminNotification = async (apiKey, adminEmailAddress, formType, referenceId) => {
+const sendAdminNotification = async (apiKey, adminEmailAddress, formType, referenceId, detailsHtml) => {
     const todayStr = new Date().toLocaleDateString("en-IN", {
         day: "2-digit",
         month: "long",
@@ -174,7 +174,7 @@ const sendAdminNotification = async (apiKey, adminEmailAddress, formType, refere
         name: adminName,
         subject: `New ${formType} Submission Received`,
         preview: `A new ${formType} submission requires your attention.`,
-        message: `A new ${formType} submission has been received.`,
+        message: `A new ${formType} submission has been received.<br/><br/>${detailsHtml || ""}`,
         referenceId,
         status: "New",
         date: todayStr,
