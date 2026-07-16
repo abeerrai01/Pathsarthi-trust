@@ -62,6 +62,9 @@ export const razorpayWebhook = onRequest(
             validTo.setFullYear(validFrom.getFullYear() + 1);
             updateData.validFrom = admin.firestore.Timestamp.fromDate(validFrom);
             updateData.validTo = admin.firestore.Timestamp.fromDate(validTo);
+            if (payment.amount) {
+              updateData.amount = payment.amount / 100;
+            }
           }
 
           await admin.firestore().collection(collectionName).doc(firestoreDocId).update(updateData);

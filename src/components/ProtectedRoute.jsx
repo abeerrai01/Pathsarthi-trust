@@ -5,10 +5,20 @@ import { auth } from '../config/firebase';
 
 const ProtectedRoute = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isIntern, setIsIntern] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        try {
+          const tokenResult = await currentUser.getIdTokenResult(true);
+          setIsIntern(tokenResult.claims.role === 'intern');
+        } catch (e) {
+          console.error('[ProtectedRoute] Error checking claims:', e);
+          setIsIntern(false);
+        }
+      }
       setUser(currentUser);
       setLoading(false);
     });
@@ -24,7 +34,11 @@ const ProtectedRoute = ({ children }) => {
   }
 
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
+  }
+
+  if (isIntern) {
+    return <Navigate to="/intern-dashboard" replace />;
   }
 
   return children;

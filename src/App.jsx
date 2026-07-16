@@ -27,6 +27,10 @@ import DonationDisclaimer from './pages/DonationDisclaimer';
 import ContestPage from './components/ContestPage';
 import Internship from './pages/Internship';
 import InternshipForm from './pages/InternshipForm';
+import InternLogin from './pages/InternLogin';
+import InternDashboard from './pages/InternDashboard';
+import InternProtectedRoute from './components/InternProtectedRoute';
+import { InternAuthProvider } from './contexts/InternAuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 import { lazy, Suspense } from 'react';
@@ -203,6 +207,7 @@ function App() {
         )}
       </AnimatePresence>
       <AuthProvider>
+        <InternAuthProvider>
         <GlobalConfetti show={globalConfetti} />
         {/* <MissionPopup /> */}
         <motion.div 
@@ -245,6 +250,12 @@ function App() {
                 <Route path="/contest" element={<ContestPage />} />
                 <Route path="/internship" element={<Internship />} />
                 <Route path="/internship-form" element={<InternshipForm />} />
+                <Route path="/intern-login" element={<InternLogin />} />
+                <Route path="/intern-dashboard" element={
+                  <InternProtectedRoute>
+                    <InternDashboard />
+                  </InternProtectedRoute>
+                } />
                 <Route path="/terms-interns" element={<TermsInterns />} />
                 <Route path="/feedback" element={<Feedback />} />
                 <Route path="/media" element={<MediaFeed />} />
@@ -282,6 +293,7 @@ function App() {
         <FloatingAssistant />
         <Analytics />
         <SpeedInsights />
+        </InternAuthProvider>
       </AuthProvider>
     </Router>
   );

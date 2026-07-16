@@ -76,6 +76,9 @@ exports.razorpayWebhook = (0, https_1.onRequest)({ secrets: [razorpayWebhookSecr
                     validTo.setFullYear(validFrom.getFullYear() + 1);
                     updateData.validFrom = admin.firestore.Timestamp.fromDate(validFrom);
                     updateData.validTo = admin.firestore.Timestamp.fromDate(validTo);
+                    if (payment.amount) {
+                        updateData.amount = payment.amount / 100;
+                    }
                 }
                 await admin.firestore().collection(collectionName).doc(firestoreDocId).update(updateData);
                 console.log(`Successfully updated document ${firestoreDocId} in ${collectionName}`);

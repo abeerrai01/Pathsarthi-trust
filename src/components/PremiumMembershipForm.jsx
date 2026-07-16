@@ -494,6 +494,19 @@ const PremiumMembershipForm = () => {
         existingDoc = { id: phoneSnap.docs[0].id, ...phoneSnap.docs[0].data() };
       }
 
+      // Link internId if email matches an intern application
+      let linkedInternId = null;
+      if (form.email) {
+        const internQ = query(
+          collection(db, 'internship_applications'),
+          where('email', '==', form.email.trim().toLowerCase())
+        );
+        const internSnap = await getDocs(internQ);
+        if (!internSnap.empty) {
+          linkedInternId = internSnap.docs[0].data().internId || null;
+        }
+      }
+
       if (existingDoc) {
         if (existingDoc.status === 'completed') {
           showToast('This user is already a registered Pathsarthi Member.', 'error');
@@ -517,7 +530,10 @@ const PremiumMembershipForm = () => {
 
           await updateDoc(doc(db, "memberships", existingDoc.id), {
             ...updatedForm,
-            createdAt: new Date() // update timestamp to now
+            ...(linkedInternId ? { internId: linkedInternId } : {}),
+            createdAt: new Date(), // update timestamp to now
+            amount: amount,
+            isPremium: true
           });
 
           setForm(updatedForm);
@@ -546,7 +562,10 @@ const PremiumMembershipForm = () => {
         ...updatedForm,
         paymentId: '',
         createdAt: new Date(),
-        status: 'pending'
+        status: 'pending',
+        amount: amount,
+        isPremium: true,
+        ...(linkedInternId ? { internId: linkedInternId } : {})
       });
 
       setForm(updatedForm);

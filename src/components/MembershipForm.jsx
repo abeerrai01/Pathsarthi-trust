@@ -142,7 +142,8 @@ const MembershipForm = () => {
         await updateDoc(doc(db, "memberships", docId), {
           paymentId: manualUpiId,
           status: 'pending', // remains pending for manual verification
-          paymentScreenshotUrl: uploadedScreenshotUrl
+          paymentScreenshotUrl: uploadedScreenshotUrl,
+          amount: 201
         });
       } else {
         await addDoc(collection(db, "memberships"), {
@@ -150,7 +151,8 @@ const MembershipForm = () => {
           paymentId: manualUpiId,
           createdAt: new Date(),
           status: 'pending',
-          paymentScreenshotUrl: uploadedScreenshotUrl
+          paymentScreenshotUrl: uploadedScreenshotUrl,
+          amount: 201
         });
       }
       setPaymentId(manualUpiId);
@@ -287,7 +289,8 @@ const MembershipForm = () => {
               paymentId: generatedId,
               status: 'completed',
               validFrom: validFrom,
-              validTo: validTo
+              validTo: validTo,
+              amount: 201
             });
           } else {
             await addDoc(collection(db, "memberships"), {
@@ -296,7 +299,8 @@ const MembershipForm = () => {
               createdAt: new Date(),
               status: 'completed',
               validFrom: validFrom,
-              validTo: validTo
+              validTo: validTo,
+              amount: 201
             });
           }
           setPaymentId(generatedId);
@@ -455,6 +459,19 @@ const MembershipForm = () => {
         existingDoc = { id: phoneSnap.docs[0].id, ...phoneSnap.docs[0].data() };
       }
 
+      // Link internId if email matches an intern application
+      let linkedInternId = null;
+      if (form.email) {
+        const internQ = query(
+          collection(db, 'internship_applications'),
+          where('email', '==', form.email.trim().toLowerCase())
+        );
+        const internSnap = await getDocs(internQ);
+        if (!internSnap.empty) {
+          linkedInternId = internSnap.docs[0].data().internId || null;
+        }
+      }
+
       if (existingDoc) {
         if (existingDoc.status === 'completed') {
           showToast('This user is already a registered Pathsarthi Member.', 'error');
@@ -478,6 +495,7 @@ const MembershipForm = () => {
 
           await updateDoc(doc(db, "memberships", existingDoc.id), {
             ...updatedForm,
+            ...(linkedInternId ? { internId: linkedInternId } : {}),
             createdAt: new Date() // update timestamp to now
           });
 
@@ -507,7 +525,8 @@ const MembershipForm = () => {
         ...updatedForm,
         paymentId: '',
         createdAt: new Date(),
-        status: 'pending'
+        status: 'pending',
+        ...(linkedInternId ? { internId: linkedInternId } : {})
       });
 
       setForm(updatedForm);

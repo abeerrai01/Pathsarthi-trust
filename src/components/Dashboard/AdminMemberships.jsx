@@ -43,6 +43,9 @@ const AdminMemberships = () => {
         validTo.setFullYear(validFrom.getFullYear() + 1);
         updateData.validFrom = validFrom;
         updateData.validTo = validTo;
+        if (!currentMember.amount) {
+          updateData.amount = 201;
+        }
       }
       await updateDoc(doc(db, 'memberships', id), updateData);
     } catch (err) {
@@ -138,6 +141,7 @@ const AdminMemberships = () => {
       'Aadhaar': e.aadhaar || 'N/A',
       'Location': `${e.city || 'N/A'}, ${e.state || 'N/A'} - ${e.pincode || ''}`,
       'Reference': e.reference || 'N/A',
+      'Amount': e.amount ? `₹${e.amount}` : 'N/A',
       'Status': isPaidMember(e) ? 'Paid' : 'Pending',
       'Payment ID': e.paymentId || 'N/A',
       'Applied On': formatDate(e.createdAt),
@@ -349,6 +353,10 @@ const AdminMemberships = () => {
                       )}
                       
                       <div className="pt-2.5 mt-2.5 border-t border-slate-200 text-xs flex flex-col gap-1 text-slate-500">
+                        <div className="flex justify-between">
+                          <span>Amount Paid:</span>
+                          <span className="font-bold text-slate-800">₹{member.amount || 'N/A'}</span>
+                        </div>
                         <div className="flex justify-between">
                           <span>Applied On:</span>
                           <span className="font-semibold text-slate-700">{formatDate(member.createdAt)}</span>

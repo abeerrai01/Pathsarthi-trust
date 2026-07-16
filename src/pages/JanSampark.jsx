@@ -152,6 +152,10 @@ const JanSampark = () => {
   };
 
   const handlePayWithRazorpay = () => {
+    if (!donationAmount || Number(donationAmount) < 21) {
+      showToast("Contribution amount must be at least ₹21.", "error");
+      return;
+    }
     if (!window.Razorpay) {
       showToast("Razorpay payment gateway is loading. Please wait a moment.", "error");
       return;
@@ -298,12 +302,26 @@ const JanSampark = () => {
 
     setLoading(true);
     try {
+      // Link internId if email matches an intern application
+      let linkedInternId = null;
+      if (form.email) {
+        const internQ = query(
+          collection(db, 'internship_applications'),
+          where('email', '==', form.email.trim().toLowerCase())
+        );
+        const internSnap = await getDocs(internQ);
+        if (!internSnap.empty) {
+          linkedInternId = internSnap.docs[0].data().internId || null;
+        }
+      }
+
       // Save pending registration in Firestore
       const docRef = await addDoc(collection(db, "jan_sampark"), {
         ...form,
         paymentId: '',
         createdAt: new Date(),
-        status: 'pending'
+        status: 'pending',
+        ...(linkedInternId ? { internId: linkedInternId } : {})
       });
 
       setCreatedDocId(docRef.id);
@@ -514,11 +532,11 @@ const JanSampark = () => {
                   <span className="font-bold text-slate-500">Other: ₹</span>
                   <input
                     type="number"
-                    min="1"
+                    min="21"
                     value={donationAmount}
                     onChange={(e) => setDonationAmount(e.target.value === '' ? '' : Number(e.target.value))}
                     className="flex-1 px-4 py-2 geom-input h-[45px] text-lg font-bold border-2 border-[#1E293B] focus:border-[#8B5CF6]"
-                    placeholder="Custom amount"
+                    placeholder="Custom amount (min ₹21)"
                   />
                 </div>
               </div>
@@ -540,7 +558,7 @@ const JanSampark = () => {
 
                 <button 
                   className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg text-xl transition-colors flex items-center justify-center gap-2 shadow-md" 
-                  disabled={loading || !donationAmount || donationAmount < 1} 
+                  disabled={loading || !donationAmount || donationAmount < 21} 
                   onClick={handlePayWithRazorpay}
                 >
                   {loading ? (

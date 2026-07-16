@@ -4,3 +4,4 @@ admin.initializeApp();
 
 export * from "./email";
 export * from "./payments/razorpay";
+export * from "./intern/internCredentials";

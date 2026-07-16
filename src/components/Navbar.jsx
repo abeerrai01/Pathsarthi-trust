@@ -81,9 +81,11 @@ const Navbar = () => {
     { 
       label: 'Others', 
       items: [
-        { to: '/login', label: 'Login' }
+        { to: '/login', label: 'Login' },
+        { to: '/intern-login', label: 'Intern Login' }
       ]
     }
+
   ];
 
   const renderNavItems = (items, depth = 0) => {

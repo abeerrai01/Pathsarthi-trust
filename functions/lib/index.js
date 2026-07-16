@@ -30,4 +30,5 @@ const admin = __importStar(require("firebase-admin"));
 admin.initializeApp();
 __exportStar(require("./email"), exports);
 __exportStar(require("./payments/razorpay"), exports);
+__exportStar(require("./intern/internCredentials"), exports);
 //# sourceMappingURL=index.js.map
