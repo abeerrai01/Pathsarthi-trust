@@ -103,7 +103,10 @@ export default function Internship() {
           <p className="text-gray-700 mb-2">You can apply by filling out our Internship Form or emailing us directly.<br/>(We’ll contact shortlisted interns within 3–5 working days.)</p>
           <div className="mb-2">
             <span className="font-semibold">📩 Email:</span> <a href="mailto:pathsarthi2022@gmail.com" className="text-indigo-700 underline">pathsarthi2022@gmail.com</a><br/>
-            <span className="font-semibold">📞 Phone:</span> <a href="tel:+918958421200" className="text-indigo-700 underline">+91 8958421200</a>
+            <span className="font-semibold">📞 Phone:</span>{' '}
+            <a href="tel:+919310757350" className="text-indigo-700 underline">+91-9310757350</a>
+            {' | '}
+            <a href="tel:+919837004175" className="text-indigo-700 underline">+91-9837004175</a>
           </div>
           <div className="flex justify-center mt-6">
             <Link to="/internship-form">
