@@ -305,13 +305,17 @@ const JanSampark = () => {
       // Link internId if email matches an intern application
       let linkedInternId = null;
       if (form.email) {
-        const internQ = query(
-          collection(db, 'internship_applications'),
-          where('email', '==', form.email.trim().toLowerCase())
-        );
-        const internSnap = await getDocs(internQ);
-        if (!internSnap.empty) {
-          linkedInternId = internSnap.docs[0].data().internId || null;
+        try {
+          const internQ = query(
+            collection(db, 'internship_applications'),
+            where('email', '==', form.email.trim().toLowerCase())
+          );
+          const internSnap = await getDocs(internQ);
+          if (!internSnap.empty) {
+            linkedInternId = internSnap.docs[0].data().internId || null;
+          }
+        } catch (e) {
+          console.warn("Could not fetch internId: ", e.message);
         }
       }
 

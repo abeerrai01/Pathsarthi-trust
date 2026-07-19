@@ -26,14 +26,8 @@ const InternshipForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      // Auto-generate a unique Intern ID: PSTI-YYYY-NNNN
-      const existingSnap = await getDocs(collection(db, "internship_applications"));
-      const count = existingSnap.size;
-      const internId = `PSTI-${new Date().getFullYear()}-${String(count + 1).padStart(4, '0')}`;
-
       await addDoc(collection(db, "internship_applications"), {
         ...form,
-        internId,
         createdAt: new Date(),
         status: "pending"
       });
