@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { db } from '../config/firebase';
+import { auth, db } from '../config/firebase';
 import { collection, addDoc, doc, updateDoc, query, where, getDocs } from 'firebase/firestore';
 import { Check, Users } from 'lucide-react';
 
@@ -304,7 +304,7 @@ const JanSampark = () => {
     try {
       // Link internId if email matches an intern application
       let linkedInternId = null;
-      if (form.email) {
+      if (auth.currentUser && form.email) {
         try {
           const internQ = query(
             collection(db, 'internship_applications'),

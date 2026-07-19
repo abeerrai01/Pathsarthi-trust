@@ -461,7 +461,7 @@ const MembershipForm = () => {
 
       // Link internId if email matches an intern application
       let linkedInternId = null;
-      if (form.email) {
+      if (auth.currentUser && form.email) {
         try {
           const internQ = query(
             collection(db, 'internship_applications'),
