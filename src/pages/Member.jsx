@@ -12,6 +12,11 @@ function getInitials(name) {
     .substring(0, 2);
 }
 
+const isPaid = (m) => {
+  const s = (m.status || '').trim().toLowerCase();
+  return s === 'completed' || s === 'paid';
+};
+
 const Member = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,9 +26,40 @@ const Member = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const snapshot = await getDocs(collection(db, 'members'));
-        const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setMembers(fetched);
+        const [membersSnap, membershipsSnap] = await Promise.all([
+          getDocs(collection(db, 'members')),
+          getDocs(collection(db, 'memberships')),
+        ]);
+
+        const fromMembers = membersSnap.docs.map(doc => ({
+          id: doc.id,
+          source: 'members',
+          ...doc.data(),
+        }));
+
+        const fromMemberships = membershipsSnap.docs
+          .map(doc => ({ id: doc.id, source: 'memberships', ...doc.data() }))
+          .filter(isPaid)
+          .map(m => ({
+            ...m,
+            // normalise fields to match members collection shape
+            name: m.fullName || `${m.firstName || ''} ${m.middleName ? m.middleName + ' ' : ''}${m.lastName || ''}`.trim() || 'Unknown',
+            district: m.district || m.city || '',
+            state: m.state || '',
+            gender: m.gender || '',
+            image: m.profilePhotoUrl || m.image || null,
+          }));
+
+        // Merge — avoid duplicates by phone or name+state
+        const seen = new Set(fromMembers.map(m => (m.phone || '') + '|' + (m.name || '').toLowerCase()));
+        const unique = fromMemberships.filter(m => {
+          const key = (m.phone || '') + '|' + (m.name || '').toLowerCase();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+
+        setMembers([...fromMembers, ...unique]);
       } catch (err) {
         console.error("Error fetching members:", err);
       } finally {
@@ -49,7 +85,11 @@ const Member = () => {
   return (
     <div className="py-12">
       <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-8 text-center">Member List</h1>
+        <h1 className="text-3xl font-bold mb-2 text-center">Member List</h1>
+        <p className="text-center text-gray-500 mb-8 text-sm">
+          Showing all registered members including paid membership holders
+          {!loading && <span className="ml-1 font-semibold text-indigo-600">({filteredMembers.length} total)</span>}
+        </p>
         {/* Filter Box */}
         <div className="flex flex-col md:flex-row gap-4 mb-6 justify-center">
           <select
@@ -76,26 +116,27 @@ const Member = () => {
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white rounded-lg shadow">
             <thead>
-              <tr>
+              <tr className="bg-indigo-50">
                 <th className="py-3 px-4 border-b text-left">Avatar</th>
                 <th className="py-3 px-4 border-b text-left">Name</th>
                 <th className="py-3 px-4 border-b text-left">Gender</th>
-                <th className="py-3 px-4 border-b text-left">District</th>
+                <th className="py-3 px-4 border-b text-left">District / City</th>
                 <th className="py-3 px-4 border-b text-left">State</th>
+                <th className="py-3 px-4 border-b text-left">Status</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="py-8 text-center text-gray-500">Loading members...</td>
+                  <td colSpan="6" className="py-8 text-center text-gray-500">Loading members...</td>
                 </tr>
               ) : filteredMembers.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="py-8 text-center text-gray-500">No members found.</td>
+                  <td colSpan="6" className="py-8 text-center text-gray-500">No members found.</td>
                 </tr>
               ) : (
                 filteredMembers.map((member, idx) => (
-                  <tr key={idx} className="hover:bg-gray-100">
+                  <tr key={member.id || idx} className="hover:bg-gray-50">
                     <td className="py-2 px-4 border-b">
                       {member.image ? (
                         <img src={member.image} alt={member.name} className="h-12 w-12 rounded-full object-cover" />
@@ -105,10 +146,21 @@ const Member = () => {
                         </div>
                       )}
                     </td>
-                    <td className="py-2 px-4 border-b">{member.name}</td>
-                    <td className="py-2 px-4 border-b">{member.gender}</td>
-                    <td className="py-2 px-4 border-b">{member.district}</td>
-                    <td className="py-2 px-4 border-b">{member.state}</td>
+                    <td className="py-2 px-4 border-b font-medium">{member.name}</td>
+                    <td className="py-2 px-4 border-b">{member.gender || '—'}</td>
+                    <td className="py-2 px-4 border-b">{member.district || '—'}</td>
+                    <td className="py-2 px-4 border-b">{member.state || '—'}</td>
+                    <td className="py-2 px-4 border-b">
+                      {member.source === 'memberships' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
+                          ✓ Paid Member
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 border border-indigo-200">
+                          Member
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 ))
               )}
