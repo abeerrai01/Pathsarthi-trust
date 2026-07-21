@@ -7,11 +7,41 @@ const TrustMembers = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const DESIGNATION_ORDER = [
+    'chairman',
+    'vice-president',
+    'vice president',
+    'accountant',
+    'secretary',
+    'technical director',
+    'technical head',
+    'co-secretary',
+    'co secretary',
+    'internship coordinator',
+    'internship cordinator',
+  ];
+
+  const NAMED_ORDER = ['sanjay sharma'];
+
+  const getSortKey = (member) => {
+    const designation = (member.designation || '').trim().toLowerCase();
+    const name = (member.name || '').trim().toLowerCase();
+
+    const dIdx = DESIGNATION_ORDER.indexOf(designation);
+    if (dIdx !== -1) return dIdx;
+
+    const nIdx = NAMED_ORDER.indexOf(name);
+    if (nIdx !== -1) return DESIGNATION_ORDER.length + nIdx;
+
+    return DESIGNATION_ORDER.length + NAMED_ORDER.length;
+  };
+
   useEffect(() => {
     const fetchMembers = async () => {
       try {
         const snapshot = await getDocs(collection(db, 'board_of_trustees'));
         const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        fetched.sort((a, b) => getSortKey(a) - getSortKey(b));
         setMembers(fetched);
       } catch (err) {
         console.error("Error fetching board of trustees:", err);
