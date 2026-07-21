@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { Users, CheckCircle, XCircle, Search, Trash2, Mail, Phone, MapPin, ShieldCheck, Download, FileText, FileSpreadsheet } from 'lucide-react';
+import { Users, CheckCircle, XCircle, Search, Trash2, Mail, Phone, MapPin, ShieldCheck, Download, FileText, FileSpreadsheet, IndianRupee } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -106,6 +106,14 @@ const AdminMemberships = () => {
     pending: memberships.filter(m => !isPaidMember(m)).length,
   };
 
+  const totalCollected = memberships
+    .filter(m => isPaidMember(m))
+    .reduce((sum, m) => sum + (parseFloat(m.amount) || 201), 0);
+
+  const totalPending = memberships
+    .filter(m => !isPaidMember(m))
+    .reduce((sum, m) => sum + (parseFloat(m.amount) || 201), 0);
+
   const formatDate = (dateValue) => {
     if (!dateValue) return 'N/A';
     if (dateValue.toDate) {
@@ -141,7 +149,7 @@ const AdminMemberships = () => {
       'Aadhaar': e.aadhaar || 'N/A',
       'Location': `${e.city || 'N/A'}, ${e.state || 'N/A'} - ${e.pincode || ''}`,
       'Reference': e.reference || 'N/A',
-      'Amount': e.amount ? `₹${e.amount}` : 'N/A',
+      'Amount': `₹${e.amount || 201}`,
       'Status': isPaidMember(e) ? 'Paid' : 'Pending',
       'Payment ID': e.paymentId || 'N/A',
       'Applied On': formatDate(e.createdAt),
@@ -244,6 +252,40 @@ const AdminMemberships = () => {
           <p className="text-orange-50 font-medium max-w-xl">
             View and manage all registered members, check payment status (Razorpay or manual), and search through applications.
           </p>
+        </div>
+      </div>
+
+      {/* Amount Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-5 shadow-md flex items-center gap-4">
+          <div className="bg-white/20 rounded-xl p-3">
+            <IndianRupee size={24} />
+          </div>
+          <div>
+            <p className="text-green-100 text-xs font-semibold uppercase tracking-widest">Total Collected</p>
+            <p className="text-3xl font-black">₹{totalCollected.toLocaleString('en-IN')}</p>
+            <p className="text-green-100 text-xs mt-0.5">{counts.completed} paid members</p>
+          </div>
+        </div>
+        <div className="bg-gradient-to-br from-yellow-400 to-orange-400 text-white rounded-2xl p-5 shadow-md flex items-center gap-4">
+          <div className="bg-white/20 rounded-xl p-3">
+            <IndianRupee size={24} />
+          </div>
+          <div>
+            <p className="text-yellow-100 text-xs font-semibold uppercase tracking-widest">Pending Amount</p>
+            <p className="text-3xl font-black">₹{totalPending.toLocaleString('en-IN')}</p>
+            <p className="text-yellow-100 text-xs mt-0.5">{counts.pending} pending members</p>
+          </div>
+        </div>
+        <div className="bg-gradient-to-br from-indigo-500 to-blue-600 text-white rounded-2xl p-5 shadow-md flex items-center gap-4">
+          <div className="bg-white/20 rounded-xl p-3">
+            <IndianRupee size={24} />
+          </div>
+          <div>
+            <p className="text-indigo-100 text-xs font-semibold uppercase tracking-widest">Total Expected</p>
+            <p className="text-3xl font-black">₹{(totalCollected + totalPending).toLocaleString('en-IN')}</p>
+            <p className="text-indigo-100 text-xs mt-0.5">{counts.all} total members</p>
+          </div>
         </div>
       </div>
 
@@ -355,7 +397,7 @@ const AdminMemberships = () => {
                       <div className="pt-2.5 mt-2.5 border-t border-slate-200 text-xs flex flex-col gap-1 text-slate-500">
                         <div className="flex justify-between">
                           <span>Amount Paid:</span>
-                          <span className="font-bold text-slate-800">₹{member.amount || 'N/A'}</span>
+                          <span className="font-bold text-slate-800">₹{member.amount || 201}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Applied On:</span>

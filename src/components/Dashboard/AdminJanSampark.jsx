@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { Users, Search, Trash2, Phone, MapPin, Download, FileText, FileSpreadsheet, CheckCircle, XCircle } from 'lucide-react';
+import { Users, Search, Trash2, Phone, MapPin, Download, FileText, FileSpreadsheet, CheckCircle, XCircle, IndianRupee } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -201,6 +201,14 @@ const AdminJanSampark = () => {
     pending: entries.filter(m => !isCompleted(m)).length,
   };
 
+  const totalCollected = entries
+    .filter(m => isCompleted(m))
+    .reduce((sum, m) => sum + (parseFloat(m.amount) || 5), 0);
+
+  const totalPending = entries
+    .filter(m => !isCompleted(m))
+    .reduce((sum, m) => sum + (parseFloat(m.amount) || 5), 0);
+
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
       
@@ -215,6 +223,40 @@ const AdminJanSampark = () => {
           <p className="text-indigo-100 font-medium max-w-xl">
             View and manage all Jan Sampark connections, check payment status, and export the database.
           </p>
+        </div>
+      </div>
+
+      {/* Amount Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl p-5 shadow-md flex items-center gap-4">
+          <div className="bg-white/20 rounded-xl p-3">
+            <IndianRupee size={24} />
+          </div>
+          <div>
+            <p className="text-green-100 text-xs font-semibold uppercase tracking-widest">Total Collected</p>
+            <p className="text-3xl font-black">₹{totalCollected.toLocaleString('en-IN')}</p>
+            <p className="text-green-100 text-xs mt-0.5">{counts.completed} paid entries</p>
+          </div>
+        </div>
+        <div className="bg-gradient-to-br from-yellow-400 to-orange-400 text-white rounded-2xl p-5 shadow-md flex items-center gap-4">
+          <div className="bg-white/20 rounded-xl p-3">
+            <IndianRupee size={24} />
+          </div>
+          <div>
+            <p className="text-yellow-100 text-xs font-semibold uppercase tracking-widest">Pending Amount</p>
+            <p className="text-3xl font-black">₹{totalPending.toLocaleString('en-IN')}</p>
+            <p className="text-yellow-100 text-xs mt-0.5">{counts.pending} pending entries</p>
+          </div>
+        </div>
+        <div className="bg-gradient-to-br from-indigo-500 to-blue-600 text-white rounded-2xl p-5 shadow-md flex items-center gap-4">
+          <div className="bg-white/20 rounded-xl p-3">
+            <IndianRupee size={24} />
+          </div>
+          <div>
+            <p className="text-indigo-100 text-xs font-semibold uppercase tracking-widest">Total Expected</p>
+            <p className="text-3xl font-black">₹{(totalCollected + totalPending).toLocaleString('en-IN')}</p>
+            <p className="text-indigo-100 text-xs mt-0.5">{counts.all} total entries</p>
+          </div>
         </div>
       </div>
 
