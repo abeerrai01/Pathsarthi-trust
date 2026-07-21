@@ -26,46 +26,49 @@ const Member = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const [membersSnap, membershipsSnap] = await Promise.all([
+        const [membersSnap, membershipsSnap, trusteesSnap] = await Promise.all([
           getDocs(collection(db, 'members')),
           getDocs(collection(db, 'memberships')),
+          getDocs(collection(db, 'board_of_trustees')),
         ]);
 
-        const fromMembers = membersSnap.docs.map(doc => ({
-          id: doc.id,
-          source: 'members',
-          ...doc.data(),
-        }));
+        // Normalise name: lowercase, trim, collapse spaces, remove punctuation
+        const normName = (name) =>
+          (name || '').toLowerCase().trim().replace(/[^a-z\s]/g, '').replace(/\s+/g, ' ');
+
+        // Build trustee exclusion sets
+        const trusteePhones = new Set(trusteesSnap.docs.map(d => d.data().phone).filter(Boolean));
+        const trusteeNames = new Set(trusteesSnap.docs.map(d => normName(d.data().name)).filter(Boolean));
+
+        const isTrustee = (name, phone) =>
+          (phone && trusteePhones.has(phone)) || (name && trusteeNames.has(normName(name)));
+
+        const fromMembers = membersSnap.docs
+          .map(doc => ({ id: doc.id, source: 'members', ...doc.data() }))
+          .filter(m => !isTrustee(m.name, m.phone));
 
         const fromMemberships = membershipsSnap.docs
           .map(doc => ({ id: doc.id, source: 'memberships', ...doc.data() }))
           .filter(isPaid)
           .map(m => ({
             ...m,
-            // normalise fields to match members collection shape
             name: m.fullName || `${m.firstName || ''} ${m.middleName ? m.middleName + ' ' : ''}${m.lastName || ''}`.trim() || 'Unknown',
             district: m.district || m.city || '',
             state: m.state || '',
             gender: m.gender || '',
             image: m.profilePhotoUrl || m.image || null,
-          }));
+          }))
+          .filter(m => !isTrustee(m.name, m.phone));
 
-        // Normalise name: lowercase, trim, collapse spaces, remove punctuation
-        const normName = (name) =>
-          (name || '').toLowerCase().trim().replace(/[^a-z\s]/g, '').replace(/\s+/g, ' ');
-
-        // Build seen sets from existing members collection
+        // Build seen sets from members to deduplicate against memberships
         const seenPhones = new Set(fromMembers.map(m => m.phone).filter(Boolean));
         const seenNames = new Set(fromMembers.map(m => normName(m.name)).filter(Boolean));
 
         const unique = fromMemberships.filter(m => {
           const phone = m.phone || '';
           const name = normName(m.name);
-          // Skip if phone matches any existing member
           if (phone && seenPhones.has(phone)) return false;
-          // Skip if normalised name matches any existing member
           if (name && seenNames.has(name)) return false;
-          // Also deduplicate within memberships themselves
           if (phone) seenPhones.add(phone);
           if (name) seenNames.add(name);
           return true;
