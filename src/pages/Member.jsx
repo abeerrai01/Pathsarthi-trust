@@ -50,12 +50,24 @@ const Member = () => {
             image: m.profilePhotoUrl || m.image || null,
           }));
 
-        // Merge — avoid duplicates by phone or name+state
-        const seen = new Set(fromMembers.map(m => (m.phone || '') + '|' + (m.name || '').toLowerCase()));
+        // Normalise name: lowercase, trim, collapse spaces, remove punctuation
+        const normName = (name) =>
+          (name || '').toLowerCase().trim().replace(/[^a-z\s]/g, '').replace(/\s+/g, ' ');
+
+        // Build seen sets from existing members collection
+        const seenPhones = new Set(fromMembers.map(m => m.phone).filter(Boolean));
+        const seenNames = new Set(fromMembers.map(m => normName(m.name)).filter(Boolean));
+
         const unique = fromMemberships.filter(m => {
-          const key = (m.phone || '') + '|' + (m.name || '').toLowerCase();
-          if (seen.has(key)) return false;
-          seen.add(key);
+          const phone = m.phone || '';
+          const name = normName(m.name);
+          // Skip if phone matches any existing member
+          if (phone && seenPhones.has(phone)) return false;
+          // Skip if normalised name matches any existing member
+          if (name && seenNames.has(name)) return false;
+          // Also deduplicate within memberships themselves
+          if (phone) seenPhones.add(phone);
+          if (name) seenNames.add(name);
           return true;
         });
 
