@@ -5,6 +5,7 @@ import VisitorCounter from "../components/VisitorCounter";
 import SupporterCard from '../components/SupporterCard';
 import TributeModal from '../components/TributeModal';
 import CSRSection from '../components/CSRSection';
+import BirthdayCard from '../components/BirthdayCard';
 import { db } from '../config/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -319,6 +320,9 @@ const Home = () => {
               </div>
             </motion.div>
           )}
+
+          {/* 🎂 Birthday Celebration Card from PathSarthi Trust Team */}
+          <BirthdayCard />
         </div>
       </section>
 
