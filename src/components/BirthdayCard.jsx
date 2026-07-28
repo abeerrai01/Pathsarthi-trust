@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { db } from '../config/firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import { Sparkles, Gift, Heart, PartyPopper } from 'lucide-react';
 
 const BirthdayCard = () => {
   const [birthdayMembers, setBirthdayMembers] = useState([]);
@@ -23,12 +22,12 @@ const BirthdayCard = () => {
             return { month: d.getMonth() + 1, day: d.getDate() };
           }
           const str = String(dob).trim();
-          // YYYY-MM-DD
+          // ISO YYYY-MM-DD
           const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
           if (isoMatch) {
             return { month: parseInt(isoMatch[2], 10), day: parseInt(isoMatch[3], 10) };
           }
-          // DD/MM/YYYY or DD-MM-YYYY
+          // Indian DD/MM/YYYY or DD-MM-YYYY
           const indMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
           if (indMatch) {
             return { month: parseInt(indMatch[2], 10), day: parseInt(indMatch[1], 10) };
@@ -47,10 +46,19 @@ const BirthdayCard = () => {
             if (!name && data.firstName) {
               name = `${data.firstName} ${data.lastName || ''}`.trim();
             }
+            const photo =
+              data.profilePhotoUrl ||
+              data.photoUrl ||
+              data.photo ||
+              data.image ||
+              data.avatarUrl ||
+              null;
+
             matched.push({
               id: doc.id,
               name: name || 'Valued Member',
               email: data.email || '',
+              photo,
               city: data.city || data.state || 'Moradabad',
             });
           }
@@ -58,7 +66,7 @@ const BirthdayCard = () => {
 
         setBirthdayMembers(matched);
       } catch (err) {
-        console.error('[BirthdayCard] Error fetching members:', err);
+        console.error('[BirthdayCard] Error fetching birthday members:', err);
       } finally {
         setLoading(false);
       }
@@ -68,95 +76,74 @@ const BirthdayCard = () => {
   }, []);
 
   // Demo fallback member if no DB record matches today (ensures card design is previewable)
-  const displayMembers = birthdayMembers.length > 0 ? birthdayMembers : [
-    {
-      id: 'demo-bday',
-      name: 'PathSarthi Champion',
-      city: 'Community Member',
-      isDemo: true,
-    }
-  ];
+  const displayMembers =
+    birthdayMembers.length > 0
+      ? birthdayMembers
+      : [
+          {
+            id: 'demo-bday',
+            name: 'PathSarthi Member',
+            photo: null,
+            city: 'Path Sarthi Trust',
+            isDemo: true,
+          },
+        ];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 25, scale: 0.98 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="mt-12 max-w-4xl mx-auto px-4"
+      transition={{ duration: 0.5 }}
+      className="mt-12 max-w-3xl mx-auto px-4"
     >
-      <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-amber-500 via-rose-500 to-purple-600 p-[3px]">
-        {/* Card Inner Content */}
-        <div className="bg-slate-900/95 backdrop-blur-xl rounded-[22px] p-6 sm:p-10 text-white relative overflow-hidden">
-          {/* Background Decorative Emojis & Glow Effects */}
-          <div className="absolute -top-10 -right-10 w-48 h-48 bg-rose-500/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm text-slate-800 relative overflow-hidden text-center space-y-6">
+        {/* Minimal Badge */}
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold">
+          <span>🎂 Birthday Celebration</span>
+        </div>
 
-          {/* Floating Emoji Decorative Watermarks */}
-          <span className="absolute top-3 right-6 text-4xl opacity-20 pointer-events-none select-none">🎈</span>
-          <span className="absolute bottom-4 left-6 text-4xl opacity-20 pointer-events-none select-none">🎂</span>
-
-          {/* Header Title Badge */}
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-rose-400 text-slate-950 font-black text-xs uppercase tracking-widest flex items-center gap-1.5 shadow-md">
-              <PartyPopper size={15} />
-              Happy Birthday Today!
-              <Sparkles size={15} />
-            </span>
-          </div>
-
-          {/* Birthday Persons List / Cards */}
-          <div className="space-y-6">
-            {displayMembers.map((member) => (
-              <div key={member.id} className="text-center space-y-4">
-                {/* Avatar with Animated Ring */}
-                <div className="relative inline-block">
-                  <div className="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-rose-400 to-purple-400 mx-auto shadow-xl animate-pulse">
-                    <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center text-3xl font-extrabold text-amber-300">
+        {/* Member Birthday Cards */}
+        <div className="space-y-6">
+          {displayMembers.map((member) => (
+            <div key={member.id} className="space-y-4">
+              {/* Profile Image / Avatar */}
+              <div className="flex justify-center">
+                {member.photo ? (
+                  <div className="relative">
+                    <img
+                      src={member.photo}
+                      alt={member.name}
+                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-slate-50 shadow-sm"
+                    />
+                    <span className="absolute bottom-0 right-0 text-xl">🎉</span>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-slate-100 text-slate-700 font-bold text-3xl flex items-center justify-center border-4 border-slate-50 shadow-xs">
                       {member.name.charAt(0)}
                     </div>
+                    <span className="absolute bottom-0 right-0 text-xl">🎉</span>
                   </div>
-                  <span className="absolute -bottom-1 -right-1 text-2xl">🎂</span>
-                </div>
-
-                {/* Member Name & Wishes */}
-                <div>
-                  <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-200 to-purple-200">
-                    Wishing {member.name} a Very Happy Birthday! 🎉
-                  </h3>
-                  <p className="text-xs uppercase tracking-wider font-semibold text-rose-300 mt-1">
-                    Warmest Wishes from PathSarthi Trust Team 💖
-                  </p>
-                </div>
-
-                {/* Card Message Body */}
-                <div className="max-w-2xl mx-auto bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-md">
-                  <p className="text-sm sm:text-base text-slate-200 font-medium leading-relaxed">
-                    "On your special day, the entire <strong className="text-amber-300 font-bold">PathSarthi Trust family</strong> sends you our warmest birthday wishes! 🎂✨ Thank you for being a valued part of our community and supporting social welfare & empowerment. May your day be filled with joy, prosperity, good health, and wonderful memories! 🥳🎈🌟"
-                  </p>
-                </div>
-
-                {/* Wishes Tags */}
-                <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-semibold pt-2">
-                  <span className="bg-rose-500/20 text-rose-200 border border-rose-400/30 px-3 py-1 rounded-full flex items-center gap-1">
-                    <Heart size={13} className="text-rose-400 fill-rose-400" /> Hope & Joy
-                  </span>
-                  <span className="bg-amber-500/20 text-amber-200 border border-amber-400/30 px-3 py-1 rounded-full flex items-center gap-1">
-                    <Gift size={13} className="text-amber-400" /> Success & Health
-                  </span>
-                  <span className="bg-purple-500/20 text-purple-200 border border-purple-400/30 px-3 py-1 rounded-full flex items-center gap-1">
-                    <Sparkles size={13} className="text-purple-300" /> PathSarthi Family
-                  </span>
-                </div>
-
-                {member.isDemo && (
-                  <p className="text-[10px] text-slate-400 pt-2 italic">
-                    (Note: Members with a birthday matching today's date in the membership database are automatically showcased here!)
-                  </p>
                 )}
               </div>
-            ))}
-          </div>
+
+              {/* Header Wishes */}
+              <div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+                  Happy Birthday, {member.name}! 🎉
+                </h3>
+                <p className="text-xs font-medium text-slate-500 mt-1">
+                  Warmest wishes from the PathSarthi Trust Team
+                </p>
+              </div>
+
+              {/* Minimal Wish Message Box */}
+              <div className="max-w-xl mx-auto bg-slate-50/80 border border-slate-100 rounded-2xl p-4 text-slate-600 text-sm leading-relaxed">
+                "On behalf of the entire PathSarthi Trust family, we wish you a joyful, healthy, and blessed birthday! 🌟 Thank you for being a part of our journey and supporting community welfare. May your day be filled with warm smiles and sweet moments! 🎂🎈✨"
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </motion.div>
