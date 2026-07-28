@@ -75,19 +75,10 @@ const BirthdayCard = () => {
     fetchBirthdayMembers();
   }, []);
 
-  // Demo fallback member if no DB record matches today (ensures card design is previewable)
-  const displayMembers =
-    birthdayMembers.length > 0
-      ? birthdayMembers
-      : [
-          {
-            id: 'demo-bday',
-            name: 'PathSarthi Member',
-            photo: null,
-            city: 'Path Sarthi Trust',
-            isDemo: true,
-          },
-        ];
+  // If loading or if no members have a birthday today, render nothing (card vanishes)
+  if (loading || birthdayMembers.length === 0) {
+    return null;
+  }
 
   return (
     <motion.div
@@ -105,7 +96,7 @@ const BirthdayCard = () => {
 
         {/* Member Birthday Cards */}
         <div className="space-y-6">
-          {displayMembers.map((member) => (
+          {birthdayMembers.map((member) => (
             <div key={member.id} className="space-y-4">
               {/* Profile Image / Avatar */}
               <div className="flex justify-center">
