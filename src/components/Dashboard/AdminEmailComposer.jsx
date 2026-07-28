@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { Mail, Send, User, Type, FileText, MessageSquare, CheckCircle, XCircle, Loader, Sparkles, ChevronDown } from 'lucide-react';
+import { Mail, Send, User, Type, FileText, MessageSquare, CheckCircle, XCircle, Loader, Sparkles, ChevronDown, Wand2 } from 'lucide-react';
 
 const QUICK_TEMPLATES = [
   {
@@ -52,6 +52,76 @@ const AdminEmailComposer = () => {
   const [result, setResult] = useState(null); // 'success' | 'error' | null
   const [errorMsg, setErrorMsg] = useState('');
   const [showTemplates, setShowTemplates] = useState(false);
+
+  // AI generation state
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [aiError, setAiError] = useState('');
+  const [showAiPanel, setShowAiPanel] = useState(false);
+
+  const handleGenerateWithAI = async () => {
+    if (!aiPrompt.trim()) return;
+    setAiGenerating(true);
+    setAiError('');
+
+    const systemInstruction = `You are an email writing assistant for Path Sarthi Trust, an NGO.
+Generate a professional, warm email based on the admin's prompt.
+You MUST respond with ONLY valid JSON — no markdown, no backticks, no extra explanation outside the JSON.
+The JSON must have exactly these keys:
+{
+  "subject": "...",
+  "preview": "...",
+  "status": "...",
+  "message": "...",
+  "additionalMessage": "..."
+}
+- subject: email subject line
+- preview: short inbox teaser (1 sentence)
+- status: badge label like "Thank You", "Update", "Invitation", "Reminder"
+- message: main email body (formal, warm, 2-3 paragraphs, use \\n for line breaks)
+- additionalMessage: closing note or next steps (1-2 sentences)
+
+Admin prompt: ${aiPrompt}`;
+
+    try {
+      // Mirror the exact same structure the chatbot uses with /api/chat
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [
+            { role: 'user', parts: [{ text: systemInstruction }] },
+            { role: 'model', parts: [{ text: 'Understood. I will generate the email as valid JSON.' }] },
+            { role: 'user', parts: [{ text: 'Generate the email now.' }] },
+          ],
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || 'API Error');
+
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      // Strip markdown code fences if present
+      const jsonText = rawText.replace(/```json|```/gi, '').trim();
+      const parsed = JSON.parse(jsonText);
+
+      setForm(prev => ({
+        ...prev,
+        subject: parsed.subject || prev.subject,
+        preview: parsed.preview || prev.preview,
+        status: parsed.status || prev.status,
+        message: parsed.message || prev.message,
+        additionalMessage: parsed.additionalMessage || prev.additionalMessage,
+      }));
+      setShowAiPanel(false);
+      setAiPrompt('');
+    } catch (err) {
+      console.error('[AI Generate]', err);
+      setAiError('Failed to generate email. Please try again or rephrase your prompt.');
+    } finally {
+      setAiGenerating(false);
+    }
+  };
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -129,7 +199,7 @@ const AdminEmailComposer = () => {
       </div>
 
       {/* Quick Templates */}
-      <div className="mb-6">
+      <div className="mb-4">
         <button
           type="button"
           onClick={() => setShowTemplates((v) => !v)}
@@ -153,6 +223,58 @@ const AdminEmailComposer = () => {
                 <div className="text-xs text-slate-400 mt-0.5 truncate">{tmpl.subject}</div>
               </button>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* AI Email Generator */}
+      <div className="mb-6">
+        <button
+          type="button"
+          onClick={() => setShowAiPanel((v) => !v)}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-purple-300 text-purple-700 bg-purple-50 hover:bg-purple-100 transition text-sm font-medium"
+        >
+          <Wand2 size={16} />
+          Generate with AI
+          <ChevronDown size={14} className={`transition-transform ${showAiPanel ? 'rotate-180' : ''}`} />
+        </button>
+
+        {showAiPanel && (
+          <div className="mt-3 bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Wand2 size={18} className="text-purple-600" />
+              <h3 className="font-bold text-purple-800 text-sm">AI Email Generator</h3>
+              <span className="text-xs bg-purple-200 text-purple-700 px-2 py-0.5 rounded-full font-medium">Powered by Gemini</span>
+            </div>
+            <p className="text-xs text-purple-600 mb-3 leading-relaxed">
+              Describe what you want the email to say — the AI will generate the subject, body, and closing note automatically.
+            </p>
+            <textarea
+              value={aiPrompt}
+              onChange={(e) => { setAiPrompt(e.target.value); setAiError(''); }}
+              rows={3}
+              placeholder='e.g. "Write a thank you email for a member who donated ₹500 last week for the notebook drive" or "Invite members to our health camp on August 5th in Moradabad"'
+              className="w-full px-3 py-2.5 rounded-xl border border-purple-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 transition resize-none placeholder:text-slate-400"
+            />
+            {aiError && (
+              <p className="text-xs text-red-600 mt-2 flex items-center gap-1">
+                <XCircle size={13} /> {aiError}
+              </p>
+            )}
+            <div className="flex justify-end mt-3">
+              <button
+                type="button"
+                onClick={handleGenerateWithAI}
+                disabled={aiGenerating || !aiPrompt.trim()}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold shadow-sm transition disabled:opacity-60 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+              >
+                {aiGenerating ? (
+                  <><Loader size={15} className="animate-spin" /> Generating...</>
+                ) : (
+                  <><Wand2 size={15} /> Generate Email</>
+                )}
+              </button>
+            </div>
           </div>
         )}
       </div>

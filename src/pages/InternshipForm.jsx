@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { db } from "../config/firebase";
 
-const departments = [
-  'Social Media',
-  'Event Organizers',
-  'College Ambassador',
-  'Tech Support',
-  'Content Writers',
-  'Media & Photography',
-];
-
 const InternshipForm = () => {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', age: '', education: '', city: '', state: '', field: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', age: '', education: '', city: '', state: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -32,7 +23,7 @@ const InternshipForm = () => {
         status: "pending"
       });
       setIsSuccess(true);
-      setForm({ name: '', email: '', phone: '', age: '', education: '', city: '', state: '', field: '', message: '' });
+      setForm({ name: '', email: '', phone: '', age: '', education: '', city: '', state: '', message: '' });
     } catch (error) {
       alert("Failed to submit application. Please try again.");
     } finally {
@@ -78,15 +69,6 @@ const InternshipForm = () => {
         <div className="mb-4">
           <label className="block mb-1 font-medium">State</label>
           <input name="state" value={form.state} onChange={handleChange} required placeholder="State" className="w-full border rounded px-3 py-2" />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Department</label>
-          <select name="field" value={form.field} onChange={handleChange} required className="w-full border rounded px-3 py-2 bg-white">
-            <option value="">Select Department</option>
-            {departments.map((dep) => (
-              <option key={dep} value={dep}>{dep}</option>
-            ))}
-          </select>
         </div>
         <div className="mb-6">
           <label className="block mb-1 font-medium">Why do you want to join?</label>

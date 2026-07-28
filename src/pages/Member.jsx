@@ -63,14 +63,33 @@ const Member = () => {
         // Build seen sets from members to deduplicate against memberships
         const seenPhones = new Set(fromMembers.map(m => m.phone).filter(Boolean));
         const seenNames = new Set(fromMembers.map(m => normName(m.name)).filter(Boolean));
+        
+        // Also create composite keys: first name + city + state (handles spelling variants)
+        const makeCompositeKey = (name, district, state) => {
+          const firstName = normName(name).split(' ')[0] || '';
+          const loc = (district || '').toLowerCase().trim() + '|' + (state || '').toLowerCase().trim();
+          return firstName && loc ? firstName + '|' + loc : '';
+        };
+        const seenComposite = new Set(
+          fromMembers.map(m => makeCompositeKey(m.name, m.district, m.state)).filter(Boolean)
+        );
 
         const unique = fromMemberships.filter(m => {
           const phone = m.phone || '';
           const name = normName(m.name);
+          const compositeKey = makeCompositeKey(m.name, m.district, m.state);
+          
+          // Skip if phone matches
           if (phone && seenPhones.has(phone)) return false;
+          // Skip if full name matches
           if (name && seenNames.has(name)) return false;
+          // Skip if first name + location matches (catches spelling variants)
+          if (compositeKey && seenComposite.has(compositeKey)) return false;
+          
+          // Add to seen sets for dedup within memberships
           if (phone) seenPhones.add(phone);
           if (name) seenNames.add(name);
+          if (compositeKey) seenComposite.add(compositeKey);
           return true;
         });
 
